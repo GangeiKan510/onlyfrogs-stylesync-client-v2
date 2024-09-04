@@ -12,6 +12,7 @@ import { useUser } from "@/components/config/user-context";
 import { createCloset } from "@/network/web/closet";
 import AddClosetCard from "@/components/cards/AddClosetCard";
 import ClosetType from "@/utils/types/ClosetType";
+// import UploadClothing from "./upload-clothing/UploadClothing";
 
 interface ClosetTabProps {
   closetCards: ClosetType[] | undefined;
@@ -25,6 +26,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [isClosetNameEmpty, setIsClosetNameEmpty] = useState(false);
+  // const [selectedCloset, setSelectedCloset] = useState<ClosetType | null>(null);
 
   const handleModalVisibility = () => {
     setModalVisible(true);

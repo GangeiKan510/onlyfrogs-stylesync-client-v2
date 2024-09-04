@@ -1,6 +1,8 @@
 export const routes = {
-  login: "login",
+  login: "/login",
+  register: "/register",
   tabs: "(tabs)",
+  welcome: "/welcome",
 
   expandedCloset: "(tabs)/closet/",
 };

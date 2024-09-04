@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import ClosetTab from "./closet/ClosetTab";
 import { useUser } from "../config/user-context";
+import PiecesTab from "./pieces/PiecesTab";
 
 const HomeTabs = () => {
   const { user } = useUser();
@@ -78,7 +79,7 @@ const HomeTabs = () => {
       </View>
       <View className="mt-1">
         {activeTab === "Closet" && <ClosetTab closetCards={closets} />}
-        {activeTab === "Pieces" && <Text>Pieces Content</Text>}
+        {activeTab === "Pieces" && <PiecesTab />}
         {activeTab === "Fits" && <Text>Fits Content</Text>}
       </View>
     </View>

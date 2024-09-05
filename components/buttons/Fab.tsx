@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import { StyleSheet, View, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
 import AntDesignIcons from "@expo/vector-icons/AntDesign";
 import Animated, {
   withDelay,
@@ -8,6 +7,7 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  SharedValue,
 } from "react-native-reanimated";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -20,12 +20,16 @@ const SPRING_CONFIG = {
 
 const OFFSET = 65;
 
-const FloatingActionButton = ({
-  isExpanded,
-  index,
-  iconName,
-  onPress,
-}: any) => {
+type IconNameType = "camerao" | "upload" | "link";
+
+type FloatingActionButtonProps = {
+  isExpanded: SharedValue<boolean>;
+  index: number;
+  iconName: IconNameType;
+  onPress: () => void;
+};
+
+const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ isExpanded, index, iconName, onPress }) => {
   const animatedStyles = useAnimatedStyle(() => {
     const moveValue = isExpanded.value ? OFFSET * index : 0;
     const translateValue = withSpring(-moveValue, SPRING_CONFIG);
@@ -46,17 +50,19 @@ const FloatingActionButton = ({
   return (
     <AnimatedPressable
       onPress={() => {
-        onPress(); // Call the button-specific action
-        isExpanded.value = false; // Close the menu
+        onPress();
+        isExpanded.value = false;
       }}
-      style={[animatedStyles, styles.shadow, styles.button]}
+      style={[animatedStyles]}
     >
-      <AntDesignIcons name={iconName} size={25} color="#f8f9ff" />
+      <View className="w-[60px] h-[60px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-1.5 bottom-6">
+      <AntDesignIcons name={iconName as keyof typeof AntDesignIcons.glyphMap} size={25} color="#f8f9ff" />
+      </View>
     </AnimatedPressable>
   );
 };
 
-const Fab = ({ onCameraPress, onGalleryPress, onLinkPress }: any) => {
+const Fab: React.FC<{ onCameraPress: () => void; onGalleryPress: () => void; onLinkPress: () => void }> = ({ onCameraPress, onGalleryPress, onLinkPress }) => {
   const isExpanded = useSharedValue(false);
 
   const handlePress = () => {
@@ -73,17 +79,15 @@ const Fab = ({ onCameraPress, onGalleryPress, onLinkPress }: any) => {
 
   return (
     <View>
-      {/* Main Plus Button */}
       <AnimatedPressable
         onPress={handlePress}
-        style={[styles.shadow, styles.mainButton]}
+        className={` bg-[#977AB3] h-[70px] w-[70px] rounded-full flex justify-center items-center z-20`}
       >
-        <Animated.Text style={[plusIconStyle, styles.iconContent]}>
+        <Animated.Text style={[plusIconStyle]}>
           <AntDesignIcons name="plus" size={30} color={"white"} />
         </Animated.Text>
       </AnimatedPressable>
 
-      {/* Action Buttons */}
       <FloatingActionButton
         isExpanded={isExpanded}
         index={1}
@@ -105,41 +109,5 @@ const Fab = ({ onCameraPress, onGalleryPress, onLinkPress }: any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  mainButton: {
-    zIndex: 1,
-    height: 70,
-    width: 70,
-    borderRadius: 100,
-    backgroundColor: "#977AB3",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconContent: {
-    fontSize: 24,
-    color: "#f8f9ff",
-  },
-  button: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#7ab3b3",
-    position: "absolute",
-    borderRadius: 100,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: -2,
-    flexDirection: "row",
-    right: 6,
-  },
-  shadow: {
-    shadowColor: "#171717",
-    shadowOffset: { width: -0.5, height: 3.5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  },
-});
 
 export default Fab;

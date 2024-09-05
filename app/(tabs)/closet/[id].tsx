@@ -33,6 +33,7 @@ const Page = () => {
   };
 
   const handleTakePicture = async () => {
+    console.log("Upload using Camera");
     await requestCameraPermissions();
 
     if (hasPermission) {
@@ -46,7 +47,7 @@ const Page = () => {
         console.log("Photo taken:", uri);
         handleCloseModal();
       } else {
-        console.log("Camera action canceled or no image captured");
+        console.log("No image captured");
       }
     } else {
       console.log("Camera permission denied");
@@ -54,6 +55,7 @@ const Page = () => {
   };
 
   const handleUploadFromGallery = async () => {
+    console.log("Upload using Gallery");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status === "granted") {

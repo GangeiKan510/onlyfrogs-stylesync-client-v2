@@ -6,17 +6,44 @@ import {
   SafeAreaView,
   Modal,
   Pressable,
+  FlatList,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
+// Dummy data
+const items = [
+  { id: "1", category: "Formal", name: "Suit" },
+  { id: "2", category: "Casual", name: "T-shirt" },
+  { id: "3", category: "Street", name: "Jacket" },
+  { id: "4", category: "Sweater", name: "Cardigan" },
+  { id: "5", category: "Summer", name: "Shorts" },
+  { id: "6", category: "Costume", name: "Elf" },
+];
+
 const PiecesTab = () => {
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const handleModalVisibility = () => {
     setModalVisible(!modalVisible);
   };
+
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters((prevFilters) =>
+      prevFilters.includes(filter)
+        ? prevFilters.filter((f) => f !== filter)
+        : [...prevFilters, filter],
+    );
+  };
+
+  const filteredItems = items.filter(
+    (item) =>
+      (selectedFilters.length === 0 ||
+        selectedFilters.includes(item.category)) &&
+      item.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <SafeAreaView>
@@ -68,9 +95,20 @@ const PiecesTab = () => {
               ].map((filter) => (
                 <Pressable
                   key={filter}
-                  className="m-1 p-1.5 border border-teal-400 rounded-md bg-white"
+                  className={`m-1 p-1.5 border border-teal-400 rounded-md ${
+                    selectedFilters.includes(filter)
+                      ? "bg-teal-400"
+                      : "bg-white"
+                  }`}
+                  onPress={() => toggleFilter(filter)}
                 >
-                  <Text className="text-lg text-center text-teal-400">
+                  <Text
+                    className={`text-lg text-center ${
+                      selectedFilters.includes(filter)
+                        ? "text-white"
+                        : "text-teal-400"
+                    }`}
+                  >
                     {filter}
                   </Text>
                 </Pressable>
@@ -79,6 +117,16 @@ const PiecesTab = () => {
           </View>
         </Pressable>
       </Modal>
+
+      <FlatList
+        data={filteredItems}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View className="p-2 border-b border-gray-300">
+            <Text>{item.name}</Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 };

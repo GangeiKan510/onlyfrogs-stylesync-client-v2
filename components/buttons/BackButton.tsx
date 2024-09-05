@@ -12,7 +12,7 @@ const BackButton = () => {
 
   return (
     <Pressable className="w-10 h-10" onPress={onBack}>
-      <Ionicons name="arrow-back" size={32} color="black" />
+      <Ionicons name="arrow-back" size={28} color="black" />
     </Pressable>
   );
 };

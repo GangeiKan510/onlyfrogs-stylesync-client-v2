@@ -63,7 +63,14 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
     <View className="flex-1">
       <View className="flex-row flex-wrap justify-start">
         {closetCards?.map((item) => (
-          <ClosetCard key={item.id} name={item.name} />
+          <ClosetCard
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            uri={
+              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+            }
+          />
         ))}
         <AddClosetCard onPress={handleModalVisibility} />
       </View>

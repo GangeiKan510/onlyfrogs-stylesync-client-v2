@@ -29,7 +29,12 @@ type FloatingActionButtonProps = {
   onPress: () => void;
 };
 
-const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ isExpanded, index, iconName, onPress }) => {
+const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
+  isExpanded,
+  index,
+  iconName,
+  onPress,
+}) => {
   const animatedStyles = useAnimatedStyle(() => {
     const moveValue = isExpanded.value ? OFFSET * index : 0;
     const translateValue = withSpring(-moveValue, SPRING_CONFIG);
@@ -55,14 +60,22 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ isExpanded,
       }}
       style={[animatedStyles]}
     >
-      <View className="w-[60px] h-[60px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-1.5 bottom-6">
-      <AntDesignIcons name={iconName as keyof typeof AntDesignIcons.glyphMap} size={25} color="#f8f9ff" />
+      <View className="w-[50px] h-[50px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-0.25 bottom-6">
+        <AntDesignIcons
+          name={iconName as keyof typeof AntDesignIcons.glyphMap}
+          size={25}
+          color="#f8f9ff"
+        />
       </View>
     </AnimatedPressable>
   );
 };
 
-const Fab: React.FC<{ onCameraPress: () => void; onGalleryPress: () => void; onLinkPress: () => void }> = ({ onCameraPress, onGalleryPress, onLinkPress }) => {
+const Fab: React.FC<{
+  onCameraPress: () => void;
+  onGalleryPress: () => void;
+  onLinkPress: () => void;
+}> = ({ onCameraPress, onGalleryPress, onLinkPress }) => {
   const isExpanded = useSharedValue(false);
 
   const handlePress = () => {
@@ -81,7 +94,7 @@ const Fab: React.FC<{ onCameraPress: () => void; onGalleryPress: () => void; onL
     <View>
       <AnimatedPressable
         onPress={handlePress}
-        className={` bg-[#977AB3] h-[70px] w-[70px] rounded-full flex justify-center items-center z-20`}
+        className={`${isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"}  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20`}
       >
         <Animated.Text style={[plusIconStyle]}>
           <AntDesignIcons name="plus" size={30} color={"white"} />

@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, Animated, Alert } from "react-native";
+import { Text, View, Animated, Alert, FlatList } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
-import { useLocalSearchParams, usePathname } from "expo-router";
+import { usePathname } from "expo-router";
 import Header from "../../../components/common/Header";
-import ClothingCard from "../../../components/cards/ClothingCard";
+import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
 import Fab from "../../../components/buttons/Fab";
+import { Image } from "expo-image";
+import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 
 const Page = () => {
-  const { id } = useLocalSearchParams();
+  const { user } = useUser();
   const path = usePathname();
+  const closetId = getIdFromUrl(path);
   const routeName = path.split("/")[1];
   const includeBack = ["closet"];
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -90,8 +93,6 @@ const Page = () => {
     // logic to paste link
   };
 
-  const clothingItems = new Array(20).fill(0);
-
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const headerOpacity = scrollY.interpolate({
@@ -106,15 +107,19 @@ const Page = () => {
     extrapolate: "clamp",
   });
 
-  console.log(id);
+  const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
+
+  const filteredClothes = user?.clothes?.filter(
+    (clothing) => clothing.closet_id === closetId
+  );
 
   return (
     <View className="flex-1 bg-white">
-      <View className="mt-14">
+      <View>
         <Header />
       </View>
       {includeBack.includes(routeName) && (
-        <View className="relative z-0 mt-[-13%] ml-4 mb-11">
+        <View className="relative z-0 mt-[-13%] ml-4 mb-7">
           <BackButton />
         </View>
       )}
@@ -124,26 +129,46 @@ const Page = () => {
           opacity: headerOpacity,
           marginBottom: headerMarginBottom,
         }}
-        className="items-center mb-1 border-[#F3F3F3]"
+        className="items-center border-b pb-5 mx-5 border-[#F3F3F3]"
       >
-        <Text className="text-xl font-bold text-center">Closet Title</Text>
-        <Text className="text-base">Closet Description</Text>
+        <Text className="text-xl font-bold text-center">
+          {currentCloset?.name || "Closet Title"}
+        </Text>
+        <Text className="text-base">
+          {currentCloset?.description || "Closet Description"}
+        </Text>
       </Animated.View>
 
-      <Animated.FlatList
-        data={clothingItems}
-        renderItem={() => <ClothingCard />}
-        keyExtractor={(_, index) => index.toString()}
-        numColumns={3}
-        contentContainerStyle={{
-          marginLeft: 15,
-        }}
-        showsVerticalScrollIndicator={true}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-      />
+      {filteredClothes?.length === 0 ? (
+        <View className="items-center">
+          <Text className="text-[#B7B7B7]">
+            This closet has no clothes yet.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredClothes || []}
+          renderItem={({ item }) => (
+            <View className="p-2">
+              <Image
+                className="bg-[#F3F3F3] rounded-[10px]"
+                source={{ uri: item.image_url }}
+                style={{ width: 100, height: 100 }}
+              />
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={3}
+          contentContainerStyle={{
+            padding: 10,
+          }}
+          showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+        />
+      )}
 
       <View className="absolute z-10 bottom-8 right-10">
         <Fab

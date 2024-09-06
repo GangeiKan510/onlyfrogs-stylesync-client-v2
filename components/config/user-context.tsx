@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, {
   createContext,
   useCallback,
@@ -17,6 +18,16 @@ type Closet = {
   user_id: string;
 };
 
+type Clothes = {
+  id: string;
+  sertial: number;
+  image_url: string;
+  user_id: string;
+  closet_id: string;
+  category: string[];
+  tags: string[];
+};
+
 type UserDetails = {
   birth_date: string | null;
   budget_preferences: object;
@@ -32,6 +43,7 @@ type UserDetails = {
   style_preferences: string[];
   tokens: number;
   closets: Closet[];
+  clothes: Clothes[];
 };
 
 interface UserContextProps {

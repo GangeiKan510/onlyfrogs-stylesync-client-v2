@@ -14,9 +14,11 @@ import { routes } from "@/utils/routes";
 interface CardProps {
   name?: string;
   onPress?: () => void;
+  uri: string;
+  id: string;
 }
 
-const ClosetCard: React.FC<CardProps> = ({ name, onPress }) => {
+const ClosetCard: React.FC<CardProps> = ({ name, onPress, uri, id }) => {
   const router = useRouter();
 
   return (
@@ -29,14 +31,14 @@ const ClosetCard: React.FC<CardProps> = ({ name, onPress }) => {
         {true ? (
           <Pressable
             onPress={() =>
-              router.replace(
-                `${routes.expandedCloset as Href<string>} ${name?.split(" ")[1]}` as Href<string>
+              router.push(
+                `${routes.expandedCloset as Href<string>} ${id}` as Href<string>
               )
             }
           >
             <ImageBackground
               source={{
-                uri: "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg",
+                uri: uri,
               }}
               className="w-full h-full justify-center items-center"
               resizeMode="cover"

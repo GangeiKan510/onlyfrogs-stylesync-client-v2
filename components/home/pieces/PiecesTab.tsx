@@ -34,7 +34,7 @@ const PiecesTab = () => {
     setSelectedFilters((prevFilters) =>
       prevFilters.includes(filter)
         ? prevFilters.filter((f) => f !== filter)
-        : [...prevFilters, filter],
+        : [...prevFilters, filter]
     );
   };
 
@@ -42,24 +42,27 @@ const PiecesTab = () => {
     (item) =>
       (selectedFilters.length === 0 ||
         selectedFilters.includes(item.category)) &&
-      item.name.toLowerCase().includes(search.toLowerCase()),
+      item.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <SafeAreaView>
-      <View className="relative w-full">
-        <TextInput
-          className="h-10 w-10/12 m-1 p-2 pr-10 border-b border-black"
-          onChangeText={setSearch}
-          value={search}
-          placeholder="Search for pieces"
-        />
-        <Ionicons
-          className="absolute right-12 top-1/2 transform -translate-y-1/2"
-          name="search-outline"
-          size={24}
-          color="black"
-        />
+      <View className="w-full">
+        <View className="flex">
+          <Ionicons
+            className="right-12 top-1/2 transform -translate-y-1/2"
+            name="search-outline"
+            size={24}
+            color="black"
+          />
+          <TextInput
+            className="h-10 w-10/12 m-1 p-2 pr-10 border-b border-black"
+            onChangeText={setSearch}
+            value={search}
+            placeholder="Search for pieces"
+          />
+        </View>
+
         <Pressable onPress={handleModalVisibility}>
           <AntDesign
             className="absolute right-2 top-1/2 transform -translate-y-1/2 border border-teal-400 bg-teal-400 rounded-full p-2"

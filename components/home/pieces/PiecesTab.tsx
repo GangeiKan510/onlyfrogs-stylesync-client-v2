@@ -37,6 +37,10 @@ const PiecesTab = () => {
     );
   };
 
+  const clearFilters = () => {
+    setSelectedFilters([]);
+  };
+
   const filteredItems = items.filter(
     (item) =>
       (selectedFilters.length === 0 ||
@@ -72,7 +76,9 @@ const PiecesTab = () => {
           <View className="absolute top-16 right-0 left-0 z-10 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
             <View className="flex-row justify-between">
               <Text className="mb-2">FILTER</Text>
-              <Text className="mb-2 underline underline-offset-2">Clear</Text>
+              <Pressable onPress={clearFilters}>
+                <Text className="mb-2 underline underline-offset-2">Clear</Text>
+              </Pressable>
             </View>
             <View className="flex-row flex-wrap">
               {[

@@ -11,8 +11,8 @@ module.exports = {
         "text-tertiary": "#7AB3B3",
       },
       fontFamily: {
-        sans: ["Inter-Regular", "sans-serif"],
-        logo: ["Judson-Bold", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
+        logo: ["Judson", "sans-serif"],
       },
       fontSize: {
         base: "16px",

@@ -77,6 +77,13 @@ export default function TabLayout() {
             ),
           }}
         />
+
+        <Tabs.Screen
+          name="closet/[id]"
+          options={{
+            href: null,
+          }}
+        />
       </Tabs>
     </UserProvider>
   );

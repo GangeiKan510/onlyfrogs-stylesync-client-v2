@@ -12,6 +12,7 @@ import { useUser } from "@/components/config/user-context";
 import { createCloset } from "@/network/web/closet";
 import AddClosetCard from "@/components/cards/AddClosetCard";
 import ClosetType from "@/utils/types/ClosetType";
+import MoreInfoIcon from "../../../assets/icons/more-info-icon.svg";
 // import UploadClothing from "./upload-clothing/UploadClothing";
 
 interface ClosetTabProps {
@@ -113,8 +114,9 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
                   onChangeText={(input) => setDescription(input)}
                 />
               </View>
-              <View>
-                <Text className="mx-10 my-4 text-text-secondary">
+              <View className="flex-row my-7 gap-3 items-center">
+                <MoreInfoIcon />
+                <Text className="text-text-secondary">
                   Make your closet name reflect the type of clothes you want to
                   store.
                 </Text>

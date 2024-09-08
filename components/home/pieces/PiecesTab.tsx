@@ -81,7 +81,7 @@ const PiecesTab = () => {
 
         {/* Floating Dropdown filter options */}
         {dropdownVisible && (
-          <View className="absolute top-16 right-0 left-0 z-10 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
+          <View className="absolute top-16 right-0 left-0 z-50 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
             <View className="flex-row justify-between">
               <Text className="mb-2">FILTER</Text>
               <Pressable onPress={clearFilters}>
@@ -116,7 +116,7 @@ const PiecesTab = () => {
       </View>
 
       <FlatList
-        className="mt-5"
+        className="mt-5 z-20"
         data={filteredClothes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (

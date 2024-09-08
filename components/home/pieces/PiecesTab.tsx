@@ -9,16 +9,8 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
-
-// Dummy data
-const items = [
-  { id: "1", category: "Formal", name: "Suit" },
-  { id: "2", category: "Casual", name: "T-shirt" },
-  { id: "3", category: "Street", name: "Jacket" },
-  { id: "4", category: "Sweater", name: "Cardigan" },
-  { id: "5", category: "Summer", name: "Shorts" },
-  { id: "6", category: "Costume", name: "Elf" },
-];
+import { clothes } from "@/components/dummy/clothes";
+import PiecesCard from "@/components/cards/PiecesCard";
 
 const PiecesTab = () => {
   const [search, setSearch] = useState("");
@@ -41,10 +33,26 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const filteredItems = items.filter(
+  const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const filters = [
+    "casual",
+    "denim",
+    "formal",
+    "basic",
+    "floral",
+    "utility",
+    "shoes",
+  ].map((filter) => capitalizeFirstLetter(filter));
+
+  const filteredClothes = clothes.filter(
     (item) =>
       (selectedFilters.length === 0 ||
-        selectedFilters.includes(item.category)) &&
+        selectedFilters.some((filter) =>
+          item.tags.includes(filter.toLowerCase())
+        )) &&
       item.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -81,26 +89,19 @@ const PiecesTab = () => {
               </Pressable>
             </View>
             <View className="flex-row flex-wrap">
-              {[
-                "Formal",
-                "Casual",
-                "Street",
-                "Sweater",
-                "Summer",
-                "Costume",
-              ].map((filter) => (
+              {filters.map((filter) => (
                 <Pressable
                   key={filter}
                   className={`m-1 px-4 py-1 border-[1.5px] border-[#7AB2B2] rounded-[10px] ${
-                    selectedFilters.includes(filter)
+                    selectedFilters.includes(filter.toLowerCase())
                       ? "bg-[#7AB2B2]"
                       : "bg-white"
                   }`}
-                  onPress={() => toggleFilter(filter)}
+                  onPress={() => toggleFilter(filter.toLowerCase())}
                 >
                   <Text
                     className={`text-center ${
-                      selectedFilters.includes(filter)
+                      selectedFilters.includes(filter.toLowerCase())
                         ? "text-white"
                         : "text-[#7AB2B2]"
                     }`}
@@ -115,13 +116,16 @@ const PiecesTab = () => {
       </View>
 
       <FlatList
-        data={filteredItems}
-        keyExtractor={(item) => item.id}
+        className="mt-5"
+        data={filteredClothes}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View className="p-2 border-b border-gray-300">
-            <Text>{item.name}</Text>
-          </View>
+          <PiecesCard
+            uri="https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+            name={item.name}
+          />
         )}
+        numColumns={3}
       />
     </SafeAreaView>
   );

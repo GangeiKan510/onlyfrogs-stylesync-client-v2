@@ -4,12 +4,11 @@ import {
   TextInput,
   View,
   SafeAreaView,
-  Modal,
   Pressable,
   FlatList,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import FilterIcon from "../../../assets/icons/filter-icon.svg";
 
 // Dummy data
 const items = [
@@ -23,11 +22,11 @@ const items = [
 
 const PiecesTab = () => {
   const [search, setSearch] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-  const handleModalVisibility = () => {
-    setModalVisible(!modalVisible);
+  const toggleDropdownVisibility = () => {
+    setDropdownVisible(!dropdownVisible);
   };
 
   const toggleFilter = (filter: string) => {
@@ -36,6 +35,10 @@ const PiecesTab = () => {
         ? prevFilters.filter((f) => f !== filter)
         : [...prevFilters, filter]
     );
+  };
+
+  const clearFilters = () => {
+    setSelectedFilters([]);
   };
 
   const filteredItems = items.filter(
@@ -48,48 +51,38 @@ const PiecesTab = () => {
   return (
     <SafeAreaView>
       <View className="w-full">
-        <View className="flex">
-          <Ionicons
-            className="right-12 top-1/2 transform -translate-y-1/2"
-            name="search-outline"
-            size={24}
-            color="black"
-          />
-          <TextInput
-            className="h-10 w-10/12 m-1 p-2 pr-10 border-b border-black"
-            onChangeText={setSearch}
-            value={search}
-            placeholder="Search for pieces"
-          />
+        <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center flex-1 border-b border-black">
+            <TextInput
+              className="flex-1 h-10 p-2"
+              onChangeText={setSearch}
+              value={search}
+              placeholder="Search for pieces"
+            />
+            <Ionicons
+              name="search-outline"
+              size={24}
+              color="black"
+              className="mr-2"
+            />
+          </View>
+          <Pressable onPress={toggleDropdownVisibility}>
+            <FilterIcon width={24} height={24} />
+          </Pressable>
         </View>
 
-        <Pressable onPress={handleModalVisibility}>
-          <AntDesign
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 border border-teal-400 bg-teal-400 rounded-full p-2"
-            name="filter"
-            size={35}
-            color="white"
-          />
-        </Pressable>
-      </View>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleModalVisibility}
-      >
-        <Pressable
-          className="flex-1 justify-center items-center bg-black bg-opacity-50"
-          onPress={handleModalVisibility}
-        >
-          <View className="w-4/5 h-1/3 p-5 bg-white rounded-lg">
-            <View>
-              <Text className="text-right text-lg">Filter</Text>
+        {/* Floating Dropdown filter options */}
+        {dropdownVisible && (
+          <View className="absolute top-16 right-0 left-0 z-10 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
+            <View className="flex-row justify-between">
+              <Text className="mb-2">FILTER</Text>
+              <Pressable onPress={clearFilters}>
+                <Text className="mb-2 underline underline-offset-2">Clear</Text>
+              </Pressable>
             </View>
-            <View className="flex-row flex-wrap justify-center">
+            <View className="flex-row flex-wrap">
               {[
-                "Formal Attire",
+                "Formal",
                 "Casual",
                 "Street",
                 "Sweater",
@@ -98,18 +91,18 @@ const PiecesTab = () => {
               ].map((filter) => (
                 <Pressable
                   key={filter}
-                  className={`m-1 p-1.5 border border-teal-400 rounded-md ${
+                  className={`m-1 px-4 py-1 border-[1.5px] border-[#7AB2B2] rounded-[10px] ${
                     selectedFilters.includes(filter)
-                      ? "bg-teal-400"
+                      ? "bg-[#7AB2B2]"
                       : "bg-white"
                   }`}
                   onPress={() => toggleFilter(filter)}
                 >
                   <Text
-                    className={`text-lg text-center ${
+                    className={`text-center ${
                       selectedFilters.includes(filter)
                         ? "text-white"
-                        : "text-teal-400"
+                        : "text-[#7AB2B2]"
                     }`}
                   >
                     {filter}
@@ -118,8 +111,8 @@ const PiecesTab = () => {
               ))}
             </View>
           </View>
-        </Pressable>
-      </Modal>
+        )}
+      </View>
 
       <FlatList
         data={filteredItems}

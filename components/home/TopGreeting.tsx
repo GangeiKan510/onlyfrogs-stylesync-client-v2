@@ -7,6 +7,8 @@ import useSignOut from "@/network/firebase/sign-out";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
+import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
+import TokensIcon from "../../assets/icons/token-icon.svg";
 
 const TopGreeting = () => {
   const { user } = useUser();
@@ -45,9 +47,16 @@ const TopGreeting = () => {
           </Pressable>
         </View>
       </View>
-      <View>
-        <Text className="text-base">Tokens:</Text>
-        <Text className="text-base text-right">{user?.tokens}</Text>
+
+      <View className="flex items-end">
+        <View className="flex-row items-center">
+          <MoreInfoIcon width={20} height={20} />
+          <Text className="text-base ml-1">Tokens:</Text>
+        </View>
+        <View className="flex-row items-center mt-1">
+          <TokensIcon width={20} height={20} />
+          <Text className="text-base ml-1">{user?.tokens}</Text>
+        </View>
       </View>
 
       <ConfirmationModal

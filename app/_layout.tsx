@@ -3,12 +3,10 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-
+import React, { useState, useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen"; 
+import useFonts from "@/hooks/useCustomFonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -16,22 +14,28 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Inter: require("../assets/fonts/Inter-Regular.ttf"),
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Judson: require("../assets/fonts/Judson-Regular.ttf"),
-  });
+  const [isReady, setIsReady] = useState(false);
+
+  const loadFonts = async () => {
+    await useFonts();
+  };
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const prepare = async () => {
+      try {
+        await loadFonts();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+        await SplashScreen.hideAsync();
+      }
+    };
 
-  if (!loaded) {
+    prepare();
+  }, []);
+
+  if (!isReady) {
     return null;
   }
 

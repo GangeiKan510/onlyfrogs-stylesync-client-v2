@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, Animated, Alert, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  Animated,
+  Alert,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { usePathname } from "expo-router";
@@ -98,7 +105,7 @@ const Page = () => {
     user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5">
         <View>
           <Header />
@@ -130,17 +137,11 @@ const Page = () => {
           </View>
         ) : (
           <FlatList
+            className="mx-auto"
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
             numColumns={3}
-            columnWrapperStyle={{
-              justifyContent: "space-between",
-              marginHorizontal: "auto",
-            }}
-            contentContainerStyle={{
-              paddingHorizontal: 10,
-            }}
           />
         )}
       </View>
@@ -151,7 +152,7 @@ const Page = () => {
           onLinkPress={handleLinkUpload}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

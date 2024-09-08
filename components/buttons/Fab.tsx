@@ -38,7 +38,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   const animatedStyles = useAnimatedStyle(() => {
     const moveValue = isExpanded.value ? OFFSET * index : 0;
     const translateValue = withSpring(-moveValue, SPRING_CONFIG);
-    const delay = index * 100;
+    const delay = index * 25;
 
     const scaleValue = isExpanded.value ? 1 : 0;
 

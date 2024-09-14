@@ -3,6 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import ClosetTab from "./closet/ClosetTab";
 import { useUser } from "../config/user-context";
 import PiecesTab from "./pieces/PiecesTab";
+import { clothes } from "../dummy/clothes";
 
 const HomeTabs = () => {
   const { user } = useUser();
@@ -46,7 +47,7 @@ const HomeTabs = () => {
                 activeTab === "Pieces" ? "font-bold" : ""
               } text-center text-base`}
             >
-              Pieces (11)
+              Pieces ({clothes.length})
             </Text>
             {activeTab === "Pieces" && (
               <View

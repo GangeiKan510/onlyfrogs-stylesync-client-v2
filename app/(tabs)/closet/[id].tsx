@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, Animated, Alert, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  Animated,
+  Alert,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { usePathname } from "expo-router";
@@ -8,8 +15,8 @@ import Header from "../../../components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
 import Fab from "../../../components/buttons/Fab";
-import { Image } from "expo-image";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
+import ClothingCard from "@/components/cards/ClothingCard";
 
 const Page = () => {
   const { user } = useUser();
@@ -31,12 +38,10 @@ const Page = () => {
   }, []);
 
   const handleCloseModal = () => {
-    console.log("menu close");
     setIsModalVisible(false);
   };
 
   const handleTakePicture = async () => {
-    console.log("Upload using Camera");
     await requestCameraPermissions();
 
     if (hasPermission) {
@@ -47,18 +52,12 @@ const Page = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
-        console.log("Photo taken:", uri);
         handleCloseModal();
-      } else {
-        console.log("No image captured");
       }
-    } else {
-      console.log("Camera permission denied");
     }
   };
 
   const handleUploadFromGallery = async () => {
-    console.log("Upload using Gallery");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status === "granted") {
@@ -77,20 +76,13 @@ const Page = () => {
         setSelectedImages((prevImages) =>
           [...prevImages, ...newImages].slice(0, 10)
         );
-        console.log("Images selected:", newImages);
         handleCloseModal();
-      } else {
-        console.log("No image selected");
       }
-    } else {
-      console.log("Media library permission denied");
     }
   };
 
   const handleLinkUpload = () => {
-    console.log("Upload using Link");
     handleCloseModal();
-    // logic to paste link
   };
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -109,67 +101,50 @@ const Page = () => {
 
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
 
-  const filteredClothes = user?.clothes?.filter(
-    (clothing) => clothing.closet_id === closetId
-  );
+  const filteredClothes =
+    user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
 
   return (
-    <View className="flex-1 bg-white">
-      <View>
-        <Header />
-      </View>
-      {includeBack.includes(routeName) && (
-        <View className="relative z-0 mt-[-13%] ml-4 mb-7">
-          <BackButton />
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="mx-5">
+        <View>
+          <Header />
         </View>
-      )}
-
-      <Animated.View
-        style={{
-          opacity: headerOpacity,
-          marginBottom: headerMarginBottom,
-        }}
-        className="items-center border-b pb-5 mx-5 border-[#F3F3F3]"
-      >
-        <Text className="text-xl font-bold text-center">
-          {currentCloset?.name || "Closet Title"}
-        </Text>
-        <Text className="text-base">
-          {currentCloset?.description || "Closet Description"}
-        </Text>
-      </Animated.View>
-
-      {filteredClothes?.length === 0 ? (
-        <View className="items-center">
-          <Text className="text-[#B7B7B7]">
-            This closet has no clothes yet.
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={filteredClothes || []}
-          renderItem={({ item }) => (
-            <View className="p-2">
-              <Image
-                className="bg-[#F3F3F3] rounded-[10px]"
-                source={{ uri: item.image_url }}
-                style={{ width: 100, height: 100 }}
-              />
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          contentContainerStyle={{
-            padding: 10,
+        {includeBack.includes(routeName) && (
+          <View className="relative z-0 mt-[-13%] ml-4 mb-7">
+            <BackButton />
+          </View>
+        )}
+        <Animated.View
+          style={{
+            opacity: headerOpacity,
+            marginBottom: headerMarginBottom,
           }}
-          showsVerticalScrollIndicator={false}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-          )}
-        />
-      )}
-
+          className="items-center border-b pb-5 mx-5 border-[#F3F3F3]"
+        >
+          <Text className="text-xl font-bold text-center">
+            {currentCloset?.name || "Closet Title"}
+          </Text>
+          <Text className="text-base">
+            {currentCloset?.description || "Closet Description"}
+          </Text>
+        </Animated.View>
+        {filteredClothes.length === 0 ? (
+          <View className="items-center">
+            <Text className="text-[#B7B7B7]">
+              This closet has no clothes yet.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            className="mx-auto"
+            data={filteredClothes}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
+            numColumns={3}
+          />
+        )}
+      </View>
       <View className="absolute z-10 bottom-8 right-10">
         <Fab
           onCameraPress={handleTakePicture}
@@ -177,7 +152,7 @@ const Page = () => {
           onLinkPress={handleLinkUpload}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

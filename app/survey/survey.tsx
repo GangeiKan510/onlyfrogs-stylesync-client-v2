@@ -17,13 +17,19 @@ const Survey = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   const handleAnalyzeComplete = () => {
     setCurrentIndex(2);
+    setIsAnalyzing(false);
   };
 
   const contentArray = [
     <Welcome />,
-    <SkinToneAnalysis onAnalyzeComplete={handleAnalyzeComplete} />,
+    <SkinToneAnalysis
+      onAnalyzeComplete={handleAnalyzeComplete}
+      setIsAnalyzing={setIsAnalyzing}
+    />,
     <Result />,
     <BodyType />,
     <PreferencesAndBudget />,
@@ -50,16 +56,14 @@ const Survey = () => {
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
-        {currentIndex > 1 &&
-          currentIndex !== 2 &&
-          currentIndex !== 3 && (
-            <TouchableOpacity onPress={handleBack} className="p-2">
-              <BackIcon />
-            </TouchableOpacity>
-          )}
+        {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
+          <TouchableOpacity onPress={handleBack} className="p-2">
+            <BackIcon />
+          </TouchableOpacity>
+        )}
 
         {/* Conditionally render the Skip Button */}
-        {currentIndex === 1 && (
+        {currentIndex === 1 && !isAnalyzing && (
           <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
             <Text className="text-bg-tertiary underline">Skip</Text>
           </TouchableOpacity>

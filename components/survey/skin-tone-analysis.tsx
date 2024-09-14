@@ -8,12 +8,13 @@ import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../common/LoadingScreen";
 
-const SkinToneAnalysis = ({ onAnalyzeComplete }: any) => {
+const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const analyzeSkinTone = () => {
+    setIsAnalyzing(true);
     setTimeout(() => {
       onAnalyzeComplete();
       setSelectedImage(null);

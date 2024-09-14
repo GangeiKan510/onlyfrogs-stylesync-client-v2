@@ -44,7 +44,7 @@ const Survey = () => {
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top}`}>
-      <View className="flex-row justify-between items-center absolute top-0 w-full p-5">
+      <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
         {currentIndex > 0 && (
           <TouchableOpacity onPress={handleBack} className="p-2">
@@ -59,9 +59,7 @@ const Survey = () => {
       </View>
 
       {/* Main Content */}
-      <View className="flex-1">
-        {contentArray[currentIndex]}
-      </View>
+      <View className="flex-1">{contentArray[currentIndex]}</View>
 
       {/* Continue Button */}
       <View className="flex justify-center items-center p-5">

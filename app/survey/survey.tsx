@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
 import React, { useState } from "react";
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
@@ -15,6 +16,7 @@ import BackIcon from "../../assets/icons/back-icon.svg";
 const Survey = () => {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [season, setSeason] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
 
   const contentArray = [
@@ -63,16 +65,18 @@ const Survey = () => {
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
-      {/* Continue Button */}
-      <View className="flex justify-center items-center p-5">
-        <TouchableOpacity
-          onPress={handleNext}
-          disabled={currentIndex === contentArray.length - 1}
-          className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
-        >
-          <Text className="text-white text-center">Continue</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Conditionally render the Continue Button */}
+      {currentIndex !== 1 && ( // Hide the Continue button on the SkinToneAnalysis screen
+        <View className="flex justify-center items-center p-5">
+          <TouchableOpacity
+            onPress={handleNext}
+            disabled={currentIndex === contentArray.length - 1}
+            className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
+          >
+            <Text className="text-white text-center">Continue</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

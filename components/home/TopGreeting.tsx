@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable } from "react-native";
 import { useUser } from "../config/user-context";
 import Avatar from "../common/Avatar";
@@ -9,13 +9,20 @@ import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import TokensIcon from "../../assets/icons/token-icon.svg";
+import EmailVerifiedIcon from "../../assets/icons/top-greeting/email-verified-icon.svg";
 
 const TopGreeting = () => {
   const { user } = useUser();
   const router = useRouter();
-
   const [signOut, loading] = useSignOut(auth);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      setIsEmailVerified(auth.currentUser.emailVerified);
+    }
+  }, []);
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -37,9 +44,12 @@ const TopGreeting = () => {
           alt={"profile-alt"}
         />
         <View className="ml-3">
-          <Text className="font-bold text-base">
-            Welcome Back, {user?.first_name.split(" ")[0]}!
-          </Text>
+          <View className="flex-row items-center gap-1">
+            <Text className="font-bold text-base">
+              Welcome Back, {user?.first_name.split(" ")[0]}!
+            </Text>
+            {isEmailVerified ? <EmailVerifiedIcon /> : null}
+          </View>
           <Pressable onPress={() => setModalVisible(true)}>
             <Text className="text-base text-text-tertiary underline">
               Log out

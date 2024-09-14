@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
 import { UserProvider } from "@/components/config/user-context";
 import HomeIcon from "../../assets/icons/tabs/home.svg";
@@ -7,8 +7,32 @@ import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
 import { View, Text, StyleSheet } from "react-native";
+import { Href, useRouter } from "expo-router";
+import { auth } from "@/firebaseConfig";
+import { routes } from "@/utils/routes";
+import { onAuthStateChanged } from "firebase/auth";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 export default function TabLayout() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoading(false);
+      } else {
+        router.replace(routes.welcome as Href<string | object>);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  if (loading) {
+    return <LoadingScreen message={"Preparing the app."} />;
+  }
+
   return (
     <UserProvider>
       <Tabs

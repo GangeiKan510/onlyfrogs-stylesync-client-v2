@@ -59,7 +59,7 @@ const Survey = () => {
       </View>
 
       {/* Main Content */}
-      <View className="flex-1 justify-center items-center">
+      <View className="flex-1">
         {contentArray[currentIndex]}
       </View>
 

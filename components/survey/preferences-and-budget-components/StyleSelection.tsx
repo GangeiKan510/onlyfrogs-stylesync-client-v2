@@ -12,7 +12,6 @@ const stylesList = [
   'Sporty',
   'Classy',
   'Vintage',
-  // Add more styles here if needed
 ];
 
 const StyleSelection = () => {
@@ -27,7 +26,7 @@ const StyleSelection = () => {
     }
   };
 
-  const visibleStyles = showAll ? stylesList : stylesList.slice(0, 8); // Show only the first 8 styles initially
+  const visibleStyles = showAll ? stylesList : stylesList.slice(0, 8);
 
   return (
     <View>
@@ -44,15 +43,14 @@ const StyleSelection = () => {
             >
               <Text className="text-base">{style}</Text>
             </TouchableOpacity>
-            {/* Show more/less link next to the style items */}
             {!showAll && stylesList.length > 8 && index === 7 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-base ml-2">Show more...</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show more...</Text>
               </TouchableOpacity>
             )}
             {showAll && index === stylesList.length - 1 && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-2">Show less</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show less</Text>
               </TouchableOpacity>
             )}
           </View>

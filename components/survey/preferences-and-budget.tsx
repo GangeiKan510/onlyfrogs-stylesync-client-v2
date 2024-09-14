@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/common/Header";
 import StyleSelection from "./preferences-and-budget-components/StyleSelection";
 import FavColorSelection from "./preferences-and-budget-components/FavColorSelection";
+import PreferredBrandsSelection from "./preferences-and-budget-components/PreferredBrandsSelection";
 
 const PreferencesAndBudget = () => {
   return (
@@ -10,21 +11,28 @@ const PreferencesAndBudget = () => {
       <View className="">
         <Header />
       </View>
+
+      <View className="flex justify-center items-center mt-10 mb-10">
+        <Text className="text-2xl">Preferences & Budget</Text>
+      </View>
       <ScrollView>
-        <View className="flex justify-center items-center mt-10">
-          <Text className="text-2xl">Preferences & Budget</Text>
-        </View>
-        <View className="flex justify-start items-start mx-5 mt-10">
+        <View className="flex justify-start items-start mx-5">
           <Text className="text-lg font-bold mb-2">
-            Choose your preferred style
+            Choose your preferred styles
           </Text>
           <StyleSelection />
         </View>
         <View className="flex justify-start items-start mx-5 mt-10">
           <Text className="text-lg font-bold mb-2">
-            Choose your favorite color
+            Choose your favorite colors
           </Text>
           <FavColorSelection />
+        </View>
+        <View className="flex justify-start items-start mx-5 mt-10">
+          <Text className="text-lg font-bold mb-2">
+            Choose your preferred brands
+          </Text>
+          <PreferredBrandsSelection />
         </View>
       </ScrollView>
     </>

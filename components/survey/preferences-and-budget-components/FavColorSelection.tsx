@@ -42,7 +42,7 @@ const FavColorSelection = () => {
     }
   };
 
-  const visibleColors = showAll ? colorList : colorList.slice(0, 8); // Show only the first 8 colors initially
+  const visibleColors = showAll ? colorList : colorList.slice(0, 8);
 
   return (
     <View>

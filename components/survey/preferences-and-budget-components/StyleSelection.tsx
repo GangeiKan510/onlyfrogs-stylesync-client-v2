@@ -34,14 +34,14 @@ const StyleSelection = () => {
             {/* Show more/less link next to the style items */}
             {!showAll && STYLE_LIST.length > 8 && index === 7 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-base ml-2">
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
                   Show more...
                 </Text>
               </TouchableOpacity>
             )}
             {showAll && index === STYLE_LIST.length - 1 && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-2">Show less</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show less</Text>
               </TouchableOpacity>
             )}
           </View>

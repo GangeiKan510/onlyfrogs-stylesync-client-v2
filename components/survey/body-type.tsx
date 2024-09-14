@@ -4,7 +4,9 @@ import BodyTypeAImage from "../../assets/images/svg/body-type-a.svg";
 import BodyTypeBImage from "../../assets/images/svg/body-type-b.svg";
 
 const BodyType = () => {
-  const [selectedBodyType, setSelectedBodyType] = useState<string | null>(null);
+  const [selectedBodyType, setSelectedBodyType] = useState<string | null>(
+    "TypeA"
+  );
 
   return (
     <View>

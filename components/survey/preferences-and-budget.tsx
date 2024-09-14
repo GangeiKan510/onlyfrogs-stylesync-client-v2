@@ -4,6 +4,7 @@ import Header from "@/components/common/Header";
 import StyleSelection from "./preferences-and-budget-components/StyleSelection";
 import FavColorSelection from "./preferences-and-budget-components/FavColorSelection";
 import PreferredBrandsSelection from "./preferences-and-budget-components/PreferredBrandsSelection";
+import BudgetRange from "./preferences-and-budget-components/BudgetRange";
 
 const PreferencesAndBudget = () => {
   return (
@@ -33,6 +34,12 @@ const PreferencesAndBudget = () => {
             Choose your preferred brands
           </Text>
           <PreferredBrandsSelection />
+        </View>
+        <View className="flex justify-start items-start mx-5 mt-10">
+          <Text className="text-lg font-bold mb-2">
+            Budget
+          </Text>
+          <BudgetRange />
         </View>
       </ScrollView>
     </>

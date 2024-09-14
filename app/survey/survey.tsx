@@ -1,12 +1,6 @@
 /* eslint-disable react/jsx-key */
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  Button,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
@@ -16,6 +10,7 @@ import SkinToneAnalysis from "@/components/survey/skin-tone-analysis";
 import Welcome from "@/components/survey/welcome";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
+import BackIcon from "../../assets/icons/back-icon.svg";
 
 const Survey = () => {
   const router = useRouter();
@@ -48,11 +43,18 @@ const Survey = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1" style={{ paddingTop: insets.top }}>
-      {/* Skip Button */}
-      <View className="absolute top-0 right-0 p-5">
-        <TouchableOpacity onPress={handleSkip}>
-          <Text className="text-blue-500">Skip</Text>
+    <SafeAreaView className={`flex-1 pt-${insets.top}`}>
+      <View className="flex-row justify-between items-center absolute top-0 w-full p-5">
+        {/* Conditionally render the Back Button */}
+        {currentIndex > 0 && (
+          <TouchableOpacity onPress={handleBack} className="p-2">
+            <BackIcon />
+          </TouchableOpacity>
+        )}
+
+        {/* Skip Button */}
+        <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
+          <Text className="text-bg-tertiary underline">Skip</Text>
         </TouchableOpacity>
       </View>
 
@@ -61,18 +63,15 @@ const Survey = () => {
         {contentArray[currentIndex]}
       </View>
 
-      {/* Navigation Buttons */}
-      <View className="flex-row justify-between p-5">
-        <Button
-          title="Back"
-          onPress={handleBack}
-          disabled={currentIndex === 0}
-        />
-        <Button
-          title="Next"
+      {/* Continue Button */}
+      <View className="flex justify-center items-center p-5">
+        <TouchableOpacity
           onPress={handleNext}
           disabled={currentIndex === contentArray.length - 1}
-        />
+          className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
+        >
+          <Text className="text-white text-center">Continue</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

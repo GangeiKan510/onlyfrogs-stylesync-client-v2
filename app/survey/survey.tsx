@@ -43,7 +43,7 @@ const Survey = () => {
   };
 
   return (
-    <SafeAreaView className={`flex-1 pt-${insets.top}`}>
+    <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
         {currentIndex > 0 && (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -7,14 +8,16 @@ import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../common/LoadingScreen";
 
-const SkinToneAnalysis = () => {
+const SkinToneAnalysis = ({ onAnalyzeComplete }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const analyzeSkinTone = () => {
-    setTimeout(() => {}, 2000);
-    setSelectedImage(null);
+    setTimeout(() => {
+      onAnalyzeComplete();
+      setSelectedImage(null);
+    }, 5000);
   };
 
   const handleCloseModal = () => {
@@ -48,6 +51,7 @@ const SkinToneAnalysis = () => {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
         handleCloseModal();
+        analyzeSkinTone();
       }
     }
   };
@@ -70,6 +74,7 @@ const SkinToneAnalysis = () => {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
         handleCloseModal();
+        analyzeSkinTone();
       }
     }
   };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
 import React, { useState } from "react";
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
@@ -16,12 +15,15 @@ import BackIcon from "../../assets/icons/back-icon.svg";
 const Survey = () => {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [season, setSeason] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
+
+  const handleAnalyzeComplete = () => {
+    setCurrentIndex(2);
+  };
 
   const contentArray = [
     <Welcome />,
-    <SkinToneAnalysis />,
+    <SkinToneAnalysis onAnalyzeComplete={handleAnalyzeComplete} />,
     <Result />,
     <BodyType />,
     <PreferencesAndBudget />,
@@ -48,14 +50,16 @@ const Survey = () => {
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
-        {currentIndex > 1 && (
-          <TouchableOpacity onPress={handleBack} className="p-2">
-            <BackIcon />
-          </TouchableOpacity>
-        )}
+        {currentIndex > 1 &&
+          currentIndex !== 2 &&
+          currentIndex !== 3 && (
+            <TouchableOpacity onPress={handleBack} className="p-2">
+              <BackIcon />
+            </TouchableOpacity>
+          )}
 
         {/* Conditionally render the Skip Button */}
-        {currentIndex > 0 && (
+        {currentIndex === 1 && (
           <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
             <Text className="text-bg-tertiary underline">Skip</Text>
           </TouchableOpacity>

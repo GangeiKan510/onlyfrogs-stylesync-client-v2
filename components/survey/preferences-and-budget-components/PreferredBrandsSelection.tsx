@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 
-// Assuming you have imported the logos as image assets
 import SheinLogo from '../../../assets/images/shein.jpeg';
 import PenshoppeLogo from '../../../assets/images/penshoppe.png';
 import UniqloLogo from '../../../assets/images/uniqlo.jpg';

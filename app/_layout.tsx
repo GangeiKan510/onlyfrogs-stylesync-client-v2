@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import React, { useState, useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen"; 
+import * as SplashScreen from "expo-splash-screen";
 import useFonts from "@/hooks/useCustomFonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -45,6 +45,7 @@ export default function RootLayout() {
         <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="register" options={{ headerShown: false }} />
+        <Stack.Screen name="survey/survey" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

@@ -53,7 +53,7 @@ export default function Register() {
       setLoading(false);
 
       if (firebaseAuthUser && newUser) {
-        router.replace(routes.login as Href<string | object>);
+        router.replace(routes.survey as Href<string | object>);
       }
     } catch (error) {
       console.error(error);
@@ -149,7 +149,7 @@ export default function Register() {
               </View>
               <Pressable className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4">
                 <View className="flex-1 justify-center items-center">
-                  <Link href={routes.welcome as Href<string | object>}>
+                  <Link href={routes.survey as Href<string | object>}>
                     Sign Up with Google
                   </Link>
                 </View>

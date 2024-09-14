@@ -12,8 +12,6 @@ const HomeTabs = () => {
   // Directly use closets from user object
   const closets = user?.closets || [];
 
-  console.log("User", user);
-
   return (
     <View className="mt-4">
       <View className="flex-row justify-between items-center mb-1 border-b-[2px] border-[#F3F3F3] pb-2">

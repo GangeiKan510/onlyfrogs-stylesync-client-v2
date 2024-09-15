@@ -2,9 +2,10 @@ import { View, Text, TextInput, Pressable, Platform } from "react-native";
 import React, { useMemo, useState } from "react";
 import Header from "@/components/common/Header";
 import { RadioButtonProps } from "react-native-radio-buttons-group";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { View, Text } from "react-native";
+import React from "react";
+import Header from "../common/Header";
 
 const PersonalInformation = () => {
   const gender: RadioButtonProps[] = useMemo(
@@ -128,6 +129,7 @@ const PersonalInformation = () => {
             placeholder="Enter Weight"
           />
         </View>
+      <Header/>
       </View>
     </View>
   );

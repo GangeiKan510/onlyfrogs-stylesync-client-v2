@@ -27,7 +27,7 @@ const PersonalInformation = () => {
   };
 
   const formatDate = (date: Date) => {
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { month: 'long', day: '2-digit', year: 'numeric' };
     const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
     
     const [month, day, year] = formattedDate.replace(',', '').split(' ');

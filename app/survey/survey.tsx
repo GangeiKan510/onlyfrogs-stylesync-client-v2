@@ -17,9 +17,19 @@ const Survey = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleAnalyzeComplete = () => {
+    setCurrentIndex(2);
+    setIsAnalyzing(false);
+  };
+
   const contentArray = [
     <Welcome />,
-    <SkinToneAnalysis />,
+    <SkinToneAnalysis
+      onAnalyzeComplete={handleAnalyzeComplete}
+      setIsAnalyzing={setIsAnalyzing}
+    />,
     <Result />,
     <BodyType />,
     <PreferencesAndBudget />,
@@ -43,34 +53,38 @@ const Survey = () => {
   };
 
   return (
-    <SafeAreaView className={`flex-1 pt-${insets.top}`}>
+    <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
-        {currentIndex > 0 && (
+        {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
           <TouchableOpacity onPress={handleBack} className="p-2">
             <BackIcon />
           </TouchableOpacity>
         )}
 
-        {/* Skip Button */}
-        <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
-          <Text className="text-bg-tertiary underline">Skip</Text>
-        </TouchableOpacity>
+        {/* Conditionally render the Skip Button */}
+        {currentIndex === 1 && !isAnalyzing && (
+          <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
+            <Text className="text-bg-tertiary underline">Skip</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
-      {/* Continue Button */}
-      <View className="flex justify-center items-center p-5">
-        <TouchableOpacity
-          onPress={handleNext}
-          disabled={currentIndex === contentArray.length - 1}
-          className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
-        >
-          <Text className="text-white text-center">Continue</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Conditionally render the Continue Button */}
+      {currentIndex !== 1 && ( // Hide the Continue button on the SkinToneAnalysis screen
+        <View className="flex justify-center items-center p-5">
+          <TouchableOpacity
+            onPress={handleNext}
+            disabled={currentIndex === contentArray.length - 1}
+            className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
+          >
+            <Text className="text-white text-center">Continue</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

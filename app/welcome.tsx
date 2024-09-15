@@ -12,6 +12,7 @@ const Welcome = () => {
 
   const textMarginBottom = screenHeight > 850 ? 72 : 52;
 
+  console.log("New Token PR");
   return (
     <View className="flex-1 bg-white">
       <WelcomeHero className="absolute top-0 left-0 right-0 bottom-0 z-0" />

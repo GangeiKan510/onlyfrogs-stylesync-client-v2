@@ -52,6 +52,7 @@ const Page = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
+        console.log("Image URI:", uri);
         handleCloseModal();
       }
     }

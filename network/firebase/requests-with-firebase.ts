@@ -9,7 +9,7 @@ const getWithFirebaseJwt = async (endpoint: string): Promise<Response> => {
 
 const postWithFirebaseJwt = async (
   endpoint: string,
-  body: any,
+  body: any
 ): Promise<Response> => {
   const url = `${process.env.EXPO_PUBLIC_API_SERVER}${endpoint}`;
   return fetchWithFirebaseJwt(url, {
@@ -21,9 +21,27 @@ const postWithFirebaseJwt = async (
   });
 };
 
+const uploadWithFirebaseJwt = async (
+  endpoint: string,
+  formData: FormData
+): Promise<Response> => {
+  const url = `${process.env.EXPO_PUBLIC_API_SERVER}${endpoint}`;
+
+  // Do not set Content-Type header, let fetch handle it
+  return fetchWithFirebaseJwt(url, {
+    method: "POST",
+    body: formData, // Directly send the FormData object
+  });
+};
+
 const deleteWithFirebaseJwt = async (endpoint: string): Promise<Response> => {
   const url = `${process.env.EXPO_PUBLIC_API_SERVER}${endpoint}`;
   return fetchWithFirebaseJwt(url, { method: "DELETE" });
 };
 
-export { getWithFirebaseJwt, postWithFirebaseJwt, deleteWithFirebaseJwt };
+export {
+  getWithFirebaseJwt,
+  postWithFirebaseJwt,
+  deleteWithFirebaseJwt,
+  uploadWithFirebaseJwt,
+};

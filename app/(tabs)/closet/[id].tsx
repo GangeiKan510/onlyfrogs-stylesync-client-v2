@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -17,9 +18,10 @@ import BackButton from "../../../components/buttons/BackButton";
 import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
+import { uploadClothing } from "@/network/web/clothes";
 
 const Page = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const path = usePathname();
   const closetId = getIdFromUrl(path);
   const routeName = path.split("/")[1];
@@ -52,7 +54,37 @@ const Page = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
-        console.log("Image URI:", uri);
+        const fileName = uri.split("/").pop();
+        const formData = new FormData();
+
+        try {
+          formData.append("file", {
+            uri: uri,
+            name: fileName,
+            type: "image/jpeg",
+          } as any);
+
+          if (user?.id) {
+            formData.append("user_id", user.id);
+          } else {
+            console.error("User ID is missing");
+            return;
+          }
+
+          if (closetId) {
+            formData.append("closet_id", closetId);
+          } else {
+            console.error("Closet ID is missing");
+            return;
+          }
+
+          const imageUploaded = await uploadClothing(formData);
+
+          refetchMe();
+        } catch (error) {
+          console.error("Error while uploading clothing:", error);
+        }
+
         handleCloseModal();
       }
     }
@@ -77,6 +109,23 @@ const Page = () => {
         setSelectedImages((prevImages) =>
           [...prevImages, ...newImages].slice(0, 10)
         );
+
+        const uri = newImages[0];
+        const fileName = uri.split("/").pop();
+        const formData = new FormData();
+
+        try {
+          const response = await fetch(uri);
+          const blob = await response.blob();
+
+          formData.append("file", blob, fileName);
+          formData.append("user_id", "56bccdfd-f61c-45da-8c70-5774bb8b8b3b");
+          formData.append("closet_id", "62c5736b-4ddd-48b5-823e-71a5aa9d4bb8");
+
+        } catch (error) {
+          console.error("Error while converting URI to Blob:", error);
+        }
+
         handleCloseModal();
       }
     }

@@ -1,20 +1,21 @@
-import { postWithFirebaseJwt } from "../firebase/requests-with-firebase";
+import { uploadWithFirebaseJwt } from "../firebase/requests-with-firebase";
 
-export const uploadClothing = async (image: FormData) => {
+export const uploadClothing = async (formData: FormData) => {
   try {
-    const response = await postWithFirebaseJwt("/web/images/upload", {
-      file: image,
-    });
+    const response = await uploadWithFirebaseJwt(
+      "/web/images/upload",
+      formData
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error creating closet: ${errorText}`);
+      throw new Error(`Error uploading clothing: ${errorText}`);
     }
 
-    const newCloset = await response.json();
-    return newCloset;
+    const newClothing = await response.json();
+    return newClothing;
   } catch (error) {
-    console.error("Failed to create closet", error);
+    console.error("Failed to upload clothing", error);
     throw error;
   }
 };

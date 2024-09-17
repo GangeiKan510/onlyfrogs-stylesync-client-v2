@@ -29,6 +29,7 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -58,6 +59,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
+          setLoading(true); // Show loading screen
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -68,6 +70,7 @@ const Page = () => {
             formData.append("user_id", user.id);
           } else {
             console.error("User ID is missing");
+            setLoading(false);
             return;
           }
 
@@ -75,6 +78,7 @@ const Page = () => {
             formData.append("closet_id", closetId);
           } else {
             console.error("Closet ID is missing");
+            setLoading(false);
             return;
           }
 
@@ -83,6 +87,8 @@ const Page = () => {
           refetchMe();
         } catch (error) {
           console.error("Error while uploading clothing:", error);
+        } finally {
+          setLoading(false);
         }
 
         handleCloseModal();
@@ -115,15 +121,20 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          const response = await fetch(uri);
-          const blob = await response.blob();
-
-          formData.append("file", blob, fileName);
-          formData.append("user_id", "56bccdfd-f61c-45da-8c70-5774bb8b8b3b");
-          formData.append("closet_id", "62c5736b-4ddd-48b5-823e-71a5aa9d4bb8");
-
+          setLoading(true);
+          formData.append("file", {
+            uri: uri,
+            name: fileName,
+            type: "image/jpeg",
+          } as any);
+          formData.append("user_id", user?.id || "");
+          formData.append("closet_id", closetId || "");
+          await uploadClothing(formData);
+          refetchMe();
         } catch (error) {
-          console.error("Error while converting URI to Blob:", error);
+          console.error("Error while uploading clothing:", error);
+        } finally {
+          setLoading(false);
         }
 
         handleCloseModal();
@@ -197,6 +208,7 @@ const Page = () => {
       </View>
       <View className="absolute z-10 bottom-8 right-10">
         <Fab
+          loading={loading}
           onCameraPress={handleTakePicture}
           onGalleryPress={handleUploadFromGallery}
           onLinkPress={handleLinkUpload}

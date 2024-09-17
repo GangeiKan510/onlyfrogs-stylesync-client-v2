@@ -198,11 +198,12 @@ const Page = () => {
           </View>
         ) : (
           <FlatList
-            className="mx-auto"
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
             numColumns={3}
+            columnWrapperStyle={{ justifyContent: "flex-start" }}
+            contentContainerStyle={{ alignItems: "flex-start" }}
           />
         )}
       </View>

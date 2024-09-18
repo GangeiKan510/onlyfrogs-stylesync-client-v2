@@ -152,9 +152,7 @@ export default function Register() {
                 </View>
                 <Pressable className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4">
                   <View className="flex-1 justify-center items-center">
-                    <Link href={routes.survey as Href<string | object>}>
-                      Sign Up with Google
-                    </Link>
+                    <Text>Sign Up with Google</Text>
                   </View>
                 </Pressable>
               </View>

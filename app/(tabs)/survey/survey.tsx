@@ -10,7 +10,7 @@ import SkinToneAnalysis from "@/components/survey/skin-tone-analysis";
 import Welcome from "@/components/survey/welcome";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
-import BackIcon from "../../assets/icons/back-icon.svg";
+import BackIcon from "../../../assets/icons/back-icon.svg";
 
 const Survey = () => {
   const router = useRouter();

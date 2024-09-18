@@ -117,6 +117,13 @@ export default function TabLayout() {
             href: null,
           }}
         />
+        <Tabs.Screen
+          name="survey/survey"
+          options={{
+            href: null,
+            tabBarStyle: { display: "none" },
+          }}
+        />
       </Tabs>
     </UserProvider>
   );

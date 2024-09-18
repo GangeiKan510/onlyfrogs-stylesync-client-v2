@@ -11,7 +11,7 @@ const Header = () => {
     <View
       className={
         headersWithoutMarginTop.includes(params.split("/")[1])
-          ? `mt-[9px]`
+          ? `mt-[56px]`
           : `mt-14`
       }
     >

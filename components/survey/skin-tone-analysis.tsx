@@ -7,31 +7,23 @@ import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../common/LoadingScreen";
+import { analyzeUserSkinTone } from "@/network/web/user";
 
 const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     requestCameraPermissions();
   }, []);
 
   useEffect(() => {
-    if (capturedImage) {
-      console.log("Captured Image URI:", capturedImage);
+    if (selectedImage) {
+      console.log("Captured Image URI:", selectedImage);
     }
-  }, [capturedImage]);
-
-  const analyzeSkinTone = () => {
-    setIsAnalyzing(true);
-    setTimeout(() => {
-      onAnalyzeComplete();
-      setSelectedImage(null);
-    }, 5000);
-  };
+  }, [selectedImage]);
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
@@ -59,9 +51,27 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-        setCapturedImage(uri);
         handleCloseModal();
-        analyzeSkinTone();
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: uri,
+          name: uri.split("/").pop(),
+          type: "image/jpeg",
+        } as any);
+
+        setIsLoading(true);
+        try {
+          console.log("Sending image for analysis:", formData);
+          const analysisResult = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", analysisResult);
+          onAnalyzeComplete(analysisResult);
+        } catch (error) {
+          console.error("Failed to analyze skin tone:", error);
+          Alert.alert("Error", "Failed to analyze skin tone.");
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
@@ -83,16 +93,34 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-        setCapturedImage(uri);
         handleCloseModal();
-        analyzeSkinTone();
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: uri,
+          name: uri.split("/").pop(),
+          type: "image/jpeg",
+        } as any);
+
+        setIsLoading(true);
+        try {
+          console.log("Sending image for analysis:", formData);
+          const analysisResult = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", analysisResult);
+          onAnalyzeComplete(analysisResult);
+        } catch (error) {
+          console.error("Failed to analyze skin tone:", error);
+          Alert.alert("Error", "Failed to analyze skin tone.");
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
 
   return (
     <>
-      {selectedImage ? (
+      {isLoading ? (
         <LoadingScreen message={"Analyzing your skin tone..."} />
       ) : (
         <View>

@@ -63,16 +63,25 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
   return (
     <View className="flex-1">
       <View className="flex-row flex-wrap justify-start">
-        {closetCards?.map((item) => (
-          <ClosetCard
-            key={item.id}
-            id={item.id}
-            name={item.name}
-            uri={
-              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-            }
-          />
-        ))}
+        {closetCards?.map((closet) => {
+          const clothingInCloset = user?.clothes.filter(
+            (clothing) => clothing.closet_id === closet.id
+          );
+
+          const imageUri =
+            clothingInCloset && clothingInCloset.length > 0
+              ? clothingInCloset[0].image_url
+              : "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg";
+
+          return (
+            <ClosetCard
+              key={closet.id}
+              id={closet.id}
+              name={closet.name}
+              uri={imageUri}
+            />
+          );
+        })}
         <AddClosetCard onPress={handleModalVisibility} />
       </View>
 

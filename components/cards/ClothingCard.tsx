@@ -19,7 +19,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri }) => {
         {loading && (
           <ActivityIndicator
             size="small"
-            color="#7AB2B2"
+            color="#fff"
             className="absolute"
           />
         )}

@@ -5,12 +5,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
 import PreferencesAndBudget from "@/components/survey/preferences-and-budget";
-import Result from "@/components/survey/result";
 import SkinToneAnalysis from "@/components/survey/skin-tone-analysis";
 import Welcome from "@/components/survey/welcome";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
-import BackIcon from "../../assets/icons/back-icon.svg";
+import BackIcon from "../../../assets/icons/back-icon.svg";
 
 const Survey = () => {
   const router = useRouter();
@@ -18,9 +17,10 @@ const Survey = () => {
   const insets = useSafeAreaInsets();
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisComplete, setAnalysisComplete] = useState(false);
 
   const handleAnalyzeComplete = () => {
-    setCurrentIndex(2);
+    setAnalysisComplete(true);
     setIsAnalyzing(false);
   };
 
@@ -30,7 +30,6 @@ const Survey = () => {
       onAnalyzeComplete={handleAnalyzeComplete}
       setIsAnalyzing={setIsAnalyzing}
     />,
-    <Result />,
     <BodyType />,
     <PreferencesAndBudget />,
     <PersonalInformation />,
@@ -63,7 +62,7 @@ const Survey = () => {
         )}
 
         {/* Conditionally render the Skip Button */}
-        {currentIndex === 1 && !isAnalyzing && (
+        {currentIndex === 1 && !isAnalyzing && !analysisComplete && (
           <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
             <Text className="text-bg-tertiary underline">Skip</Text>
           </TouchableOpacity>
@@ -74,7 +73,7 @@ const Survey = () => {
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
       {/* Conditionally render the Continue Button */}
-      {currentIndex !== 1 && ( // Hide the Continue button on the SkinToneAnalysis screen
+      {(currentIndex !== 1 || analysisComplete) && (
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}

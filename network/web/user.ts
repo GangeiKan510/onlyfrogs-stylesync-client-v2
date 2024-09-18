@@ -1,5 +1,8 @@
 import { CreateUserData } from "@/utils/types/CreateUser";
-import { postWithFirebaseJwt } from "../firebase/requests-with-firebase";
+import {
+  postWithFirebaseJwt,
+  uploadWithFirebaseJwt,
+} from "../firebase/requests-with-firebase";
 
 export const getMe = async ({ email }: { email: string }) => {
   try {
@@ -21,7 +24,7 @@ export const createUser = async (userData: CreateUserData) => {
   try {
     const response = await postWithFirebaseJwt(
       "/web/users/create-user",
-      userData,
+      userData
     );
 
     if (!response.ok) {
@@ -32,6 +35,26 @@ export const createUser = async (userData: CreateUserData) => {
     return newUser;
   } catch (error) {
     console.error("Failed to create user", error);
+    throw error;
+  }
+};
+
+export const analyzeUserSkinTone = async (formData: FormData) => {
+  try {
+    const response = await uploadWithFirebaseJwt(
+      "/web/images/analyze-skin-tone",
+      formData
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error uploading clothing: ${errorText}`);
+    }
+
+    const newClothing = await response.json();
+    return newClothing;
+  } catch (error) {
+    console.error("Failed to upload clothing", error);
     throw error;
   }
 };

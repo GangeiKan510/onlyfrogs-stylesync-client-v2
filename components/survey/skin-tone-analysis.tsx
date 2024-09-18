@@ -7,19 +7,25 @@ import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../common/LoadingScreen";
+import { analyzeUserSkinTone } from "@/network/web/user";
+import Result from "./result";
 
 const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
 
-  const analyzeSkinTone = () => {
-    setIsAnalyzing(true);
-    setTimeout(() => {
-      onAnalyzeComplete();
-      setSelectedImage(null);
-    }, 5000);
-  };
+  useEffect(() => {
+    requestCameraPermissions();
+  }, []);
+
+  useEffect(() => {
+    if (selectedImage) {
+      console.log("Captured Image URI:", selectedImage);
+    }
+  }, [selectedImage]);
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
@@ -29,10 +35,6 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
   };
-
-  useEffect(() => {
-    requestCameraPermissions();
-  }, []);
 
   const handleTakePicture = async () => {
     await requestCameraPermissions();
@@ -52,7 +54,28 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
         handleCloseModal();
-        analyzeSkinTone();
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: uri,
+          name: uri.split("/").pop(),
+          type: "image/jpeg",
+        } as any);
+
+        setIsLoading(true);
+        setIsAnalyzing(true);
+        try {
+          console.log("Sending image for analysis:", formData);
+          const result = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", result);
+          setAnalysisResult(result.skinToneAnalysis);
+          onAnalyzeComplete();
+        } catch (error) {
+          console.error("Failed to analyze skin tone:", error);
+          Alert.alert("Error", "Failed to analyze skin tone.");
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
@@ -75,15 +98,41 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
         handleCloseModal();
-        analyzeSkinTone();
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: uri,
+          name: uri.split("/").pop(),
+          type: "image/jpeg",
+        } as any);
+
+        setIsLoading(true);
+        setIsAnalyzing(true);
+        try {
+          console.log("Sending image for analysis:", formData);
+          const result = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", result);
+          setAnalysisResult(result.skinToneAnalysis);
+          onAnalyzeComplete();
+        } catch (error) {
+          console.error("Failed to analyze skin tone:", error);
+          Alert.alert("Error", "Failed to analyze skin tone.");
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
 
   return (
     <>
-      {selectedImage ? (
+      {isLoading ? (
         <LoadingScreen message={"Analyzing your skin tone..."} />
+      ) : analysisResult ? (
+        <Result
+          subSeason={analysisResult.sub_season}
+          complements={analysisResult.complements}
+        />
       ) : (
         <View>
           <View className="h-[85vh] flex justify-center items-center mt-10">

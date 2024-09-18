@@ -20,7 +20,7 @@ type Closet = {
 
 type Clothes = {
   id: string;
-  sertial: number;
+  serial: number;
   image_url: string;
   user_id: string;
   closet_id: string;
@@ -63,13 +63,28 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
     setUser(userData);
   }, []);
 
+  const retryFetchUser = async (email: string, retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const userInfo = await getMe({ email });
+        if (userInfo) {
+          updateUser(userInfo);
+          return;
+        }
+      } catch (error) {
+        console.error(`Error fetching user info, attempt ${i + 1}:`, error);
+      }
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+    throw new Error("Failed to fetch user after retries");
+  };
+
   const refetchMe = useCallback(async () => {
     if (auth.currentUser?.email) {
       try {
-        const userInfo = await getMe({ email: auth.currentUser.email });
-        updateUser(userInfo);
+        await retryFetchUser(auth.currentUser.email);
       } catch (error) {
-        console.error("Error fetching user info:", error);
+        console.error("Error fetching user info after retries:", error);
       }
     }
   }, [updateUser]);
@@ -78,10 +93,9 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const userInfo = await getMe({ email: firebaseUser.email as string });
-          updateUser(userInfo);
+          await retryFetchUser(firebaseUser.email as string);
         } catch (error) {
-          console.error("Error fetching user info:", error);
+          console.error("Error fetching user info after retries:", error);
         }
       } else {
         updateUser(null);

@@ -8,12 +8,14 @@ import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../common/LoadingScreen";
 import { analyzeUserSkinTone } from "@/network/web/user";
+import Result from "./result";
 
 const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
 
   useEffect(() => {
     requestCameraPermissions();
@@ -63,9 +65,9 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         setIsLoading(true);
         try {
           console.log("Sending image for analysis:", formData);
-          const analysisResult = await analyzeUserSkinTone(formData);
-          console.log("Analysis result:", analysisResult);
-          onAnalyzeComplete(analysisResult);
+          const result = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", result);
+          setAnalysisResult(result.skinToneAnalysis); 
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
           Alert.alert("Error", "Failed to analyze skin tone.");
@@ -105,9 +107,9 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         setIsLoading(true);
         try {
           console.log("Sending image for analysis:", formData);
-          const analysisResult = await analyzeUserSkinTone(formData);
-          console.log("Analysis result:", analysisResult);
-          onAnalyzeComplete(analysisResult);
+          const result = await analyzeUserSkinTone(formData);
+          console.log("Analysis result:", result);
+          setAnalysisResult(result.skinToneAnalysis);
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
           Alert.alert("Error", "Failed to analyze skin tone.");
@@ -122,6 +124,11 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
     <>
       {isLoading ? (
         <LoadingScreen message={"Analyzing your skin tone..."} />
+      ) : analysisResult ? (
+        <Result
+          subSeason={analysisResult.sub_season}
+          complements={analysisResult.complements}
+        />
       ) : (
         <View>
           <View className="h-[85vh] flex justify-center items-center mt-10">

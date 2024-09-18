@@ -63,11 +63,13 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         } as any);
 
         setIsLoading(true);
+        setIsAnalyzing(true);
         try {
           console.log("Sending image for analysis:", formData);
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
-          setAnalysisResult(result.skinToneAnalysis); 
+          setAnalysisResult(result.skinToneAnalysis);
+          onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
           Alert.alert("Error", "Failed to analyze skin tone.");
@@ -105,11 +107,13 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
         } as any);
 
         setIsLoading(true);
+        setIsAnalyzing(true);
         try {
           console.log("Sending image for analysis:", formData);
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
           setAnalysisResult(result.skinToneAnalysis);
+          onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
           Alert.alert("Error", "Failed to analyze skin tone.");

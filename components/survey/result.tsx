@@ -34,7 +34,7 @@ const Result: React.FC<ResultProps> = ({ subSeason, complements }) => {
       <View className="mb-14">
         <Text className="text-[16px] text-center mb-3">Your season is</Text>
         <View className="text-center mb-5 mx-10">
-          <Text className="text-[96px] font-logo text-tertiary leading-[80px] text-center">
+          <Text className="text-[96px] font-logo text-tertiary leading-[85px] text-center">
             {capitalizedSubSeason}
           </Text>
           <Text className="text-[16px] text-center">

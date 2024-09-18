@@ -13,6 +13,18 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    requestCameraPermissions();
+  }, []);
+
+  useEffect(() => {
+    if (capturedImage) {
+      console.log("Captured Image URI:", capturedImage);
+    }
+  }, [capturedImage]);
+
   const analyzeSkinTone = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
@@ -29,10 +41,6 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
   };
-
-  useEffect(() => {
-    requestCameraPermissions();
-  }, []);
 
   const handleTakePicture = async () => {
     await requestCameraPermissions();
@@ -51,6 +59,7 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
+        setCapturedImage(uri);
         handleCloseModal();
         analyzeSkinTone();
       }
@@ -74,6 +83,7 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
+        setCapturedImage(uri);
         handleCloseModal();
         analyzeSkinTone();
       }

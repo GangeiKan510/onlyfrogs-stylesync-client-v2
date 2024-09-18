@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -17,9 +18,10 @@ import BackButton from "../../../components/buttons/BackButton";
 import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
+import { uploadClothing } from "@/network/web/clothes";
 
 const Page = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const path = usePathname();
   const closetId = getIdFromUrl(path);
   const routeName = path.split("/")[1];
@@ -27,6 +29,7 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -52,6 +55,42 @@ const Page = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
+        const fileName = uri.split("/").pop();
+        const formData = new FormData();
+
+        try {
+          setLoading(true); // Show loading screen
+          formData.append("file", {
+            uri: uri,
+            name: fileName,
+            type: "image/jpeg",
+          } as any);
+
+          if (user?.id) {
+            formData.append("user_id", user.id);
+          } else {
+            console.error("User ID is missing");
+            setLoading(false);
+            return;
+          }
+
+          if (closetId) {
+            formData.append("closet_id", closetId);
+          } else {
+            console.error("Closet ID is missing");
+            setLoading(false);
+            return;
+          }
+
+          const imageUploaded = await uploadClothing(formData);
+
+          refetchMe();
+        } catch (error) {
+          console.error("Error while uploading clothing:", error);
+        } finally {
+          setLoading(false);
+        }
+
         handleCloseModal();
       }
     }
@@ -76,6 +115,28 @@ const Page = () => {
         setSelectedImages((prevImages) =>
           [...prevImages, ...newImages].slice(0, 10)
         );
+
+        const uri = newImages[0];
+        const fileName = uri.split("/").pop();
+        const formData = new FormData();
+
+        try {
+          setLoading(true);
+          formData.append("file", {
+            uri: uri,
+            name: fileName,
+            type: "image/jpeg",
+          } as any);
+          formData.append("user_id", user?.id || "");
+          formData.append("closet_id", closetId || "");
+          await uploadClothing(formData);
+          refetchMe();
+        } catch (error) {
+          console.error("Error while uploading clothing:", error);
+        } finally {
+          setLoading(false);
+        }
+
         handleCloseModal();
       }
     }
@@ -137,16 +198,18 @@ const Page = () => {
           </View>
         ) : (
           <FlatList
-            className="mx-auto"
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
             numColumns={3}
+            columnWrapperStyle={{ justifyContent: "flex-start" }}
+            contentContainerStyle={{ alignItems: "flex-start" }}
           />
         )}
       </View>
       <View className="absolute z-10 bottom-8 right-10">
         <Fab
+          loading={loading}
           onCameraPress={handleTakePicture}
           onGalleryPress={handleUploadFromGallery}
           onLinkPress={handleLinkUpload}

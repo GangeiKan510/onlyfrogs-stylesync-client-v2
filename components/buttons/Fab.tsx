@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
   SharedValue,
 } from "react-native-reanimated";
+import Spinner from "../common/Spinner";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -27,6 +28,7 @@ type FloatingActionButtonProps = {
   index: number;
   iconName: IconNameType;
   onPress: () => void;
+  disabled: boolean;
 };
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
@@ -34,6 +36,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   index,
   iconName,
   onPress,
+  disabled,
 }) => {
   const animatedStyles = useAnimatedStyle(() => {
     const moveValue = isExpanded.value ? OFFSET * index : 0;
@@ -55,8 +58,10 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <AnimatedPressable
       onPress={() => {
-        onPress();
-        isExpanded.value = false;
+        if (!disabled) {
+          onPress();
+          isExpanded.value = false;
+        }
       }}
       style={[animatedStyles]}
     >
@@ -75,11 +80,14 @@ const Fab: React.FC<{
   onCameraPress: () => void;
   onGalleryPress: () => void;
   onLinkPress: () => void;
-}> = ({ onCameraPress, onGalleryPress, onLinkPress }) => {
+  loading: boolean; // Add loading prop
+}> = ({ onCameraPress, onGalleryPress, onLinkPress, loading }) => {
   const isExpanded = useSharedValue(false);
 
   const handlePress = () => {
-    isExpanded.value = !isExpanded.value;
+    if (!loading) {
+      isExpanded.value = !isExpanded.value;
+    }
   };
 
   const plusIconStyle = useAnimatedStyle(() => {
@@ -94,11 +102,16 @@ const Fab: React.FC<{
     <View>
       <AnimatedPressable
         onPress={handlePress}
+        disabled={loading}
         className={`${isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"}  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20`}
       >
-        <Animated.Text style={[plusIconStyle]}>
-          <AntDesignIcons name="plus" size={30} color={"white"} />
-        </Animated.Text>
+        {loading ? (
+          <Spinner type="primary" />
+        ) : (
+          <Animated.Text style={[plusIconStyle]}>
+            <AntDesignIcons name="plus" size={30} color={"white"} />
+          </Animated.Text>
+        )}
       </AnimatedPressable>
 
       <FloatingActionButton
@@ -106,18 +119,21 @@ const Fab: React.FC<{
         index={1}
         iconName="camerao"
         onPress={onCameraPress}
+        disabled={loading}
       />
       <FloatingActionButton
         isExpanded={isExpanded}
         index={2}
         iconName="upload"
         onPress={onGalleryPress}
+        disabled={loading}
       />
       <FloatingActionButton
         isExpanded={isExpanded}
         index={3}
         iconName="link"
         onPress={onLinkPress}
+        disabled={loading}
       />
     </View>
   );

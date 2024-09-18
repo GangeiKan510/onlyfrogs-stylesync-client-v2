@@ -4,6 +4,7 @@ export const routes = {
   survey: "/survey/survey",
   tabs: "(tabs)",
   welcome: "/welcome",
+  closet: "closet",
 
   expandedCloset: "(tabs)/closet/",
 };

@@ -52,7 +52,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           onPress={handleSave} // Saving and closing the modal
           className="w-96 p-4 bg-[#7ab3b3] absolute bottom-2 rounded-2xl"
         >
-          <Text className="text-center text-white text-lg">
+          <Text className="text-center text-white text-lg font-bold">
             {isSaving ? "Saving..." : "Save"}
           </Text>
         </TouchableOpacity>

@@ -8,7 +8,6 @@ import {
   Alert,
   FlatList,
   SafeAreaView,
-  TouchableOpacity,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
@@ -20,7 +19,7 @@ import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
-import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal"; // Import modal
+import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -31,7 +30,7 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [selectedClothingImage, setSelectedClothingImage] = useState<string | null>(null); // New state for selected image
+  const [selectedClothingImage, setSelectedClothingImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {

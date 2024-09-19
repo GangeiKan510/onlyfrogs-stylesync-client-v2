@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, View, Text, Image, TouchableOpacity } from "react-native";
+import BackIcon from "../../assets/icons/back-icon.svg";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -12,25 +13,51 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   onClose,
   clothingImage,
 }) => {
+  const [isSaving, setIsSaving] = useState(false); // Track saving state
+
+  const handleSave = () => {
+    setIsSaving(true); // Indicate saving process (optional)
+
+    setTimeout(() => {
+      setIsSaving(false); // End saving process
+      onClose();
+      console.log("Clothing item saved!");
+    }, 500);
+  };
+
   return (
-    <Modal visible={isVisible} transparent={false} animationType="slide" presentationStyle="fullScreen">
-    <View className="flex-1 justify-center items-center bg-white bg-opacity-50">
-      <View className="w-full h-full flex-1 items-center">
-        {clothingImage && (
-          <>
+    <Modal
+      visible={isVisible}
+      transparent={false}
+      animationType="slide"
+      presentationStyle="fullScreen"
+    >
+      <View className="flex-1 justify-center items-center bg-white bg-opacity-50">
+        <TouchableOpacity
+          onPress={onClose}
+          className="z-10 absolute top-6 left-7 p-2"
+        >
+          <BackIcon width={22} height={22} />
+        </TouchableOpacity>
+        <View className="w-full h-full flex-1 items-center">
+          {clothingImage && (
             <Image
               source={{ uri: clothingImage }}
               className="w-full h-60 my-4"
               resizeMode="contain"
             />
-            <TouchableOpacity onPress={onClose} className="w-3/4 p-2 bg-[#7ab3b3] rounded-md absolute bottom-8 transform -translate-x-1/2">
-              <Text className="text-center">Close</Text>
-            </TouchableOpacity>
-          </>
-        )}
+          )}
+        </View>
+        <TouchableOpacity
+          onPress={handleSave} // Saving and closing the modal
+          className="w-96 p-4 bg-[#7ab3b3] absolute bottom-2 rounded-2xl"
+        >
+          <Text className="text-center text-white text-lg">
+            {isSaving ? "Saving..." : "Save"}
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
-  </Modal>
+    </Modal>
   );
 };
 

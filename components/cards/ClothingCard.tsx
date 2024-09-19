@@ -10,7 +10,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress }) => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <TouchableOpacity onPress={onPress} className="w-[30%] min-w-[100px] aspect-square m-1 rounded-[10px] overflow-hidden bg-[#F3F3F3]">
+    <TouchableOpacity onPress={onPress} className="w-[31%] min-w-[100px] aspect-square m-1 rounded-[10px]  bg-[#F3F3F3]">
       <ImageBackground
         source={{ uri: uri }}
         className="w-full h-full justify-center items-center"

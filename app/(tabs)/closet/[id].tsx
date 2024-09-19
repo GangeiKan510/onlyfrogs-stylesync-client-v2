@@ -8,6 +8,7 @@ import {
   Alert,
   FlatList,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
@@ -19,6 +20,7 @@ import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
+import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal"; // Import modal
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -29,6 +31,7 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedClothingImage, setSelectedClothingImage] = useState<string | null>(null); // New state for selected image
   const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {
@@ -42,6 +45,11 @@ const Page = () => {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleClothingClick = (imageUrl: string) => {
+    setSelectedClothingImage(imageUrl);
+    setIsModalVisible(true);
   };
 
   const handleTakePicture = async () => {
@@ -200,7 +208,9 @@ const Page = () => {
           <FlatList
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
+            renderItem={({ item }) => (
+              <ClothingCard uri={item.image_url} onPress={() => handleClothingClick(item.image_url)} />
+            )}
             numColumns={3}
             columnWrapperStyle={{ justifyContent: "flex-start" }}
             contentContainerStyle={{ alignItems: "flex-start" }}
@@ -215,6 +225,12 @@ const Page = () => {
           onLinkPress={handleLinkUpload}
         />
       </View>
+
+      <ClothingDetailsModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        clothingImage={selectedClothingImage}
+      />
     </SafeAreaView>
   );
 };

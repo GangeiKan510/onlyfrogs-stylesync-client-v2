@@ -41,7 +41,9 @@ const StyleSelection = () => {
             )}
             {showAll && index === STYLE_LIST.length - 1 && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show less</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                  Show less
+                </Text>
               </TouchableOpacity>
             )}
           </View>

@@ -19,6 +19,7 @@ import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
+import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -29,6 +30,7 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedClothingImage, setSelectedClothingImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {
@@ -42,6 +44,11 @@ const Page = () => {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleClothingClick = (imageUrl: string) => {
+    setSelectedClothingImage(imageUrl);
+    setIsModalVisible(true);
   };
 
   const handleTakePicture = async () => {
@@ -100,20 +107,17 @@ const Page = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status === "granted") {
-      if (selectedImages.length >= 10) {
-        Alert.alert("Limit Reached", "You can only select up to 10 images.");
-        return;
-      }
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
+        allowsMultipleSelection: true,
+        selectionLimit: 5,
       });
 
       if (!result.canceled && result.assets) {
         const newImages = result.assets.map((asset) => asset.uri);
         setSelectedImages((prevImages) =>
-          [...prevImages, ...newImages].slice(0, 10)
+          [...prevImages, ...newImages]
         );
 
         const uri = newImages[0];
@@ -200,10 +204,10 @@ const Page = () => {
           <FlatList
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <ClothingCard uri={item.image_url} />}
+            renderItem={({ item }) => (
+              <ClothingCard uri={item.image_url} onPress={() => handleClothingClick(item.image_url)} />
+            )}
             numColumns={3}
-            columnWrapperStyle={{ justifyContent: "flex-start" }}
-            contentContainerStyle={{ alignItems: "flex-start" }}
           />
         )}
       </View>
@@ -215,6 +219,12 @@ const Page = () => {
           onLinkPress={handleLinkUpload}
         />
       </View>
+
+      <ClothingDetailsModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        clothingImage={selectedClothingImage}
+      />
     </SafeAreaView>
   );
 };

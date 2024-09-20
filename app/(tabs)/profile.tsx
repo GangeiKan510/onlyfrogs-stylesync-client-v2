@@ -8,6 +8,7 @@ import SparkleIcon from "../../assets/icons/profile/sparkle-icon.svg";
 import BodyTypeIcon from "../../assets/icons/profile/body-type-icon.svg";
 import LogOutIcon from "../../assets/icons/profile/log-out-icon.svg";
 import ArrowRightIcon from "../../assets/icons/profile/arrow-right-icon.svg";
+import CheckmarkIcon from "../../assets/icons/profile/checkmark-icon.svg";
 import { Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
@@ -63,8 +64,12 @@ const Profile = () => {
             </Text>
             <Text>deybalivio09@gmail.com </Text>
           </View>
-          <Pressable className="bg-[#F2F2F2] h-[32px] w-[335px] rounded-[10px] mt-10 px-10 py-1">
-            <Text> Verify Account </Text>
+          <Pressable className="flex-row bg-[#F2F2F2] h-[32px] w-[300px] rounded-[4px] mt-10 px-5 py-1 justify-between items-center">
+            <View className="flex-row items-center">
+              <CheckmarkIcon width={20} height={20} />
+              <Text className="ml-5">Verify Account</Text>
+            </View>
+            <ArrowRightIcon width={15} height={15} />
           </Pressable>
         </View>
       </View>

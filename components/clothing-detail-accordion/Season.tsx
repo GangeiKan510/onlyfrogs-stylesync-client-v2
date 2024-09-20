@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
-
-const seasons = ["Spring", "Summer", "Autumn", "Winter"];
+import { seasons } from "../constants/clothing-details/seasons";
 
 const SeasonSelection = () => {
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);

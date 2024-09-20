@@ -2,25 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
-
-// Define the types for category types and the overall structure
-interface CategoryTypes {
-  [key: string]: string[];
-}
-
-const categoryTypes: CategoryTypes = {
-  Tops: ["T-Shirts", "Long Sleeves", "Blouses", "Tank Tops"],
-  Dresses: ["Casual Dresses", "Formal Dresses", "Maxi Dresses"],
-  Pants: ["Jeans", "Chinos", "Shorts", "Trousers"],
-  Skirts: ["Mini Skirts", "Midi Skirts", "Maxi Skirts"],
-  Outerwear: ["Jackets", "Coats", "Hoodies"],
-  Innerwear: ["Undergarments", "Loungewear"],
-  Shoes: ["Sneakers", "Boots", "Sandals", "Flats"],
-  Bags: ["Backpacks", "Handbags", "Clutches"],
-  Jewelry: ["Necklaces", "Bracelets", "Earrings"],
-  Headwear: ["Hats", "Caps", "Scarves"],
-  OtherItems: ["Socks", "Belts", "Gloves"],
-};
+import { categoryTypes } from "../constants/clothing-details/categories";
 
 const CategorySelection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

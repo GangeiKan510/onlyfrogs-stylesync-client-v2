@@ -2,20 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
-
-const occasion = [
-  "Daily",
-  "Work",
-  "Date",
-  "Formal",
-  "Travel",
-  "Home",
-  "Party",
-  "Sport",
-  "Casual",
-  "Beach",
-  "Others",
-];
+import { occasion } from "../constants/clothing-details/occasion";
 
 const OccasionSelection = () => {
   const [selectedOccasion, setSelectedOccasion] = useState<string[]>([]);

@@ -1,7 +1,7 @@
 export const routes = {
   login: "/login",
   register: "/register",
-  survey: "/survey/survey",
+  survey: "(tabs)/survey/survey",
   tabs: "(tabs)",
   welcome: "/welcome",
   closet: "closet",

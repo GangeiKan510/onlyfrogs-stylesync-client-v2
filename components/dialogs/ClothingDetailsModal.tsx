@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { Modal, View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import BackIcon from "../../assets/icons/back-icon.svg";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import SeasonAccordion from "../clothing-detail-accordion/Season";
 import OccasionSelection from "../clothing-detail-accordion/Occasion";
 import CategorySelection from "../clothing-detail-accordion/Category";
+import Spinner from "../common/Spinner";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -36,7 +44,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       animationType="slide"
       presentationStyle="fullScreen"
     >
-      <View className="flex-1 justify-center items-center bg-white bg-opacity-50">
+      <View className="flex-1 justify-center items-center bg-white bg-opacity-50 mt-2">
         <TouchableOpacity
           onPress={onClose}
           className="z-10 absolute top-6 left-7 p-2"
@@ -44,7 +52,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           <BackIcon width={22} height={22} />
         </TouchableOpacity>
         <View>
-          <Text className="text-2xl font-bold text-center mt-7">
+          <Text className="text-xl font-bold text-center mt-7">
             Item Details
           </Text>
         </View>
@@ -56,34 +64,30 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             {clothingImage && (
               <Image
                 source={{ uri: clothingImage }}
-                className="w-full h-60 my-4"
+                className="w-60 h-60 my-4 bg-[#F3F3F3] rounded-[10px]"
                 resizeMode="contain"
               />
             )}
             {/*  Accordion */}
             <View className="mt-4 w-full px-4">
-              <Text className="font-bold text-xl mb-2 text-[#484848]">
-                When will you wear it?
-              </Text>
+              <Text className="mb-2">When will you wear it?</Text>
               <SeasonAccordion />
             </View>
             <View className="mt-4 w-full px-4 mb-4">
               <OccasionSelection />
             </View>
             <View className="mt-4 w-full px-4">
-              <Text className="font-bold text-xl mb-2">
-                What kind of item is this??
-              </Text>
+              <Text className="mb-2">What kind of item is this?</Text>
               <CategorySelection />
             </View>
           </View>
         </ScrollView>
         <TouchableOpacity
           onPress={handleSave} // Saving and closing the modal
-          className="w-96 p-4 bg-[#7ab3b3] absolute bottom-2 rounded-2xl"
+          className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 rounded-[10px] mb-4"
         >
-          <Text className="text-center text-white text-lg font-bold">
-            {isSaving ? "Saving..." : "Save"}
+          <Text className="text-center text-white">
+            {isSaving ? <Spinner type={"primary"} /> : "Save"}
           </Text>
         </TouchableOpacity>
       </View>

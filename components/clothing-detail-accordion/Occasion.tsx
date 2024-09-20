@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 
-const occasion = ["Daily", "Work", "Date", "Formal", "Travel", "Home", "Party", "Sport", "Casual", "Beach"];
+const occasion = ["Daily", "Work", "Date", "Formal", "Travel", "Home", "Party", "Sport", "Casual", "Beach", "Others"];
 
 const OccasionSelection = () => {
   const [selectedOccasion, setSelectedOccasion] = useState<string[]>([]);
@@ -23,7 +23,7 @@ const OccasionSelection = () => {
   };
 
   useEffect(() => {
-    const itemHeight = 15; 
+    const itemHeight = 14; 
     Animated.timing(animatedHeight, {
       toValue: isOpen ? occasion.length * itemHeight : 0,
       duration: 300,
@@ -38,7 +38,7 @@ const OccasionSelection = () => {
         onPress={toggleAccordion}
         className="flex-row justify-between items-center rounded-full"
       >
-        <Text className="text-xl">Occasion</Text>
+        <Text className="text-lg">Occasion</Text>
         {isOpen ? (
           <ChevronUpIcon width={20} height={20} color={"black"} />
         ) : (

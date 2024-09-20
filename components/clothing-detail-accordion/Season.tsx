@@ -37,7 +37,7 @@ const SeasonSelection = () => {
         onPress={toggleAccordion}
         className="flex-row justify-between items-center rounded-full"
       >
-        <Text className="text-xl">Season</Text>
+        <Text className="text-lg">Season</Text>
         {isOpen ? (
           <ChevronUpIcon width={20} height={20} color={"black"} />
         ) : (

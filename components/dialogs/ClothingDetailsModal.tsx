@@ -4,6 +4,7 @@ import BackIcon from "../../assets/icons/back-icon.svg";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import SeasonAccordion from "../clothing-detail-accordion/Season";
 import OccasionSelection from "../clothing-detail-accordion/Occasion";
+import CategorySelection from "../clothing-detail-accordion/Category";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -61,13 +62,19 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             )}
             {/*  Accordion */}
             <View className="mt-4 w-full px-4">
-              <Text className="font-bold text-2xl mb-2">
+              <Text className="font-bold text-xl mb-2 text-[#484848]">
                 When will you wear it?
               </Text>
               <SeasonAccordion />
             </View>
-            <View className="mt-4 w-full px-4">
+            <View className="mt-4 w-full px-4 mb-4">
               <OccasionSelection />
+            </View>
+            <View className="mt-4 w-full px-4">
+              <Text className="font-bold text-xl mb-2">
+                What kind of item is this??
+              </Text>
+              <CategorySelection />
             </View>
           </View>
         </ScrollView>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Modal, View, Text, Image, TouchableOpacity } from "react-native";
+import { Modal, View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import BackIcon from "../../assets/icons/back-icon.svg";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import SeasonAccordion from "../clothing-detail-accordion/Season";
+import OccasionSelection from "../clothing-detail-accordion/Occasion";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -15,7 +16,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   onClose,
   clothingImage,
 }) => {
-  const [isSaving, setIsSaving] = useState(false); // Track saving state 
+  const [isSaving, setIsSaving] = useState(false); // Track saving state
 
   const handleSave = () => {
     setIsSaving(true); // Indicate saving process (optional)
@@ -49,20 +50,27 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         <View className="z-10 absolute top-6 right-7 p-2">
           <DesignIcon width={24} height={24} />
         </View>
-        <View className="w-full h-full flex-1 items-center">
-          {clothingImage && (
-            <Image
-              source={{ uri: clothingImage }}
-              className="w-full h-60 bg-[#F3F3F3] my-4"
-              resizeMode="contain"
-            />
-          )}
-          {/* Season Accordion placed here */}
-          <View className="mt-4 w-full px-4">
-            <Text className="font-bold text-2xl mb-2">When will you wear it?</Text>
-            <SeasonAccordion />
+        <ScrollView>
+          <View className="w-full h-full flex-1 items-center">
+            {clothingImage && (
+              <Image
+                source={{ uri: clothingImage }}
+                className="w-full h-60 my-4"
+                resizeMode="contain"
+              />
+            )}
+            {/*  Accordion */}
+            <View className="mt-4 w-full px-4">
+              <Text className="font-bold text-2xl mb-2">
+                When will you wear it?
+              </Text>
+              <SeasonAccordion />
+            </View>
+            <View className="mt-4 w-full px-4">
+              <OccasionSelection />
+            </View>
           </View>
-        </View>
+        </ScrollView>
         <TouchableOpacity
           onPress={handleSave} // Saving and closing the modal
           className="w-96 p-4 bg-[#7ab3b3] absolute bottom-2 rounded-2xl"

@@ -27,16 +27,35 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   onClose,
   clothingImage,
 }) => {
-  const [isSaving, setIsSaving] = useState(false); // Track saving state
+  const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+  const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    name: string | null;
+    type: string | null;
+  }>({ name: null, type: null });
 
   const handleSave = () => {
-    setIsSaving(true); // Indicate saving process (optional)
+    const clothingDetails = {
+      name: itemName,
+      brand: brandName,
+      season: selectedSeasons,
+      occasion: selectedOccasions,
+      category: {
+        name: selectedCategory.name,
+        type: selectedCategory.type,
+      },
+    };
+
+    console.log("Clothing Details:", clothingDetails);
+
+    setIsSaving(true);
 
     setTimeout(() => {
-      setIsSaving(false); // End saving process
+      setIsSaving(false);
       onClose();
-      console.log("Clothing item saved with name:", itemName);
     }, 500);
   };
 
@@ -66,7 +85,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         </View>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-          {/* Add bottom padding */}
           <View className="w-full h-full flex-1 items-center">
             {clothingImage && (
               <Image
@@ -88,23 +106,32 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <Text className="font-medium mb-1">Brand</Text>
               <TextInput
                 placeholder="Enter brand name"
-                value={itemName}
-                onChangeText={setItemName}
+                value={brandName}
+                onChangeText={setBrandName}
                 className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
               />
             </View>
             <View className="mt-4 w-full px-4">
               <Text className="mb-1 font-medium">When will you wear it?</Text>
-              <SeasonAccordion />
+              <SeasonAccordion
+                selectedSeasons={selectedSeasons}
+                setSelectedSeasons={setSelectedSeasons}
+              />
             </View>
             <View className="mt-4 w-full px-4 mb-4">
-              <OccasionSelection />
+              <OccasionSelection
+                selectedOccasions={selectedOccasions}
+                setSelectedOccasions={setSelectedOccasions}
+              />
             </View>
             <View className="mt-4 w-full px-4">
               <Text className="mb-1 font-medium">
                 What kind of item is this?
               </Text>
-              <CategorySelection />
+              <CategorySelection
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
             </View>
           </View>
         </ScrollView>

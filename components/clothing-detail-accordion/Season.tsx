@@ -1,17 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/prop-types */
+import React, { useRef, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 import { seasons } from "../constants/clothing-details/seasons";
 
-const SeasonSelection = () => {
-  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const toggleSeasonSelection = (season: string) => {
     if (selectedSeasons.includes(season)) {
-      setSelectedSeasons(selectedSeasons.filter((s) => s !== season));
+      setSelectedSeasons(selectedSeasons.filter((s: string) => s !== season));
     } else {
       setSelectedSeasons([...selectedSeasons, season]);
     }
@@ -24,7 +25,7 @@ const SeasonSelection = () => {
   useEffect(() => {
     const itemHeight = 16;
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? seasons.length * itemHeight + 50 : 0, // Adjust height and add extra space
+      toValue: isOpen ? seasons.length * itemHeight + 50 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -32,7 +33,6 @@ const SeasonSelection = () => {
 
   return (
     <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
-      {/* Header */}
       <TouchableOpacity
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"
@@ -45,18 +45,15 @@ const SeasonSelection = () => {
         )}
       </TouchableOpacity>
 
-      {/* Selected Seasons */}
       {selectedSeasons.length > 0 && (
         <View className="mt-2 mb-4">
           <Text className="text-[#7AB2B2]">{selectedSeasons.join(", ")}</Text>
         </View>
       )}
 
-      {/* Content */}
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
           <View className="flex-wrap flex-row mt-4 pb-4">
-            {/* Add padding-bottom */}
             {seasons.map((season, index) => (
               <TouchableOpacity
                 key={index}
@@ -85,4 +82,4 @@ const SeasonSelection = () => {
   );
 };
 
-export default SeasonSelection;
+export default SeasonAccordion;

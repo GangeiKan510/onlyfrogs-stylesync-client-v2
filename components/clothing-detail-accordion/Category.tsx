@@ -3,7 +3,12 @@ import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 
-const categoryTypes = {
+// Define the types for category types and the overall structure
+interface CategoryTypes {
+  [key: string]: string[];
+}
+
+const categoryTypes: CategoryTypes = {
   Tops: ["T-Shirts", "Long Sleeves", "Blouses", "Tank Tops"],
   Dresses: ["Casual Dresses", "Formal Dresses", "Maxi Dresses"],
   Pants: ["Jeans", "Chinos", "Shorts", "Trousers"],
@@ -17,7 +22,7 @@ const categoryTypes = {
   OtherItems: ["Socks", "Belts", "Gloves"],
 };
 
-const CategorySelection = () => {
+const CategorySelection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,14 +44,14 @@ const CategorySelection = () => {
   };
 
   useEffect(() => {
-    const itemHeight = 14; 
+    const itemHeight = 16;
     const categoriesHeight = selectedCategory
-      ? categoryTypes[selectedCategory].length * itemHeight
+      ? categoryTypes[selectedCategory]?.length * itemHeight + 50 // Add extra height for padding
       : 0;
     const totalHeight = isOpen
       ? selectedCategory
         ? categoriesHeight
-        : Object.keys(categoryTypes).length * itemHeight
+        : Object.keys(categoryTypes).length * itemHeight + 50 // Add extra height for padding
       : 0;
 
     Animated.timing(animatedHeight, {
@@ -57,31 +62,32 @@ const CategorySelection = () => {
   }, [isOpen, selectedCategory]);
 
   return (
-    <View className="w-96 bg-[#F3F3F3] p-4 rounded-md">
+    <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
       {/* Header */}
       <TouchableOpacity
         onPress={toggleAccordion}
-        className="flex-row justify-between items-center rounded-full"
+        className="h-[42px] flex-row justify-between items-center rounded-[10px]"
       >
-        <Text className="text-lg">Category</Text>
+        <Text>Category</Text>
         {isOpen ? (
-          <ChevronUpIcon width={20} height={20} color={"black"} />
+          <ChevronUpIcon width={15} height={15} color={"black"} />
         ) : (
-          <ChevronDownIcon width={20} height={20} color={"black"} />
+          <ChevronDownIcon width={15} height={15} color={"black"} />
         )}
       </TouchableOpacity>
 
       {/* Selected Category */}
       {selectedCategory && (
-        <View className="flex-row justify-between items-center mt-2">
-          <Text className="text-[#7ab3b3]">{`${selectedCategory}: ${selectedTypes.join(", ")}`}</Text>
+        <View className="mt-2 mb-4">
+          {/* Add margin for spacing */}
+          <Text className="text-[#7AB2B2]">{`${selectedCategory}: ${selectedTypes.join(", ")}`}</Text>
         </View>
       )}
 
       {selectedCategory && isOpen && (
         <View className="flex-row items-center">
           <TouchableOpacity onPress={() => setSelectedCategory(null)}>
-            <Text className="text-black items-center m-1 px-4 py-2 rounded-full border-gray-900 bg-gray-200 border-[1px]">
+            <Text className="text-white items-center m-1 px-4 py-2 rounded-[10px] border-tertiary bg-tertiary border-[1.5px]">
               {`${selectedCategory}`}
             </Text>
           </TouchableOpacity>
@@ -91,21 +97,30 @@ const CategorySelection = () => {
       {/* Animated Content */}
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
-          <View className="mt-4">
+          <View className="mt-4 pb-4">
+            {/* Add padding-bottom */}
             {selectedCategory ? (
               <View className="flex-wrap flex-row">
                 {/* Show Types of Selected Category */}
                 {categoryTypes[selectedCategory].map((type, index) => (
                   <TouchableOpacity
                     key={index}
-                    className={`m-1 px-4 py-2 border-2 rounded-full ${
+                    className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
                       selectedTypes.includes(type)
-                        ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                        : "border-[#7AB2B2] border-[1px]"
+                        ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                        : "bg-white border-[#7AB2B2]"
                     }`}
                     onPress={() => toggleTypeSelection(type)}
                   >
-                    <Text className="text-base">{type}</Text>
+                    <Text
+                      className={`text-center ${
+                        selectedTypes.includes(type)
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {type}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -115,14 +130,22 @@ const CategorySelection = () => {
                 {Object.keys(categoryTypes).map((category) => (
                   <TouchableOpacity
                     key={category}
-                    className={`m-1 px-4 py-2 border-2 rounded-full ${
+                    className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
                       selectedCategory === category
-                        ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                        : "border-[#7AB2B2] border-[1px]"
+                        ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                        : "bg-white border-[#7AB2B2]"
                     }`}
                     onPress={() => toggleCategorySelection(category)}
                   >
-                    <Text className="text-base">{category}</Text>
+                    <Text
+                      className={`text-center ${
+                        selectedCategory === category
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {category}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>

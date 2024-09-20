@@ -39,7 +39,7 @@ const CategorySelection = () => {
   };
 
   useEffect(() => {
-    const itemHeight = 40; // Adjust based on your item height
+    const itemHeight = 14; 
     const categoriesHeight = selectedCategory
       ? categoryTypes[selectedCategory].length * itemHeight
       : 0;

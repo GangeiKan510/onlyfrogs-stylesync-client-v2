@@ -23,8 +23,9 @@ const SeasonSelection = () => {
   };
 
   useEffect(() => {
+    const itemHeight = 16; 
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? 60 : 0,
+      toValue: isOpen ? seasons.length * itemHeight : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();

@@ -107,20 +107,17 @@ const Page = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status === "granted") {
-      if (selectedImages.length >= 10) {
-        Alert.alert("Limit Reached", "You can only select up to 10 images.");
-        return;
-      }
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
+        allowsMultipleSelection: true,
+        selectionLimit: 5,
       });
 
       if (!result.canceled && result.assets) {
         const newImages = result.assets.map((asset) => asset.uri);
         setSelectedImages((prevImages) =>
-          [...prevImages, ...newImages].slice(0, 10)
+          [...prevImages, ...newImages]
         );
 
         const uri = newImages[0];
@@ -211,8 +208,6 @@ const Page = () => {
               <ClothingCard uri={item.image_url} onPress={() => handleClothingClick(item.image_url)} />
             )}
             numColumns={3}
-            columnWrapperStyle={{ justifyContent: "flex-start" }}
-            contentContainerStyle={{ alignItems: "flex-start" }}
           />
         )}
       </View>

@@ -18,6 +18,7 @@ import {
   SkinToneAnalysisResult,
   Preferences,
 } from "@/utils/types/UpdateUser";
+import Spinner from "@/components/common/Spinner";
 
 const Survey = () => {
   const { user, refetchMe } = useUser();
@@ -27,6 +28,7 @@ const Survey = () => {
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<SkinToneAnalysisResult | null>(null);
@@ -83,11 +85,14 @@ const Survey = () => {
     };
 
     try {
+      setLoading(true);
       await updateUser(surveyData);
       refetchMe();
       router.push(routes.tabs as Href<string | object>);
     } catch (error) {
       console.error("Error updating user:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,12 +140,18 @@ const Survey = () => {
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}
-            disabled={currentIndex === 1 && !analysisComplete}
+            disabled={(currentIndex === 1 && !analysisComplete) || loading}
             className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
           >
-            <Text className="text-white text-center">
-              {currentIndex === contentArray.length - 1 ? "Finish" : "Continue"}
-            </Text>
+            {loading ? (
+              <Spinner type={"primary"} />
+            ) : (
+              <Text className="text-white text-center">
+                {currentIndex === contentArray.length - 1
+                  ? "Finish"
+                  : "Continue"}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       )}

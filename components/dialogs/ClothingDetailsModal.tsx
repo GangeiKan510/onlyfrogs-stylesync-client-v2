@@ -89,12 +89,12 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             {clothingImage && (
               <Image
                 source={{ uri: clothingImage }}
-                className="w-60 h-60 my-4 bg-[#F3F3F3] rounded-[10px]"
+                className="w-full h-60 my-4"
                 resizeMode="contain"
               />
             )}
             <View className="w-full px-4 mt-4">
-              <Text className="font-medium mb-1">Name</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">Name</Text>
               <TextInput
                 placeholder="Enter item name"
                 value={itemName}
@@ -103,7 +103,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             </View>
             <View className="w-full px-4 mt-4">
-              <Text className="font-medium mb-1">Brand</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">Brand</Text>
               <TextInput
                 placeholder="Enter brand name"
                 value={brandName}
@@ -112,7 +112,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             </View>
             <View className="mt-4 w-full px-4">
-              <Text className="mb-1 font-medium">When will you wear it?</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">When will you wear it?</Text>
               <SeasonAccordion
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
@@ -125,7 +125,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             </View>
             <View className="mt-4 w-full px-4">
-              <Text className="mb-1 font-medium">
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
                 What kind of item is this?
               </Text>
               <CategorySelection

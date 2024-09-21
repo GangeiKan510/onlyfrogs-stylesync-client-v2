@@ -1,15 +1,13 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
-  Pressable,
   Platform,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from "react-native";
-import Header from "@/components/common/Header";
-import { RadioButtonProps } from "react-native-radio-buttons-group";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -42,15 +40,12 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   const [height, setHeight] = useState<number>(160);
   const [weight, setWeight] = useState<number>(70);
 
-  const gender: RadioButtonProps[] = useMemo(
-    () => [
-      { id: "1", label: "Man" },
-      { id: "2", label: "Woman" },
-      { id: "3", label: "Non-Binary" },
-      { id: "4", label: "Prefer not to say" },
-    ],
-    []
-  );
+  const genderButtons = [
+    { id: "1", label: "Female" },
+    { id: "2", label: "Male" },
+    { id: "3", label: "Non-Binary" },
+    { id: "4", label: "Rather Not Say" },
+  ];
 
   const toggleShow = () => {
     setShow(!show);
@@ -127,10 +122,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   useEffect(() => {
     const genderMapping: { [key in "1" | "2" | "3" | "4"]: string } = {
-      "1": "Man",
-      "2": "Woman",
+      "1": "Female",
+      "2": "Male",
       "3": "Non-Binary",
-      "4": "Prefer not to say",
+      "4": "Rather Not Say",
     };
 
     setPersonalInfo({
@@ -153,8 +148,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
   return (
     <ScrollView>
-      <Header />
-      <View className="flex justify-center items-center mt-10 mb-5">
+      <View className="flex justify-center items-center mt-10 mb-10">
         <Text className="text-[20px] text-center font-bold">
           Personal Information
         </Text>
@@ -163,80 +157,62 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View>
+        <View className="px-5">
           {/* Birthday */}
-          <View>
-            <Text className="pt-6 px-5 text-[16px]">Birthday</Text>
-            <View className="flex-row items-center justify-center mt-3">
-              {!show && (
-                <Pressable onPress={toggleShow}>
-                  <TextInput
-                    className="p-1.5 bg-[#D9D9D9] bh-[42px] rounded-[5px] px-4 w-80 text-center text-black"
-                    value={birthday}
-                    placeholder="Month | Day | Year"
-                    editable={false}
-                    onPressIn={toggleShow}
-                  />
-                </Pressable>
-              )}
-              {show && (
-                <DateTimePicker
-                  mode="date"
-                  display={Platform.OS === "android" ? "spinner" : "default"}
-                  value={date}
-                  onChange={onChange}
-                />
-              )}
-            </View>
+          <View className="mb-5">
+            <Text className="text-lg">Birthday</Text>
+            <TouchableOpacity onPress={toggleShow}>
+              <View className="border border-gray-300 p-3 rounded-lg flex-row justify-between items-center">
+                <Text>{birthday || "Month | Day | Year"}</Text>
+              </View>
+            </TouchableOpacity>
+            {show && (
+              <DateTimePicker
+                mode="date"
+                display={Platform.OS === "android" ? "spinner" : "default"}
+                value={date}
+                onChange={onChange}
+              />
+            )}
           </View>
+
           {/* Gender */}
-          <View className="mt-12">
-            <Text className="pt-30 px-5 text-[16px]">Gender</Text>
-            <View className="px-5 flex-row flex-wrap">
-              {gender.map((button) => (
-                <View
+          <View className="mb-5">
+            <Text className="text-lg">Gender</Text>
+            <View className="flex flex-row flex-wrap justify-between mt-3">
+              {genderButtons.map((button) => (
+                <TouchableOpacity
                   key={button.id}
-                  className={`border border-[#7AB2B2] rounded-full p-1 mb-4 w-[44%] ${selectedId === button.id ? "bg-[#7AB2B2]" : "bg-[#F3F3F3]"} m-2`}
+                  onPress={() =>
+                    setSelectedId(button.id as "1" | "2" | "3" | "4")
+                  }
+                  className={`w-[48%] py-2 px-5 border rounded-[10px] mb-3 ${
+                    selectedId === button.id
+                      ? "border-tertiary bg-tertiary"
+                      : "border-tertiary"
+                  }`}
                 >
                   <Text
-                    className={`text-center text-base ${selectedId === button.id ? "text-white" : "text-black"}`}
-                    onPress={() =>
-                      setSelectedId(button.id as "1" | "2" | "3" | "4")
-                    }
+                    className={`text-center ${
+                      selectedId === button.id ? "text-white" : "text-tertiary"
+                    }`}
                   >
                     {button.label}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
-          {/* Location */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Location</Text>
-            </View>
-          </View>
-          <View className="items-center mt-1">
-            <Pressable onPress={requestLocationPermission}>
-              <TextInput
-                className="pt-1 bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10 text-black"
-                value={text}
-                editable={false}
-                onPress={requestLocationPermission}
-              />
-            </Pressable>
-          </View>
+
           {/* Height */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Height</Text>
-              <Text className="pt-25 absolute right-10 text-[20px] text-[#7AB2B2]">
-                cm
-              </Text>
+          <View className="mb-5">
+            <View className="flex-row justify-between">
+              <Text className="text-lg">Height</Text>
+              <Text className="ml-2 text-tertiary">cm</Text>
             </View>
-            <View className="items-center mt-1">
+            <View className="flex-row items-center">
               <TextInput
-                className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="Enter Height"
                 value={height.toString()}
@@ -244,23 +220,32 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
               />
             </View>
           </View>
+
           {/* Weight */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Weight</Text>
-              <Text className="pt-25 absolute right-10 text-[20px] text-[#7AB2B2]">
-                kg
-              </Text>
+          <View className="mb-5">
+            <View className="flex-row justify-between">
+              <Text className="text-lg">Weight</Text>
+              <Text className="ml-2 text-tertiary">kg</Text>
             </View>
-            <View className="mt-1 items-center">
+            <View className="flex-row items-center">
               <TextInput
-                className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="Enter Weight"
                 value={weight.toString()}
                 onChangeText={(value) => setWeight(Number(value))}
               />
             </View>
+          </View>
+
+          {/* Location */}
+          <View className="mb-5">
+            <Text className="text-lg">Location</Text>
+            <TouchableOpacity onPress={requestLocationPermission}>
+              <View className="border-[#F3F3F3] bg-[#F3F3F3] p-3 rounded-lg">
+                <Text>{text}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>

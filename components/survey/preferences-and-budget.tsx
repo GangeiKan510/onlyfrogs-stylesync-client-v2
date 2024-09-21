@@ -25,7 +25,7 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
   return (
     <>
       <View className="flex justify-center items-center mt-10 mb-10">
-        <Text className="text-[20px]">Preferences & Budget</Text>
+        <Text className="text-[20px] font-bold">Preferences & Budget</Text>
       </View>
       <ScrollView>
         <View className="flex justify-start items-start mx-5">

@@ -38,6 +38,9 @@ const Survey = () => {
   const handleNext = () => {
     if (currentIndex < contentArray.length - 1) {
       setCurrentIndex(currentIndex + 1);
+    } else {
+      console.log("Finished Survey");
+      router.push(routes.tabs as Href<string | object>);
     }
   };
 
@@ -72,15 +75,17 @@ const Survey = () => {
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
-      {/* Conditionally render the Continue Button */}
+      {/* Conditionally render the Continue or Finish Button */}
       {(currentIndex !== 1 || analysisComplete) && (
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}
-            disabled={currentIndex === contentArray.length - 1}
+            disabled={currentIndex === 1 && !analysisComplete}
             className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
           >
-            <Text className="text-white text-center">Continue</Text>
+            <Text className="text-white text-center">
+              {currentIndex === contentArray.length - 1 ? "Finish" : "Continue"}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

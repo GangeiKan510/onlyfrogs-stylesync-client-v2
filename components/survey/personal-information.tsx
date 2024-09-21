@@ -3,14 +3,11 @@ import {
   View,
   Text,
   TextInput,
-  Platform,
   ScrollView,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 
 interface PersonalInformationProps {
@@ -29,16 +26,16 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   setPersonalInfo,
 }) => {
   const [selectedId, setSelectedId] = useState<"1" | "2" | "3" | "4">("1");
-  const [birthday, setBirthday] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
-  const [show, setShow] = useState(false);
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
-  const [height, setHeight] = useState<number>(160);
-  const [weight, setWeight] = useState<number>(70);
+  const [height, setHeight] = useState<number>(0);
+  const [weight, setWeight] = useState<number>(0);
+  const [birthDate, setBirthDate] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
+  const [parsedBirthDate, setParsedBirthDate] = useState<Date | null>(null); // Store the parsed date
 
   const genderButtons = [
     { id: "1", label: "Female" },
@@ -47,28 +44,48 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     { id: "4", label: "Rather Not Say" },
   ];
 
-  const toggleShow = () => {
-    setShow(!show);
-  };
-
-  const formatDate = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "long",
-      day: "2-digit",
-      year: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  };
-
-  const onChange = (
-    _event: DateTimePickerEvent,
-    selectedDate: Date | undefined
-  ) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-      setBirthday(formatDate(selectedDate));
+  const validateBirthDate = (dateString: string) => {
+    const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;
+    if (!regex.test(dateString)) {
+      setBirthDateError("Please enter a valid date in MM/DD/YYYY format.");
+      return false;
     }
-    setShow(false);
+
+    const [month, day, year] = dateString.split("/").map(Number);
+    const enteredDate = new Date(year, month - 1, day);
+    const today = new Date();
+
+    if (isNaN(enteredDate.getTime())) {
+      setBirthDateError("Invalid date.");
+      return false;
+    }
+
+    if (enteredDate >= today) {
+      setBirthDateError("Birthdate must be in the past.");
+      return false;
+    }
+
+    setBirthDateError(null); // Clear error if the date is valid
+    setParsedBirthDate(enteredDate); // Set the parsed date
+    return true;
+  };
+
+  const handleBirthDateChange = (value: string) => {
+    const formattedDate = formatDateInput(value);
+    setBirthDate(formattedDate);
+    validateBirthDate(formattedDate);
+  };
+
+  const formatDateInput = (value: string) => {
+    let cleaned = value.replace(/\D/g, "");
+
+    if (cleaned.length >= 3 && cleaned.length <= 4) {
+      cleaned = cleaned.replace(/^(\d{2})(\d)/, "$1/$2"); // MM/DD
+    } else if (cleaned.length >= 5) {
+      cleaned = cleaned.replace(/^(\d{2})(\d{2})(\d{0,4})/, "$1/$2/$3"); // MM/DD/YYYY
+    }
+
+    return cleaned.slice(0, 10); // Limit to 10 characters
   };
 
   const requestLocationPermission = async () => {
@@ -128,14 +145,16 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       "4": "Rather Not Say",
     };
 
-    setPersonalInfo({
-      birthday,
-      gender: genderMapping[selectedId],
-      location: address,
-      height_cm: height,
-      weight_kg: weight,
-    });
-  }, [birthday, selectedId, address, height, weight]);
+    if (!birthDateError) {
+      setPersonalInfo({
+        birthday: parsedBirthDate ? parsedBirthDate.toISOString() : birthDate,
+        gender: genderMapping[selectedId],
+        location: address,
+        height_cm: height,
+        weight_kg: weight,
+      });
+    }
+  }, [birthDate, parsedBirthDate, selectedId, address, height, weight]);
 
   let text = "Waiting..";
   if (errorMsg) {
@@ -161,18 +180,19 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Birthday */}
           <View className="mb-5">
             <Text className="text-lg">Birthday</Text>
-            <TouchableOpacity onPress={toggleShow}>
-              <View className="border border-gray-300 p-3 rounded-lg flex-row justify-between items-center">
-                <Text>{birthday || "Month | Day | Year"}</Text>
-              </View>
-            </TouchableOpacity>
-            {show && (
-              <DateTimePicker
-                mode="date"
-                display={Platform.OS === "android" ? "spinner" : "default"}
-                value={date}
-                onChange={onChange}
+            <View className="flex-row items-center">
+              <TextInput
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
+                keyboardType="numeric"
+                placeholder="MM/DD/YYYY"
+                value={birthDate}
+                onChangeText={handleBirthDateChange}
               />
+            </View>
+            {birthDateError && (
+              <Text style={{ color: "red", marginTop: 5 }}>
+                {birthDateError}
+              </Text>
             )}
           </View>
 

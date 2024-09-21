@@ -1,37 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useRef, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
+import { categoryTypes } from "../constants/clothing-details/categories";
 
-const categoryTypes = {
-  Tops: ["T-Shirts", "Long Sleeves", "Blouses", "Tank Tops"],
-  Dresses: ["Casual Dresses", "Formal Dresses", "Maxi Dresses"],
-  Pants: ["Jeans", "Chinos", "Shorts", "Trousers"],
-  Skirts: ["Mini Skirts", "Midi Skirts", "Maxi Skirts"],
-  Outerwear: ["Jackets", "Coats", "Hoodies"],
-  Innerwear: ["Undergarments", "Loungewear"],
-  Shoes: ["Sneakers", "Boots", "Sandals", "Flats"],
-  Bags: ["Backpacks", "Handbags", "Clutches"],
-  Jewelry: ["Necklaces", "Bracelets", "Earrings"],
-  Headwear: ["Hats", "Caps", "Scarves"],
-  OtherItems: ["Socks", "Belts", "Gloves"],
-};
-
-const CategorySelection = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const toggleCategorySelection = (category: string) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
-    setSelectedTypes([]); // Clear selected types when category changes
+    setSelectedCategory({
+      name: selectedCategory.name === category ? null : category,
+      type: null,
+    });
   };
 
   const toggleTypeSelection = (type: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+    setSelectedCategory((prev: { type: string }) => ({
+      ...prev,
+      type: prev.type === type ? null : type,
+    }));
   };
 
   const toggleAccordion = () => {
@@ -39,14 +28,14 @@ const CategorySelection = () => {
   };
 
   useEffect(() => {
-    const itemHeight = 14; 
-    const categoriesHeight = selectedCategory
-      ? categoryTypes[selectedCategory].length * itemHeight
+    const itemHeight = 16;
+    const categoriesHeight = selectedCategory.name
+      ? categoryTypes[selectedCategory.name]?.length * itemHeight + 50
       : 0;
     const totalHeight = isOpen
-      ? selectedCategory
+      ? selectedCategory.name
         ? categoriesHeight
-        : Object.keys(categoryTypes).length * itemHeight
+        : Object.keys(categoryTypes).length * itemHeight + 50
       : 0;
 
     Animated.timing(animatedHeight, {
@@ -57,76 +46,73 @@ const CategorySelection = () => {
   }, [isOpen, selectedCategory]);
 
   return (
-    <View className="w-96 bg-[#F3F3F3] p-4 rounded-md">
-      {/* Header */}
+    <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
-        className="flex-row justify-between items-center rounded-full"
+        className="h-[42px] flex-row justify-between items-center rounded-[10px]"
       >
-        <Text className="text-lg">Category</Text>
+        <Text>Category</Text>
         {isOpen ? (
-          <ChevronUpIcon width={20} height={20} color={"black"} />
+          <ChevronUpIcon width={15} height={15} color={"black"} />
         ) : (
-          <ChevronDownIcon width={20} height={20} color={"black"} />
+          <ChevronDownIcon width={15} height={15} color={"black"} />
         )}
       </TouchableOpacity>
 
-      {/* Selected Category */}
-      {selectedCategory && (
-        <View className="flex-row justify-between items-center mt-2">
-          <Text className="text-[#7ab3b3]">{`${selectedCategory}: ${selectedTypes.join(", ")}`}</Text>
+      {selectedCategory.name && selectedCategory.type && (
+        <View className="mt-2 mb-4">
+          <Text className="text-[#7AB2B2]">
+            {`${selectedCategory.name}: ${selectedCategory.type}`}
+          </Text>
         </View>
       )}
 
-      {selectedCategory && isOpen && (
-        <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => setSelectedCategory(null)}>
-            <Text className="text-black items-center m-1 px-4 py-2 rounded-full border-gray-900 bg-gray-200 border-[1px]">
-              {`${selectedCategory}`}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Animated Content */}
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
-          <View className="mt-4">
-            {selectedCategory ? (
-              <View className="flex-wrap flex-row">
-                {/* Show Types of Selected Category */}
-                {categoryTypes[selectedCategory].map((type, index) => (
+          <View className="flex-wrap flex-row mt-4 pb-4">
+            {selectedCategory.name
+              ? categoryTypes[selectedCategory.name].map((type, index) => (
                   <TouchableOpacity
                     key={index}
-                    className={`m-1 px-4 py-2 border-2 rounded-full ${
-                      selectedTypes.includes(type)
-                        ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                        : "border-[#7AB2B2] border-[1px]"
+                    className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
+                      selectedCategory.type === type
+                        ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                        : "bg-white border-[#7AB2B2]"
                     }`}
                     onPress={() => toggleTypeSelection(type)}
                   >
-                    <Text className="text-base">{type}</Text>
+                    <Text
+                      className={`text-center ${
+                        selectedCategory.type === type
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {type}
+                    </Text>
                   </TouchableOpacity>
-                ))}
-              </View>
-            ) : (
-              // Show All Categories if no category is selected
-              <View className="flex-wrap flex-row">
-                {Object.keys(categoryTypes).map((category) => (
+                ))
+              : Object.keys(categoryTypes).map((category) => (
                   <TouchableOpacity
                     key={category}
-                    className={`m-1 px-4 py-2 border-2 rounded-full ${
-                      selectedCategory === category
-                        ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                        : "border-[#7AB2B2] border-[1px]"
+                    className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
+                      selectedCategory.name === category
+                        ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                        : "bg-white border-[#7AB2B2]"
                     }`}
                     onPress={() => toggleCategorySelection(category)}
                   >
-                    <Text className="text-base">{category}</Text>
+                    <Text
+                      className={`text-center ${
+                        selectedCategory.name === category
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {category}
+                    </Text>
                   </TouchableOpacity>
                 ))}
-              </View>
-            )}
           </View>
         )}
       </Animated.View>

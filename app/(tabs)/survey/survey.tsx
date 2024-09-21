@@ -19,6 +19,11 @@ const Survey = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
 
+  const [skinToneAnalysisResult, setSkinToneAnalysisResult] = useState(null);
+  const [bodyType, setBodyType] = useState("TypeA");
+  const [preferences, setPreferences] = useState({});
+  const [personalInfo, setPersonalInfo] = useState({});
+
   const handleAnalyzeComplete = () => {
     setAnalysisComplete(true);
     setIsAnalyzing(false);
@@ -29,18 +34,32 @@ const Survey = () => {
     <SkinToneAnalysis
       onAnalyzeComplete={handleAnalyzeComplete}
       setIsAnalyzing={setIsAnalyzing}
+      setSkinToneAnalysisResult={setSkinToneAnalysisResult}
     />,
-    <BodyType />,
-    <PreferencesAndBudget />,
-    <PersonalInformation />,
+    <BodyType setBodyType={setBodyType} />,
+    <PreferencesAndBudget setPreferences={setPreferences} />,
+    <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
+
+  const handleFinish = () => {
+    const surveyData = {
+      preferences: {
+        skin_tone_analysis: skinToneAnalysisResult,
+        body_type: bodyType,
+        ...preferences,
+      },
+      personal_info: personalInfo,
+    };
+
+    console.log("Finished Survey Data: ", JSON.stringify(surveyData, null, 2));
+    router.push(routes.tabs as Href<string | object>);
+  };
 
   const handleNext = () => {
     if (currentIndex < contentArray.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      console.log("Finished Survey");
-      router.push(routes.tabs as Href<string | object>);
+      handleFinish();
     }
   };
 

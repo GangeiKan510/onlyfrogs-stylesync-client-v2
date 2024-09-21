@@ -15,8 +15,22 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 
-const PersonalInformation = () => {
-  const [selectedId, setSelectedId] = useState<string | undefined>();
+interface PersonalInformationProps {
+  setPersonalInfo: (info: PersonalInfoData) => void;
+}
+
+interface PersonalInfoData {
+  birthday: string;
+  gender: string;
+  location: string | null;
+  height_cm: number;
+  weight_kg: number;
+}
+
+const PersonalInformation: React.FC<PersonalInformationProps> = ({
+  setPersonalInfo,
+}) => {
+  const [selectedId, setSelectedId] = useState<"1" | "2" | "3" | "4">("1");
   const [birthday, setBirthday] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [show, setShow] = useState(false);
@@ -25,6 +39,8 @@ const PersonalInformation = () => {
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
+  const [height, setHeight] = useState<number>(160);
+  const [weight, setWeight] = useState<number>(70);
 
   const gender: RadioButtonProps[] = useMemo(
     () => [
@@ -46,13 +62,7 @@ const PersonalInformation = () => {
       day: "2-digit",
       year: "numeric",
     };
-    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-      date
-    );
-
-    const [month, day, year] = formattedDate.replace(",", "").split(" ");
-
-    return `${month} | ${day} | ${year}`;
+    return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
   const onChange = (
@@ -98,7 +108,7 @@ const PersonalInformation = () => {
         if (reverseGeocode.length > 0) {
           let firstResult = reverseGeocode[0];
           setAddress(
-            ` ${firstResult.city}, ${firstResult.region}, ${firstResult.country}`
+            `${firstResult.city}, ${firstResult.region}, ${firstResult.country}`
           );
         } else {
           setErrorMsg("Unable to retrieve address from location.");
@@ -114,6 +124,23 @@ const PersonalInformation = () => {
   useEffect(() => {
     requestLocationPermission();
   }, []);
+
+  useEffect(() => {
+    const genderMapping: { [key in "1" | "2" | "3" | "4"]: string } = {
+      "1": "Man",
+      "2": "Woman",
+      "3": "Non-Binary",
+      "4": "Prefer not to say",
+    };
+
+    setPersonalInfo({
+      birthday,
+      gender: genderMapping[selectedId],
+      location: address,
+      height_cm: height,
+      weight_kg: weight,
+    });
+  }, [birthday, selectedId, address, height, weight]);
 
   let text = "Waiting..";
   if (errorMsg) {
@@ -133,7 +160,7 @@ const PersonalInformation = () => {
         </Text>
       </View>
       <KeyboardAvoidingView
-        style={{ flex: 1 }} // Added flex: 1
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View>
@@ -173,7 +200,9 @@ const PersonalInformation = () => {
                 >
                   <Text
                     className={`text-center text-base ${selectedId === button.id ? "text-white" : "text-black"}`}
-                    onPress={() => setSelectedId(button.id)}
+                    onPress={() =>
+                      setSelectedId(button.id as "1" | "2" | "3" | "4")
+                    }
                   >
                     {button.label}
                   </Text>
@@ -210,6 +239,8 @@ const PersonalInformation = () => {
                 className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
                 keyboardType="numeric"
                 placeholder="Enter Height"
+                value={height.toString()}
+                onChangeText={(value) => setHeight(Number(value))}
               />
             </View>
           </View>
@@ -226,6 +257,8 @@ const PersonalInformation = () => {
                 className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
                 keyboardType="numeric"
                 placeholder="Enter Weight"
+                value={weight.toString()}
+                onChangeText={(value) => setWeight(Number(value))}
               />
             </View>
           </View>

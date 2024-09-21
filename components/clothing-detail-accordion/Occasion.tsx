@@ -47,9 +47,13 @@ const OccasionSelection = ({
         )}
       </TouchableOpacity>
 
-      {selectedOccasions.length > 0 && (
+      {selectedOccasions.length > 0 ? (
         <View className="mb-4">
           <Text className="text-[#7ab3b3]">{selectedOccasions.join(", ")}</Text>
+        </View>
+      ) : (
+        <View className="mb-4">
+          <Text className="text-[#B7B7B7]">Select occasion</Text>
         </View>
       )}
 

@@ -60,11 +60,15 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
         )}
       </TouchableOpacity>
 
-      {selectedCategory?.name && selectedCategory?.type && (
+      {selectedCategory?.name && selectedCategory?.type ? (
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-[#7AB2B2]">
-            {`${selectedCategory?.name}: ${selectedCategory?.type}`}
+            {`${selectedCategory.name}: ${selectedCategory.type}`}
           </Text>
+        </View>
+      ) : (
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-[#B7B7B7]">Select category and type</Text>
         </View>
       )}
 
@@ -80,7 +84,7 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
           >
             <View className="flex-row space-x-2 m-1 px-4 py-1.5 border-[1px] rounded-full bg-[#7AB2B2] border-[#7AB2B2]">
               <Text className="text-white">{`${selectedCategory?.name}`}</Text>
-            <Unselect width={15} height={15} color={"white"} />
+              <Unselect width={15} height={15} color={"white"} />
             </View>
           </TouchableOpacity>
         </View>

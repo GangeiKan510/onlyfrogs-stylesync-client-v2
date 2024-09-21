@@ -45,9 +45,13 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
         )}
       </TouchableOpacity>
 
-      {selectedSeasons.length > 0 && (
+      {selectedSeasons.length > 0 ?  (
         <View className="mb-4">
           <Text className="text-[#7AB2B2]">{selectedSeasons.join(", ")}</Text>
+        </View>
+      ) : (
+        <View className="mb-4">
+          <Text className="text-[#B7B7B7]">Select season</Text>
         </View>
       )}
 

@@ -14,7 +14,10 @@ import DesignIcon from "../../assets/icons/tabs/design.svg";
 import SeasonAccordion from "../clothing-detail-accordion/Season";
 import OccasionSelection from "../clothing-detail-accordion/Occasion";
 import CategorySelection from "../clothing-detail-accordion/Category";
+import ColorAccordion from "../clothing-detail-accordion/Color";
+
 import Spinner from "../common/Spinner";
+import MaterialAccordion from "../clothing-detail-accordion/Material";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -32,6 +35,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [brandName, setBrandName] = useState("");
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
+  const [selectedColor, setSelectedcolor] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<{
     name: string | null;
     type: string | null;
@@ -47,6 +51,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         name: selectedCategory.name,
         type: selectedCategory.type,
       },
+      Color: selectedColor,
     };
 
     console.log("Clothing Details:", clothingDetails);
@@ -93,8 +98,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 resizeMode="contain"
               />
             )}
-            <View className="w-full px-4 mt-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">Name</Text>
+            {/* <View className="w-full px-4 mt-4">
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
+                Name
+              </Text>
               <TextInput
                 placeholder="Enter item name"
                 value={itemName}
@@ -103,16 +110,20 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             </View>
             <View className="w-full px-4 mt-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">Brand</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
+                Brand
+              </Text>
               <TextInput
                 placeholder="Enter brand name"
                 value={brandName}
                 onChangeText={setBrandName}
                 className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
               />
-            </View>
+            </View> */}
             <View className="mt-4 w-full px-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">When will you wear it?</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
+                When will you wear it?
+              </Text>
               <SeasonAccordion
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
@@ -132,6 +143,16 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
               />
+              <View className="mt-4 w-full mb-4">
+                <ColorAccordion
+                selectedColor={selectedColor}
+                setSelectedColor={setSelectedcolor}
+                />
+              </View>
+              <View className="mt-4 w-full mb-4">
+                <MaterialAccordion
+                />
+              </View>
             </View>
           </View>
         </ScrollView>

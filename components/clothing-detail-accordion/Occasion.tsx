@@ -37,7 +37,7 @@ const OccasionSelection = ({
     <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
-        className="h-[42px] flex-row justify-between items-center rounded-full"
+        className="h-[42px] flex-row justify-between items-center"
       >
         <Text className="text-[16px] text-[#484848]">Occasion</Text>
         {isOpen ? (
@@ -48,7 +48,7 @@ const OccasionSelection = ({
       </TouchableOpacity>
 
       {selectedOccasions.length > 0 ? (
-        <View className="mb-4">
+        <View className="mb-4 w-3/4">
           <Text className="text-[#7ab3b3]">{selectedOccasions.join(", ")}</Text>
         </View>
       ) : (
@@ -59,7 +59,7 @@ const OccasionSelection = ({
 
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
-          <View className="flex-wrap flex-row ">
+          <View className="flex-wrap flex-row">
             {occasion.map((occ, index) => (
               <TouchableOpacity
                 key={index}

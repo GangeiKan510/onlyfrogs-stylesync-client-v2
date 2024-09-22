@@ -15,7 +15,6 @@ import SeasonAccordion from "../clothing-detail-accordion/Season";
 import OccasionSelection from "../clothing-detail-accordion/Occasion";
 import CategorySelection from "../clothing-detail-accordion/Category";
 import ColorAccordion from "../clothing-detail-accordion/Color";
-
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../clothing-detail-accordion/Material";
 import PatternAccordion from "../clothing-detail-accordion/Pattern";
@@ -34,6 +33,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState("");
+  const [isBrandTyping, setIsBrandTyping] = useState(false);
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [selectedColor, setSelectedcolor] = useState<string | null>(null);
@@ -99,28 +99,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 resizeMode="contain"
               />
             )}
-            {/* <View className="w-full px-4 mt-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">
-                Name
-              </Text>
-              <TextInput
-                placeholder="Enter item name"
-                value={itemName}
-                onChangeText={setItemName}
-                className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
-              />
-            </View>
-            <View className="w-full px-4 mt-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">
-                Brand
-              </Text>
-              <TextInput
-                placeholder="Enter brand name"
-                value={brandName}
-                onChangeText={setBrandName}
-                className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
-              />
-            </View> */}
             <View className="mt-4 w-full px-4">
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 When will you wear it?
@@ -146,16 +124,30 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
               <View className="mt-4 w-full mb-4">
                 <ColorAccordion
-                selectedColor={selectedColor}
-                setSelectedColor={setSelectedcolor}
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedcolor}
                 />
               </View>
               <View className="w-full mb-4">
-                <MaterialAccordion
-                />
+                <MaterialAccordion />
               </View>
               <View className="w-full mb-4">
-                <PatternAccordion
+                <PatternAccordion />
+              </View>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
+                <Text className="text-[16px] text-[#484848] mb-2">
+                  Brand
+                </Text>
+                <TextInput
+                  placeholder="Enter brand name"
+                  value={brandName}
+                  onChangeText={(text) => {
+                    setBrandName(text);
+                    setIsBrandTyping(text.length > 0);
+                  }}
+                  style={{
+                    color: isBrandTyping ? '#7ab3b3' : '#000',
+                  }}
                 />
               </View>
             </View>

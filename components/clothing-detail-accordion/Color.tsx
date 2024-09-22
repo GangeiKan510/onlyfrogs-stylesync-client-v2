@@ -32,7 +32,7 @@ const Colors = () => {
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"
       >
-        <Text className="text-[16px] text-[#484848]">Colors</Text>
+        <Text className="text-[16px] text-[#484848]">Color</Text>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />
         ) : (
@@ -56,7 +56,7 @@ const Colors = () => {
             {COLOR_LIST.map((color, index) => (
               <View key={index} className="flex-row items-center mb-1">
                 <TouchableOpacity
-                  className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
+                  className={`m-1 px-3 py-1.5 border-[1px] rounded-full flex-row items-center ${
                     selectedColor === color.name
                       ? "bg-[#7AB2B2] border-[#7AB2B2]"
                       : "bg-white border-[#7AB2B2]"
@@ -69,7 +69,7 @@ const Colors = () => {
                   />
                   <Text
                     className={`text-base ${
-                      selectedColor === color.name ? "text-white" : "#7AB2B2"
+                      selectedColor === color.name ? "text-white" : "text-black"
                     }`}
                   >
                     {color.name}

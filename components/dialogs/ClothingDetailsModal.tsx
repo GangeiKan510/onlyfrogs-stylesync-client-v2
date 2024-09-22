@@ -18,6 +18,7 @@ import ColorAccordion from "../clothing-detail-accordion/Color";
 
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../clothing-detail-accordion/Material";
+import PatternAccordion from "../clothing-detail-accordion/Pattern";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -84,7 +85,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               Item Details
             </Text>
           </View>
-          <View className="z-10 absolute top-6 right-7 p-2">
+          <View className="z-10 absolute top-5 right-7 p-2">
             <DesignIcon width={24} height={24} />
           </View>
         </View>
@@ -149,8 +150,12 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 setSelectedColor={setSelectedcolor}
                 />
               </View>
-              <View className="mt-4 w-full mb-4">
+              <View className="w-full mb-4">
                 <MaterialAccordion
+                />
+              </View>
+              <View className="w-full mb-4">
+                <PatternAccordion
                 />
               </View>
             </View>

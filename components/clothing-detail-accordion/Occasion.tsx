@@ -74,7 +74,7 @@ const OccasionSelection = ({
                   className={`text-center ${
                     selectedOccasions.includes(occ)
                       ? "text-white"
-                      : "text-[#7AB2B2]"
+                      : "text-black"
                   }`}
                 >
                   {occ}

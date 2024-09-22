@@ -21,31 +21,29 @@ import Cashmere from '../../../assets/images/materials/20.svg';
 import Mohair from '../../../assets/images/materials/21.svg';
 import Angora from '../../../assets/images/materials/22.svg';
 import OtherMaterials from '../../../assets/images/materials/23.svg';
-
-
   
-export const MATERIAL_lIST = [
-  { name: "Cotton", reference: Cotton },
-  { name: "Polyester", reference: Polyester },
-  { name: "Nylon", reference: Nylon },
-  { name: "Denim", reference: Denim },
-  { name: "Leather", reference: Leather },
-  { name: "Wool", reference: Wool },
-  { name: "Linen", reference:Linen },
-  { name: "Acrylic", reference: Acrylic },
-  { name: "Silk", reference: Silk },
-  { name: "Rayon", reference:Rayon },
-  { name: "Viscose", reference: Viscose },
-  { name: "Tweed", reference: Tweed },
-  { name: "Velvet", reference: Velvet },
-  { name: "Chiffon", reference: Chiffon },
-  { name: "Suede", reference: Suede },
-  { name: "Corduroy", reference: Corduroy },
-  { name: "Lace", reference: Lace },
-  { name: "Fur", reference: Fur },
-  { name: "Lyocell", reference: Lyocell },
-  { name: "Cashmere", reference:Cashmere },
-  { name: "Mohair", reference:Mohair },
-  { name: "Angora", reference:Angora },
-  { name: "Other Materials", reference:OtherMaterials },
-  ];
+export const MATERIAL_LIST = [
+  { name: "Cotton", reference: Cotton, description: "Soft, breathable, and widely used fabric." },
+  { name: "Polyester", reference: Polyester, description: "Durable, wrinkle-resistant, and quick-drying fabric." },
+  { name: "Nylon", reference: Nylon, description: "Strong, lightweight, and elastic synthetic material." },
+  { name: "Denim", reference: Denim, description: "Durable cotton fabric used in jeans and jackets." },
+  { name: "Leather", reference: Leather, description: "Tough, flexible material made from animal hides." },
+  { name: "Wool", reference: Wool, description: "Warm, soft material typically used in winter clothing." },
+  { name: "Linen", reference: Linen, description: "Lightweight, breathable fabric made from flax fibers." },
+  { name: "Acrylic", reference: Acrylic, description: "Synthetic wool-like fabric, often used in knitwear." },
+  { name: "Silk", reference: Silk, description: "Smooth, luxurious fabric made from silkworms." },
+  { name: "Rayon", reference: Rayon, description: "Soft, smooth material that drapes well, made from cellulose." },
+  { name: "Viscose", reference: Viscose, description: "Silk-like fabric with good draping, often used in dresses." },
+  { name: "Tweed", reference: Tweed, description: "Rough, woolen fabric, popular for jackets and suits." },
+  { name: "Velvet", reference: Velvet, description: "Soft, dense fabric with a smooth feel, often used in evening wear." },
+  { name: "Chiffon", reference: Chiffon, description: "Lightweight, sheer fabric commonly used in formal wear." },
+  { name: "Suede", reference: Suede, description: "Soft, textured leather, often used in shoes and jackets." },
+  { name: "Corduroy", reference: Corduroy, description: "Thick, ridged fabric, often used in pants and jackets." },
+  { name: "Lace", reference: Lace, description: "Delicate, open-weave fabric, often used in formal attire." },
+  { name: "Fur", reference: Fur, description: "Thick, soft material made from animal pelts." },
+  { name: "Lyocell", reference: Lyocell, description: "Eco-friendly, breathable fabric made from wood pulp." },
+  { name: "Cashmere", reference: Cashmere, description: "Luxurious, soft wool from cashmere goats." },
+  { name: "Mohair", reference: Mohair, description: "Silky, durable fiber made from the hair of angora goats." },
+  { name: "Angora", reference: Angora, description: "Soft, fluffy material from angora rabbits, often used in knitwear." },
+  { name: "Other Materials", reference: OtherMaterials, description: "Various other materials used in clothing production." }
+];

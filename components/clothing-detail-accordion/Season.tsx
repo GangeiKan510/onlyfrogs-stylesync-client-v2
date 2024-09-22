@@ -61,7 +61,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
             {seasons.map((season, index) => (
               <TouchableOpacity
                 key={index}
-                className={`m-1 px-4 py-1.5 border-[1px] rounded-full ${
+                className={`m-1 px-3 py-1.5 border-[1px] rounded-full ${
                   selectedSeasons.includes(season)
                     ? "bg-[#7AB2B2] border-[#7AB2B2]"
                     : "bg-white border-[#7AB2B2]"
@@ -72,7 +72,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
                   className={`text-center ${
                     selectedSeasons.includes(season)
                       ? "text-white"
-                      : "text-[#7AB2B2]"
+                      : "text-black"
                   }`}
                 >
                   {season}

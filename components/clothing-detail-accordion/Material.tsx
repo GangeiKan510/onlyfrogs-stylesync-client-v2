@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Animated } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
-import { MATERIAL_lIST } from "@/components/constants/clothing-details/material";
+import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
 
 const MaterialAccordion = () => {
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
@@ -22,7 +22,7 @@ const MaterialAccordion = () => {
   useEffect(() => {
     const itemHeight = 15;
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? MATERIAL_lIST.length * itemHeight + 40 : 0,
+      toValue: isOpen ? MATERIAL_LIST.length * itemHeight + 40 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -34,7 +34,7 @@ const MaterialAccordion = () => {
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"
       >
-        <Text className="text-[16px] text-[#484848]">Materials</Text>
+        <Text className="text-[16px] text-[#484848]">Material</Text>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />
         ) : (
@@ -43,8 +43,15 @@ const MaterialAccordion = () => {
       </TouchableOpacity>
 
       {selectedMaterial ? (
-        <View className="mb-4">
-          <Text className="text-[#7ab3b3]">{selectedMaterial}</Text>
+        <View className="mb-4 flex-row w-3/4">
+          <Text className="text-[#7ab3b3]">{`${selectedMaterial}: `}</Text>
+          <Text className="text-[#7ab3b3]">
+            {
+              MATERIAL_LIST.find(
+                (material) => material.name === selectedMaterial
+              )?.description
+            }
+          </Text>
         </View>
       ) : (
         <View className="mb-4">
@@ -55,10 +62,10 @@ const MaterialAccordion = () => {
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
           <View className="flex-wrap flex-row">
-            {MATERIAL_lIST.map((material, index) => (
+            {MATERIAL_LIST.map((material, index) => (
               <View key={index} className="flex-row items-center mb-1">
                 <TouchableOpacity
-                  className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
+                  className={`m-1 px-3 py-1.5 border-[1px] rounded-full flex-row items-center ${
                     selectedMaterial === material.name
                       ? "bg-[#7AB2B2] border-[#7AB2B2]"
                       : "bg-white border-[#7AB2B2]"
@@ -77,7 +84,7 @@ const MaterialAccordion = () => {
                     className={`text-base ${
                       selectedMaterial === material.name
                         ? "text-white"
-                        : "#7AB2B2"
+                        : "text-black"
                     }`}
                   >
                     {material.name}

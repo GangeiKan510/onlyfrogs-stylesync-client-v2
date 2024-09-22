@@ -10,7 +10,9 @@ const MaterialAccordion = () => {
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const toggleMaterialSelection = (materialName: string) => {
-    setSelectedMaterial(selectedMaterial === materialName ? null : materialName);
+    setSelectedMaterial(
+      selectedMaterial === materialName ? null : materialName
+    );
   };
 
   const toggleAccordion = () => {
@@ -18,9 +20,9 @@ const MaterialAccordion = () => {
   };
 
   useEffect(() => {
-    const itemHeight = 16;
+    const itemHeight = 15;
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? MATERIAL_lIST.length * itemHeight + 50 : 0,
+      toValue: isOpen ? MATERIAL_lIST.length * itemHeight + 40 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -63,19 +65,19 @@ const MaterialAccordion = () => {
                   }`}
                   onPress={() => toggleMaterialSelection(material.name)}
                 >
-                  <View
-                    style={{ backgroundColor: "transparent" }}
-                    className="w-4 h-4 rounded-full mr-2 border-gray border-[0.5px]"
-                  >
-                    <img
-                      src={material.image}
-                      alt={material.name}
-                      style={{ width: 20, height: 20 }}
+                  <View className="mr-2 rounded-lg overflow-hidden">
+                    <material.reference
+                      width={20}
+                      height={20}
+                      style={{ width: "100%", height: "100%" }}
                     />
                   </View>
+
                   <Text
                     className={`text-base ${
-                      selectedMaterial === material.name ? "text-white" : "text-[#7AB2B2]"
+                      selectedMaterial === material.name
+                        ? "text-white"
+                        : "#7AB2B2"
                     }`}
                   >
                     {material.name}

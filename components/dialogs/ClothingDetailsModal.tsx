@@ -14,7 +14,10 @@ import DesignIcon from "../../assets/icons/tabs/design.svg";
 import SeasonAccordion from "../clothing-detail-accordion/Season";
 import OccasionSelection from "../clothing-detail-accordion/Occasion";
 import CategorySelection from "../clothing-detail-accordion/Category";
+import ColorAccordion from "../clothing-detail-accordion/Color";
 import Spinner from "../common/Spinner";
+import MaterialAccordion from "../clothing-detail-accordion/Material";
+import PatternAccordion from "../clothing-detail-accordion/Pattern";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -30,8 +33,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
+  const [selectedColor, setSelectedcolor] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<{
     name: string | null;
     type: string | null;
@@ -47,6 +52,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         name: selectedCategory.name,
         type: selectedCategory.type,
       },
+      Color: selectedColor,
     };
 
     console.log("Clothing Details:", clothingDetails);
@@ -79,7 +85,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               Item Details
             </Text>
           </View>
-          <View className="z-10 absolute top-6 right-7 p-2">
+          <View className="z-10 absolute top-5 right-7 p-2">
             <DesignIcon width={24} height={24} />
           </View>
         </View>
@@ -89,49 +95,80 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             {clothingImage && (
               <Image
                 source={{ uri: clothingImage }}
-                className="w-60 h-60 my-4 bg-[#F3F3F3] rounded-[10px]"
+                className="w-full h-60 my-4"
                 resizeMode="contain"
               />
             )}
-            <View className="w-full px-4 mt-4">
-              <Text className="font-medium mb-1">Name</Text>
-              <TextInput
-                placeholder="Enter item name"
-                value={itemName}
-                onChangeText={setItemName}
-                className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
-              />
-            </View>
-            <View className="w-full px-4 mt-4">
-              <Text className="font-medium mb-1">Brand</Text>
-              <TextInput
-                placeholder="Enter brand name"
-                value={brandName}
-                onChangeText={setBrandName}
-                className="w-full h-[42px] bg-[#F3F3F3] rounded-lg px-4"
-              />
-            </View>
             <View className="mt-4 w-full px-4">
-              <Text className="mb-1 font-medium">When will you wear it?</Text>
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
+                When will you wear it?
+              </Text>
               <SeasonAccordion
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
               />
+              <View className="mt-4 w-full mb-4">
+                <OccasionSelection
+                  selectedOccasions={selectedOccasions}
+                  setSelectedOccasions={setSelectedOccasions}
+                />
+              </View>
             </View>
-            <View className="mt-4 w-full px-4 mb-4">
-              <OccasionSelection
-                selectedOccasions={selectedOccasions}
-                setSelectedOccasions={setSelectedOccasions}
-              />
-            </View>
+
             <View className="mt-4 w-full px-4">
-              <Text className="mb-1 font-medium">
+              <Text className="mb-1 text-lg text-[#484848] font-bold">
                 What kind of item is this?
               </Text>
               <CategorySelection
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
               />
+              <View className="mt-4 w-full mb-4">
+                <ColorAccordion
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedcolor}
+                />
+              </View>
+              <View className="w-full mb-4">
+                <MaterialAccordion />
+              </View>
+              <View className="w-full mb-4">
+                <PatternAccordion />
+              </View>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
+                <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
+                <TextInput
+                  placeholder="Enter brand name"
+                  value={brandName}
+                  onChangeText={(text) => {
+                    setBrandName(text);
+                    setIsTyping(text.length > 0);
+                  }}
+                  style={{
+                    color: isTyping ? "#7ab3b3" : "#000",
+                  }}
+                />
+              </View>
+            </View>
+
+            <View className="mt-7">
+              <Text className="text-lg text-[#484848] font-bold">
+                Additional information (optional)
+              </Text>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
+                <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
+                <TextInput
+                  placeholder="Give it a name"
+                  value={brandName}
+                  onChangeText={(text) => {
+                    setItemName(text);
+                    setIsTyping(text.length > 0);
+                  }}
+                  style={{
+                    color: isTyping ? "#7ab3b3" : "#000",
+                  }}
+                />
+              </View>
             </View>
           </View>
         </ScrollView>

@@ -23,9 +23,9 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
   };
 
   useEffect(() => {
-    const itemHeight = 16;
+    const itemHeight = 12;
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? seasons.length * itemHeight + 50 : 0,
+      toValue: isOpen ? seasons.length * itemHeight : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -37,27 +37,31 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"
       >
-        <Text>Season</Text>
+        <Text className="text-[16px] text-[#484848]">Season</Text>
         {isOpen ? (
-          <ChevronUpIcon width={15} height={15} color={"black"} />
+          <ChevronUpIcon width={18} height={18} color={"#484848"} />
         ) : (
-          <ChevronDownIcon width={15} height={15} color={"black"} />
+          <ChevronDownIcon width={18} height={18} color={"#484848"} />
         )}
       </TouchableOpacity>
 
-      {selectedSeasons.length > 0 && (
-        <View className="mt-2 mb-4">
+      {selectedSeasons.length > 0 ?  (
+        <View className="mb-4">
           <Text className="text-[#7AB2B2]">{selectedSeasons.join(", ")}</Text>
+        </View>
+      ) : (
+        <View className="mb-4">
+          <Text className="text-[#B7B7B7]">Select season</Text>
         </View>
       )}
 
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
-          <View className="flex-wrap flex-row mt-4 pb-4">
+          <View className="flex-wrap flex-row ">
             {seasons.map((season, index) => (
               <TouchableOpacity
                 key={index}
-                className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
+                className={`m-1 px-3 py-1.5 border-[1px] rounded-full ${
                   selectedSeasons.includes(season)
                     ? "bg-[#7AB2B2] border-[#7AB2B2]"
                     : "bg-white border-[#7AB2B2]"
@@ -68,7 +72,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
                   className={`text-center ${
                     selectedSeasons.includes(season)
                       ? "text-white"
-                      : "text-[#7AB2B2]"
+                      : "text-black"
                   }`}
                 >
                   {season}

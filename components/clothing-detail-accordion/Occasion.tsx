@@ -25,7 +25,7 @@ const OccasionSelection = ({
   };
 
   useEffect(() => {
-    const itemHeight = 14;
+    const itemHeight = 7;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? occasion.length * itemHeight + 50 : 0,
       duration: 300,
@@ -37,29 +37,33 @@ const OccasionSelection = ({
     <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
-        className="h-[42px] flex-row justify-between items-center rounded-full"
+        className="h-[42px] flex-row justify-between items-center"
       >
-        <Text>Occasion</Text>
+        <Text className="text-[16px] text-[#484848]">Occasion</Text>
         {isOpen ? (
-          <ChevronUpIcon width={15} height={15} color={"black"} />
+          <ChevronUpIcon width={18} height={18} color={"#484848"} />
         ) : (
-          <ChevronDownIcon width={15} height={15} color={"black"} />
+          <ChevronDownIcon width={18} height={18} color={"#484848"} />
         )}
       </TouchableOpacity>
 
-      {selectedOccasions.length > 0 && (
-        <View className="mt-2 mb-4">
+      {selectedOccasions.length > 0 ? (
+        <View className="mb-4 w-3/4">
           <Text className="text-[#7ab3b3]">{selectedOccasions.join(", ")}</Text>
+        </View>
+      ) : (
+        <View className="mb-4">
+          <Text className="text-[#B7B7B7]">Select occasion</Text>
         </View>
       )}
 
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
-          <View className="flex-wrap flex-row mt-4 pb-4">
+          <View className="flex-wrap flex-row">
             {occasion.map((occ, index) => (
               <TouchableOpacity
                 key={index}
-                className={`m-1 px-4 py-1 border-[1.5px] rounded-[10px] ${
+                className={`m-1 px-4 py-1.5 border-[1px] rounded-full ${
                   selectedOccasions.includes(occ)
                     ? "bg-[#7AB2B2] border-[#7AB2B2]"
                     : "bg-white border-[#7AB2B2]"
@@ -70,7 +74,7 @@ const OccasionSelection = ({
                   className={`text-center ${
                     selectedOccasions.includes(occ)
                       ? "text-white"
-                      : "text-[#7AB2B2]"
+                      : "text-black"
                   }`}
                 >
                   {occ}

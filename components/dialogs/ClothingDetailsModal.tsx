@@ -33,7 +33,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState("");
-  const [isBrandTyping, setIsBrandTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [selectedColor, setSelectedcolor] = useState<string | null>(null);
@@ -107,13 +107,14 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
               />
+              <View className="mt-4 w-full mb-4">
+                <OccasionSelection
+                  selectedOccasions={selectedOccasions}
+                  setSelectedOccasions={setSelectedOccasions}
+                />
+              </View>
             </View>
-            <View className="mt-4 w-full px-4 mb-4">
-              <OccasionSelection
-                selectedOccasions={selectedOccasions}
-                setSelectedOccasions={setSelectedOccasions}
-              />
-            </View>
+
             <View className="mt-4 w-full px-4">
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 What kind of item is this?
@@ -135,18 +136,36 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 <PatternAccordion />
               </View>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
-                <Text className="text-[16px] text-[#484848] mb-2">
-                  Brand
-                </Text>
+                <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
                 <TextInput
                   placeholder="Enter brand name"
                   value={brandName}
                   onChangeText={(text) => {
                     setBrandName(text);
-                    setIsBrandTyping(text.length > 0);
+                    setIsTyping(text.length > 0);
                   }}
                   style={{
-                    color: isBrandTyping ? '#7ab3b3' : '#000',
+                    color: isTyping ? "#7ab3b3" : "#000",
+                  }}
+                />
+              </View>
+            </View>
+
+            <View className="mt-7">
+              <Text className="text-lg text-[#484848] font-bold">
+                Additional information (optional)
+              </Text>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
+                <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
+                <TextInput
+                  placeholder="Give it a name"
+                  value={brandName}
+                  onChangeText={(text) => {
+                    setItemName(text);
+                    setIsTyping(text.length > 0);
+                  }}
+                  style={{
+                    color: isTyping ? "#7ab3b3" : "#000",
                   }}
                 />
               </View>

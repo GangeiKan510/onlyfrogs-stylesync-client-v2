@@ -41,6 +41,8 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     name: string | null;
     type: string | null;
   }>({ name: null, type: null });
+  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+  const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
 
   const handleSave = () => {
     const clothingDetails = {
@@ -52,7 +54,9 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         name: selectedCategory.name,
         type: selectedCategory.type,
       },
-      Color: selectedColor,
+      color: selectedColor,
+      material: selectedMaterial,
+      pattern: selectedPattern,
     };
 
     console.log("Clothing Details:", clothingDetails);
@@ -130,10 +134,16 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 />
               </View>
               <View className="w-full mb-4">
-                <MaterialAccordion />
+                <MaterialAccordion
+                  selectedMaterial={selectedMaterial}
+                  setSelectedMaterial={setSelectedMaterial}
+                />
               </View>
               <View className="w-full mb-4">
-                <PatternAccordion />
+                <PatternAccordion
+                  selectedPattern={selectedPattern}
+                  setSelectedPattern={setSelectedPattern}
+                />
               </View>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
                 <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
@@ -159,7 +169,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
                   placeholder="Give it a name"
-                  value={brandName}
+                  value={itemName}
                   onChangeText={(text) => {
                     setItemName(text);
                     setIsTyping(text.length > 0);

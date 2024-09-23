@@ -4,7 +4,6 @@ import {
   Text,
   Pressable,
   KeyboardAvoidingView,
-  Alert,
   ScrollView,
 } from "react-native";
 import { useState } from "react";
@@ -15,6 +14,7 @@ import { createUser } from "@/network/web/user";
 import { routes } from "@/utils/routes";
 import CustomButton from "@/components/buttons/CustomButton";
 import { validateForm } from "@/components/validators/verifyRegistrationDetails";
+import Toast from "react-native-toast-message";
 
 export default function Register() {
   const router = useRouter();
@@ -28,16 +28,24 @@ export default function Register() {
   const handleSignUp = async () => {
     setLoading(true);
 
+    const lowercasedEmail = email.toLowerCase();
+
     const { success, message } = validateForm(
       firstName,
       lastName,
-      email,
+      lowercasedEmail,
       password,
       confirmPassword
     );
 
     if (!success) {
-      Alert.alert("Registration Error", message);
+      Toast.show({
+        type: "error",
+        text1: "Registration Error",
+        text2: message,
+        position: "top",
+        swipeable: true,
+      });
       setLoading(false);
       return;
     }
@@ -46,22 +54,34 @@ export default function Register() {
       const userData = {
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email: lowercasedEmail,
       };
 
-      const firebaseAuthUser = await signUp(email, password);
+      const firebaseAuthUser = await signUp(lowercasedEmail, password);
+
       const newUser = await createUser(userData);
+
       setLoading(false);
 
       if (firebaseAuthUser && newUser) {
+        Toast.show({
+          type: "success",
+          text1: "Registration Successful",
+          text2: "You have successfully signed up!",
+          position: "top",
+          swipeable: true,
+        });
         router.replace(routes.survey as Href<string | object>);
       }
     } catch (error) {
       console.error(error);
-      Alert.alert(
-        "Registration Error",
-        "Please check your credentials and try again."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Registration Error",
+        text2: "Please check your credentials and try again.",
+        position: "top",
+        swipeable: true,
+      });
       setLoading(false);
     }
   };

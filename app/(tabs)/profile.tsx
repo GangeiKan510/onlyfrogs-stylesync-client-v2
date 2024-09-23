@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserIcon from "../../assets/icons/profile/user-icon.svg";
 import CustomizeIcon from "../../assets/icons/profile/customize-icon.svg";
@@ -9,89 +9,25 @@ import BodyTypeIcon from "../../assets/icons/profile/body-type-icon.svg";
 import LogOutIcon from "../../assets/icons/profile/log-out-icon.svg";
 import ArrowRightIcon from "../../assets/icons/profile/arrow-right-icon.svg";
 import CheckmarkIcon from "../../assets/icons/profile/checkmark-icon.svg";
-import { useRouter, Href } from "expo-router";
+import { useRouter, Link } from "expo-router";
+import type { Href } from "expo-router";
 import { routes } from "@/utils/routes";
-import { Image, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import NoProfileImg from "../../assets/icons/profile/no-profile-img.svg";
+import LockIcon from "../../assets/icons/profile/lock-icon.svg";
+import CoverImg from "../../assets/icons/profile/cover-img.svg";
 
 const Profile = () => {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-
   const router = useRouter();
-
-  const uploadProfileImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status === "denied") {
-      Alert.alert(
-        "Permission Required",
-        "Permission to access the media library is required. Please enable it in settings.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Try Again",
-            onPress: async () => {
-              const newPermissionResult =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-              if (newPermissionResult.granted) {
-                launchImagePicker();
-              } else {
-                Alert.alert(
-                  "Permission still denied. Please enable it in settings."
-                );
-              }
-            },
-          },
-        ]
-      );
-      return;
-    }
-
-    if (status === "granted") {
-      launchImagePicker();
-    }
-  };
-
-  const launchImagePicker = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-      setProfileImage(uri);
-    }
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#ffffff]">
-      <View className="bg-[#F2F2F2] w-full h-[150px]">
+      <View className="h-40">
+        <CoverImg width={375} height={150} />
       </View>
+
       <View className="items-center">
-        <View className="items-center">
-          <Pressable
-            onPress={uploadProfileImage}
-            className="absolute -bottom-[50px] z-10"
-          >
-            <View className="h-[110px] w-[110px] rounded-full bg-[#F2F2F2] items-center justify-center overflow-hidden">
-              {profileImage ? (
-                <Image
-                  source={{ uri: profileImage }}
-                  className="h-full w-full rounded-full"
-                  style={{ resizeMode: "cover" }}
-                />
-              ) : (
-                <NoProfileImg width={110} height={110} />
-              )}
-            </View>
-          </Pressable>
+        <View className=" absolute  z-10 top-[-55px] h-[110px] w-[110px] rounded-full bg-[#F2F2F2] items-center justify-center overflow-hidden">
+          <NoProfileImg width={110} height={110} />
         </View>
         <View className="mt-16 items-center">
           <Text className="text-black font-bold text-[16px]">
@@ -118,15 +54,18 @@ const Profile = () => {
           </Text>
 
           <View className="ml-2">
-            <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
-              <View className="flex-row">
-                <UserSettingIcon width={25.5} height={24.82} />
-                <Text className=" font-medium text-[16px] ml-2 ">
-                  Profile Settings
-                </Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} />
-            </Pressable>
+              <Link push href={routes.profileSettings as Href<string | object>} asChild>
+                <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                  <View className="flex-row">
+                      <UserSettingIcon width={25.5} height={24.82} />
+                  <Text className="font-medium text-[16px] ml-3">
+                    Profile Settings
+                  </Text>
+                  </View>
+                
+                  <ArrowRightIcon width={15} height={15} />
+                </Pressable>
+              </Link>
 
             <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
               <View className="flex-row">
@@ -162,6 +101,16 @@ const Profile = () => {
               <View className="flex-row">
                 <BodyTypeIcon width={20.63} height={25.97} />
                 <Text className="font-medium text-[16px] ml-3">Body Type</Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} />
+            </Pressable>
+
+            <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+              <View className="flex-row">
+                <LockIcon width={20} height={20} />
+                <Text className="font-medium text-[16px] ml-3">
+                  Change Password
+                </Text>
               </View>
               <ArrowRightIcon width={15} height={15} />
             </Pressable>

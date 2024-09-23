@@ -6,5 +6,7 @@ export const routes = {
   welcome: "/welcome",
   closet: "closet",
 
+  profileSettings: "profile/ProfileSettings",
+
   expandedCloset: "(tabs)/closet/",
 };

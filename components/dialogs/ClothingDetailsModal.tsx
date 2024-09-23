@@ -18,6 +18,7 @@ import ColorAccordion from "../clothing-detail-accordion/Color";
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../clothing-detail-accordion/Material";
 import PatternAccordion from "../clothing-detail-accordion/Pattern";
+import { updateClothing } from "@/network/web/clothes";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -44,7 +45,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const clothingDetails = {
       name: itemName,
       brand: brandName,
@@ -63,10 +64,15 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
     setIsSaving(true);
 
-    setTimeout(() => {
+    try {
+      const updatedClothing = await updateClothing(clothingDetails);
+      console.log("Successfully updated clothing:", updatedClothing);
+    } catch (error) {
+      console.error("Failed to update clothing:", error);
+    } finally {
       setIsSaving(false);
       onClose();
-    }, 500);
+    }
   };
 
   return (

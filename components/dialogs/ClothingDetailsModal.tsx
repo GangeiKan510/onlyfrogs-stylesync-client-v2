@@ -19,6 +19,7 @@ import Spinner from "../common/Spinner";
 import MaterialAccordion from "../clothing-detail-accordion/Material";
 import PatternAccordion from "../clothing-detail-accordion/Pattern";
 import { updateClothing } from "@/network/web/clothes";
+import Toast from "react-native-toast-message";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -63,14 +64,23 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       pattern: selectedPattern?.toLowerCase() || null,
     };
 
-    console.log("Clothing Details:", clothingDetails);
-
     setIsSaving(true);
 
     try {
-      const updatedClothing = await updateClothing(clothingDetails);
-      console.log("Successfully updated clothing:", updatedClothing);
+      await updateClothing(clothingDetails);
+      Toast.show({
+        type: "success",
+        text1: "Successfully updated clothing!",
+        position: "top",
+        swipeable: true,
+      });
     } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Failed to update clothing!",
+        position: "top",
+        swipeable: true,
+      });
       console.error("Failed to update clothing:", error);
     } finally {
       setIsSaving(false);
@@ -168,10 +178,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
-            </View>
-
-            <View className="mt-7">
-              <Text className="text-lg text-[#484848] font-bold">
+              <Text className="text-lg text-[#484848] font-bold mt-5">
                 Additional information (optional)
               </Text>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">

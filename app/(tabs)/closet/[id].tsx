@@ -173,7 +173,6 @@ const Page = () => {
   const filteredClothes =
     user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
 
-  console.log("Filtered Clothes", selectedClothingId);
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5">

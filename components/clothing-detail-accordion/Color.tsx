@@ -1,11 +1,18 @@
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
 
-const Colors = () => {
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+interface ColorAccordionProps {
+  selectedColor: string | null;
+  setSelectedColor: (color: string | null) => void;
+}
+
+const ColorAccordion: React.FC<ColorAccordionProps> = ({
+  selectedColor,
+  setSelectedColor,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
@@ -54,28 +61,27 @@ const Colors = () => {
         {isOpen && (
           <View className="flex-wrap flex-row">
             {COLOR_LIST.map((color, index) => (
-              <View key={index} className="flex-row items-center mb-1">
-                <TouchableOpacity
-                  className={`m-1 px-3 py-1.5 border-[1px] rounded-full flex-row items-center ${
-                    selectedColor === color.name
-                      ? "bg-[#7AB2B2] border-[#7AB2B2]"
-                      : "bg-white border-[#7AB2B2]"
+              <TouchableOpacity
+                key={index}
+                className={`m-1 px-3 py-1.5 border-[1px] rounded-full flex-row items-center ${
+                  selectedColor === color.name
+                    ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                    : "bg-white border-[#7AB2B2]"
+                }`}
+                onPress={() => toggleColorSelection(color.name)}
+              >
+                <View
+                  style={{ backgroundColor: color.colorCode }}
+                  className="w-4 h-4 rounded-full mr-2 border-gray border-[0.5px]"
+                />
+                <Text
+                  className={`text-base ${
+                    selectedColor === color.name ? "text-white" : "text-black"
                   }`}
-                  onPress={() => toggleColorSelection(color.name)}
                 >
-                  <View
-                    style={{ backgroundColor: color.colorCode }}
-                    className="w-4 h-4 rounded-full mr-2 border-gray border-[0.5px]"
-                  />
-                  <Text
-                    className={`text-base ${
-                      selectedColor === color.name ? "text-white" : "text-black"
-                    }`}
-                  >
-                    {color.name}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  {color.name}
+                </Text>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -84,4 +90,4 @@ const Colors = () => {
   );
 };
 
-export default Colors;
+export default ColorAccordion;

@@ -1,11 +1,18 @@
-import { View, Text, TouchableOpacity, Animated } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
 
-const MaterialAccordion = () => {
-  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+interface MaterialAccordionProps {
+  selectedMaterial: string | null;
+  setSelectedMaterial: (material: string | null) => void;
+}
+
+const MaterialAccordion: React.FC<MaterialAccordionProps> = ({
+  selectedMaterial,
+  setSelectedMaterial,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 

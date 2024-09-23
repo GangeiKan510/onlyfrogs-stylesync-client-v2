@@ -30,7 +30,12 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [selectedClothingImage, setSelectedClothingImage] = useState<string | null>(null);
+  const [selectedClothingImage, setSelectedClothingImage] = useState<
+    string | null
+  >(null);
+  const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
 
   const requestCameraPermissions = async () => {
@@ -46,8 +51,9 @@ const Page = () => {
     setIsModalVisible(false);
   };
 
-  const handleClothingClick = (imageUrl: string) => {
+  const handleClothingClick = (id: string, imageUrl: string) => {
     setSelectedClothingImage(imageUrl);
+    setSelectedClothingId(id);
     setIsModalVisible(true);
   };
 
@@ -116,9 +122,7 @@ const Page = () => {
 
       if (!result.canceled && result.assets) {
         const newImages = result.assets.map((asset) => asset.uri);
-        setSelectedImages((prevImages) =>
-          [...prevImages, ...newImages]
-        );
+        setSelectedImages((prevImages) => [...prevImages, ...newImages]);
 
         const uri = newImages[0];
         const fileName = uri.split("/").pop();
@@ -205,7 +209,10 @@ const Page = () => {
             data={filteredClothes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <ClothingCard uri={item.image_url} onPress={() => handleClothingClick(item.image_url)} />
+              <ClothingCard
+                uri={item.image_url}
+                onPress={() => handleClothingClick(item.id, item.image_url)}
+              />
             )}
             numColumns={3}
           />
@@ -224,6 +231,7 @@ const Page = () => {
         isVisible={isModalVisible}
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
+        clothingId={selectedClothingId}
       />
     </SafeAreaView>
   );

@@ -7,6 +7,7 @@ import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { routes } from "@/utils/routes";
 import CustomButton from "@/components/buttons/CustomButton";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
   const [user, setUser] = useState<User | null>(null);
@@ -19,18 +20,30 @@ export default function Login() {
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      const res = await signIn(email, password);
-      console.log(res);
+      await signIn(email, password);
       setLoading(false);
     } catch (error) {
-      console.log(error);
       setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Login failed!",
+        text2: "Please check your email and password.",
+        position: "top",
+        swipeable: true,
+      });
+      console.log(error);
     }
   };
 
   useEffect(() => {
     const checkAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
+        Toast.show({
+          type: "success",
+          text1: "You're now logged in!",
+          position: "top",
+          swipeable: true,
+        });
         setUser(user);
         router.replace(routes.tabs as Href<string | object>);
       } else {

@@ -1,18 +1,23 @@
-import { View, Text, TouchableOpacity, Animated } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
 import ChevronDownIcon from "../../assets/icons/down-icon.svg";
 import ChevronUpIcon from "../../assets/icons/up-icon.svg";
 import { PATTERN_LIST } from "@/components/constants/clothing-details/pattern";
 
-const PatternAccordion = () => {
-  const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
+interface PatternAccordionProps {
+  selectedPattern: string | null;
+  setSelectedPattern: (pattern: string | null) => void;
+}
+
+const PatternAccordion: React.FC<PatternAccordionProps> = ({
+  selectedPattern,
+  setSelectedPattern,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const togglePatternSelection = (patternName: string) => {
-    setSelectedPattern(
-      selectedPattern === patternName ? null : patternName
-    );
+    setSelectedPattern(selectedPattern === patternName ? null : patternName);
   };
 
   const toggleAccordion = () => {
@@ -65,14 +70,6 @@ const PatternAccordion = () => {
                   }`}
                   onPress={() => togglePatternSelection(pattern.name)}
                 >
-                  <View className="mr-2 rounded-lg overflow-hidden">
-                    <pattern.reference
-                      width={20}
-                      height={20}
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </View>
-
                   <Text
                     className={`text-base ${
                       selectedPattern === pattern.name

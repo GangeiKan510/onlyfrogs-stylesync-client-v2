@@ -18,17 +18,21 @@ import ColorAccordion from "../clothing-detail-accordion/Color";
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../clothing-detail-accordion/Material";
 import PatternAccordion from "../clothing-detail-accordion/Pattern";
+import { updateClothing } from "@/network/web/clothes";
+import Toast from "react-native-toast-message";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
   onClose: () => void;
   clothingImage: string | null;
+  clothingId: string | null;
 }
 
 const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   isVisible,
   onClose,
   clothingImage,
+  clothingId,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
@@ -41,28 +45,47 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     name: string | null;
     type: string | null;
   }>({ name: null, type: null });
+  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+  const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const clothingDetails = {
+      id: clothingId,
       name: itemName,
       brand: brandName,
-      season: selectedSeasons,
-      occasion: selectedOccasions,
+      season: selectedSeasons.map((season) => season.toLowerCase()),
+      occasion: selectedOccasions.map((occasion) => occasion.toLowerCase()),
       category: {
-        name: selectedCategory.name,
-        type: selectedCategory.type,
+        name: selectedCategory.name?.toLowerCase() || null,
+        type: selectedCategory.type?.toLowerCase() || null,
       },
-      Color: selectedColor,
+      color: selectedColor?.toLowerCase() || null,
+      material: selectedMaterial?.toLowerCase() || null,
+      pattern: selectedPattern?.toLowerCase() || null,
     };
-
-    console.log("Clothing Details:", clothingDetails);
 
     setIsSaving(true);
 
-    setTimeout(() => {
+    try {
+      await updateClothing(clothingDetails);
+      Toast.show({
+        type: "success",
+        text1: "Successfully updated clothing!",
+        position: "top",
+        swipeable: true,
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Failed to update clothing!",
+        position: "top",
+        swipeable: true,
+      });
+      console.error("Failed to update clothing:", error);
+    } finally {
       setIsSaving(false);
       onClose();
-    }, 500);
+    }
   };
 
   return (
@@ -130,10 +153,16 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 />
               </View>
               <View className="w-full mb-4">
-                <MaterialAccordion />
+                <MaterialAccordion
+                  selectedMaterial={selectedMaterial}
+                  setSelectedMaterial={setSelectedMaterial}
+                />
               </View>
               <View className="w-full mb-4">
-                <PatternAccordion />
+                <PatternAccordion
+                  selectedPattern={selectedPattern}
+                  setSelectedPattern={setSelectedPattern}
+                />
               </View>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
                 <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
@@ -149,17 +178,14 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
-            </View>
-
-            <View className="mt-7">
-              <Text className="text-lg text-[#484848] font-bold">
+              <Text className="text-lg text-[#484848] font-bold mt-5">
                 Additional information (optional)
               </Text>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
                   placeholder="Give it a name"
-                  value={brandName}
+                  value={itemName}
                   onChangeText={(text) => {
                     setItemName(text);
                     setIsTyping(text.length > 0);

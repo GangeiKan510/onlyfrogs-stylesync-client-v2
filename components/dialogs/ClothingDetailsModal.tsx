@@ -24,12 +24,14 @@ interface ClothingDetailsModalProps {
   isVisible: boolean;
   onClose: () => void;
   clothingImage: string | null;
+  clothingId: string | null;
 }
 
 const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   isVisible,
   onClose,
   clothingImage,
+  clothingId,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
@@ -47,17 +49,18 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   const handleSave = async () => {
     const clothingDetails = {
+      id: clothingId,
       name: itemName,
       brand: brandName,
-      season: selectedSeasons,
-      occasion: selectedOccasions,
+      season: selectedSeasons.map((season) => season.toLowerCase()),
+      occasion: selectedOccasions.map((occasion) => occasion.toLowerCase()),
       category: {
-        name: selectedCategory.name,
-        type: selectedCategory.type,
+        name: selectedCategory.name?.toLowerCase() || null,
+        type: selectedCategory.type?.toLowerCase() || null,
       },
-      color: selectedColor,
-      material: selectedMaterial,
-      pattern: selectedPattern,
+      color: selectedColor?.toLowerCase() || null,
+      material: selectedMaterial?.toLowerCase() || null,
+      pattern: selectedPattern?.toLowerCase() || null,
     };
 
     console.log("Clothing Details:", clothingDetails);

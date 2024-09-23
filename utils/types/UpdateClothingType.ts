@@ -1,4 +1,5 @@
 export type UpdateClothingData = {
+  id: string | null;
   name: string;
   brand: string;
   season: string[];

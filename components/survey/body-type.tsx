@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BodyTypeAImage from "../../assets/images/svg/body-type-a.svg";
 import BodyTypeBImage from "../../assets/images/svg/body-type-b.svg";
 
-const BodyType = () => {
-  const [selectedBodyType, setSelectedBodyType] = useState<string | null>(
-    "TypeA"
-  );
+const BodyType = ({ setBodyType }: any) => {
+  const [selectedBodyType, setSelectedBodyType] = useState<string>("TypeA");
+
+  useEffect(() => {
+    setBodyType(selectedBodyType);
+  }, [selectedBodyType]);
 
   return (
     <View>

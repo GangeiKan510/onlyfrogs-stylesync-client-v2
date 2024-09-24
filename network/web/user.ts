@@ -1,4 +1,5 @@
 import { CreateUserData } from "@/utils/types/CreateUser";
+import { UpdateUserData } from "@/utils/types/UpdateUser";
 import {
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,
@@ -55,6 +56,25 @@ export const analyzeUserSkinTone = async (formData: FormData) => {
     return newClothing;
   } catch (error) {
     console.error("Failed to upload clothing", error);
+    throw error;
+  }
+};
+
+export const updateUser = async (userData: UpdateUserData) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-user",
+      userData
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error updating user: ${response.statusText}`);
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to update user", error);
     throw error;
   }
 };

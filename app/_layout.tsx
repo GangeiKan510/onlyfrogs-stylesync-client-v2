@@ -8,8 +8,8 @@ import React, { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import useFonts from "@/hooks/useCustomFonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import Toast from "react-native-toast-message";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -52,6 +52,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
+
+      <Toast />
     </ThemeProvider>
   );
 }

@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../assets/images/svg/skin-tone-analysis-hero.svg";
@@ -10,7 +10,11 @@ import LoadingScreen from "../common/LoadingScreen";
 import { analyzeUserSkinTone } from "@/network/web/user";
 import Result from "./result";
 
-const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
+const SkinToneAnalysis = ({
+  onAnalyzeComplete,
+  setIsAnalyzing,
+  setSkinToneAnalysisResult,
+}: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -69,6 +73,7 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
           setAnalysisResult(result.skinToneAnalysis);
+          setSkinToneAnalysisResult(result.skinToneAnalysis);
           onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
@@ -113,6 +118,7 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
           setAnalysisResult(result.skinToneAnalysis);
+          setSkinToneAnalysisResult(JSON.stringify(result.skinToneAnalysis));
           onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
@@ -148,9 +154,6 @@ const SkinToneAnalysis = ({ onAnalyzeComplete, setIsAnalyzing }: any) => {
                 <Text className="text-[12px] text-center">
                   We&apos;ll use your camera to analyze your skin tone and
                   recommend the best colors for you.
-                </Text>
-                <Text className="text-[12px] text-center underline text-tertiary">
-                  I already know my skin tone
                 </Text>
               </View>
             </View>

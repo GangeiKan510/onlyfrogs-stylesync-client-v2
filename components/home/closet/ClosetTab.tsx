@@ -13,7 +13,7 @@ import { createCloset } from "@/network/web/closet";
 import AddClosetCard from "@/components/cards/AddClosetCard";
 import ClosetType from "@/utils/types/ClosetType";
 import MoreInfoIcon from "../../../assets/icons/more-info-icon.svg";
-// import UploadClothing from "./upload-clothing/UploadClothing";
+import Toast from "react-native-toast-message";
 
 interface ClosetTabProps {
   closetCards: ClosetType[] | undefined;
@@ -49,13 +49,26 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
 
     try {
       await createCloset(closetData);
-      await refetchMe(); // Refresh the user data after creating the closet
+      setModalVisible(false);
+      Toast.show({
+        type: "success",
+        text1: "Successfully created a new closet!",
+        position: "top",
+        swipeable: true,
+      });
+      await refetchMe();
     } catch (error) {
       console.error("Error creating closet:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to create closet.",
+        position: "top",
+        swipeable: true,
+      });
+      setModalVisible(false);
     } finally {
       setClosetName("");
       setDescription("");
-      setModalVisible(false);
       setIsRequestLoading(false);
     }
   };

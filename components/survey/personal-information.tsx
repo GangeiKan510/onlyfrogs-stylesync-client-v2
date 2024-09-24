@@ -1,69 +1,91 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
-  Pressable,
-  Platform,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
+  Platform,
 } from "react-native";
-import Header from "@/components/common/Header";
-import { RadioButtonProps } from "react-native-radio-buttons-group";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 
-const PersonalInformation = () => {
-  const [selectedId, setSelectedId] = useState<string | undefined>();
-  const [birthday, setBirthday] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
-  const [show, setShow] = useState(false);
+interface PersonalInformationProps {
+  setPersonalInfo: (info: PersonalInfoData) => void;
+}
+
+interface PersonalInfoData {
+  birthday: string;
+  gender: string;
+  location: string | null;
+  height_cm: number;
+  weight_kg: number;
+}
+
+const PersonalInformation: React.FC<PersonalInformationProps> = ({
+  setPersonalInfo,
+}) => {
+  const [selectedId, setSelectedId] = useState<"1" | "2" | "3" | "4">("1");
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
+  const [height, setHeight] = useState<number>(0);
+  const [weight, setWeight] = useState<number>(0);
+  const [birthDate, setBirthDate] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
+  const [parsedBirthDate, setParsedBirthDate] = useState<Date | null>(null); // Store the parsed date
 
-  const gender: RadioButtonProps[] = useMemo(
-    () => [
-      { id: "1", label: "Man" },
-      { id: "2", label: "Woman" },
-      { id: "3", label: "Non-Binary" },
-      { id: "4", label: "Prefer not to say" },
-    ],
-    []
-  );
+  const genderButtons = [
+    { id: "1", label: "Female" },
+    { id: "2", label: "Male" },
+    { id: "3", label: "Non-Binary" },
+    { id: "4", label: "Rather Not Say" },
+  ];
 
-  const toggleShow = () => {
-    setShow(!show);
-  };
-
-  const formatDate = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "long",
-      day: "2-digit",
-      year: "numeric",
-    };
-    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-      date
-    );
-
-    const [month, day, year] = formattedDate.replace(",", "").split(" ");
-
-    return `${month} | ${day} | ${year}`;
-  };
-
-  const onChange = (
-    _event: DateTimePickerEvent,
-    selectedDate: Date | undefined
-  ) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-      setBirthday(formatDate(selectedDate));
+  const validateBirthDate = (dateString: string) => {
+    const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;
+    if (!regex.test(dateString)) {
+      setBirthDateError("Please enter a valid date in MM/DD/YYYY format.");
+      return false;
     }
-    setShow(false);
+
+    const [month, day, year] = dateString.split("/").map(Number);
+    const enteredDate = new Date(year, month - 1, day);
+    const today = new Date();
+
+    if (isNaN(enteredDate.getTime())) {
+      setBirthDateError("Invalid date.");
+      return false;
+    }
+
+    if (enteredDate >= today) {
+      setBirthDateError("Birthdate must be in the past.");
+      return false;
+    }
+
+    setBirthDateError(null); // Clear error if the date is valid
+    setParsedBirthDate(enteredDate); // Set the parsed date
+    return true;
+  };
+
+  const handleBirthDateChange = (value: string) => {
+    const formattedDate = formatDateInput(value);
+    setBirthDate(formattedDate);
+    validateBirthDate(formattedDate);
+  };
+
+  const formatDateInput = (value: string) => {
+    let cleaned = value.replace(/\D/g, "");
+
+    if (cleaned.length >= 3 && cleaned.length <= 4) {
+      cleaned = cleaned.replace(/^(\d{2})(\d)/, "$1/$2"); // MM/DD
+    } else if (cleaned.length >= 5) {
+      cleaned = cleaned.replace(/^(\d{2})(\d{2})(\d{0,4})/, "$1/$2/$3"); // MM/DD/YYYY
+    }
+
+    return cleaned.slice(0, 10); // Limit to 10 characters
   };
 
   const requestLocationPermission = async () => {
@@ -98,7 +120,7 @@ const PersonalInformation = () => {
         if (reverseGeocode.length > 0) {
           let firstResult = reverseGeocode[0];
           setAddress(
-            ` ${firstResult.city}, ${firstResult.region}, ${firstResult.country}`
+            `${firstResult.city}, ${firstResult.region}, ${firstResult.country}`
           );
         } else {
           setErrorMsg("Unable to retrieve address from location.");
@@ -115,6 +137,25 @@ const PersonalInformation = () => {
     requestLocationPermission();
   }, []);
 
+  useEffect(() => {
+    const genderMapping: { [key in "1" | "2" | "3" | "4"]: string } = {
+      "1": "Female",
+      "2": "Male",
+      "3": "Non-Binary",
+      "4": "Rather Not Say",
+    };
+
+    if (!birthDateError) {
+      setPersonalInfo({
+        birthday: parsedBirthDate ? parsedBirthDate.toISOString() : birthDate,
+        gender: genderMapping[selectedId],
+        location: address,
+        height_cm: height,
+        weight_kg: weight,
+      });
+    }
+  }, [birthDate, parsedBirthDate, selectedId, address, height, weight]);
+
   let text = "Waiting..";
   if (errorMsg) {
     text = errorMsg;
@@ -126,108 +167,105 @@ const PersonalInformation = () => {
 
   return (
     <ScrollView>
-      <Header />
-      <View className="flex justify-center items-center mt-10 mb-5">
+      <View className="flex justify-center items-center mt-10 mb-10">
         <Text className="text-[20px] text-center font-bold">
           Personal Information
         </Text>
       </View>
       <KeyboardAvoidingView
-        style={{ flex: 1 }} // Added flex: 1
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View>
+        <View className="px-5">
           {/* Birthday */}
-          <View>
-            <Text className="pt-6 px-5 text-[16px]">Birthday</Text>
-            <View className="flex-row items-center justify-center mt-3">
-              {!show && (
-                <Pressable onPress={toggleShow}>
-                  <TextInput
-                    className="p-1.5 bg-[#D9D9D9] bh-[42px] rounded-[5px] px-4 w-80 text-center text-black"
-                    value={birthday}
-                    placeholder="Month | Day | Year"
-                    editable={false}
-                    onPressIn={toggleShow}
-                  />
-                </Pressable>
-              )}
-              {show && (
-                <DateTimePicker
-                  mode="date"
-                  display={Platform.OS === "android" ? "spinner" : "default"}
-                  value={date}
-                  onChange={onChange}
-                />
-              )}
+          <View className="mb-5">
+            <Text className="text-lg">Birthday</Text>
+            <View className="flex-row items-center">
+              <TextInput
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
+                keyboardType="numeric"
+                placeholder="MM/DD/YYYY"
+                value={birthDate}
+                onChangeText={handleBirthDateChange}
+              />
             </View>
+            {birthDateError && (
+              <Text style={{ color: "red", marginTop: 5 }}>
+                {birthDateError}
+              </Text>
+            )}
           </View>
+
           {/* Gender */}
-          <View className="mt-12">
-            <Text className="pt-30 px-5 text-[16px]">Gender</Text>
-            <View className="px-5 flex-row flex-wrap">
-              {gender.map((button) => (
-                <View
+          <View className="mb-5">
+            <Text className="text-lg">Gender</Text>
+            <View className="flex flex-row flex-wrap justify-between mt-3">
+              {genderButtons.map((button) => (
+                <TouchableOpacity
                   key={button.id}
-                  className={`border border-[#7AB2B2] rounded-full p-1 mb-4 w-[44%] ${selectedId === button.id ? "bg-[#7AB2B2]" : "bg-[#F3F3F3]"} m-2`}
+                  onPress={() =>
+                    setSelectedId(button.id as "1" | "2" | "3" | "4")
+                  }
+                  className={`w-[48%] py-2 px-5 border rounded-[10px] mb-3 ${
+                    selectedId === button.id
+                      ? "border-tertiary bg-tertiary"
+                      : "border-tertiary"
+                  }`}
                 >
                   <Text
-                    className={`text-center text-base ${selectedId === button.id ? "text-white" : "text-black"}`}
-                    onPress={() => setSelectedId(button.id)}
+                    className={`text-center ${
+                      selectedId === button.id ? "text-white" : "text-tertiary"
+                    }`}
                   >
                     {button.label}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
-          {/* Location */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Location</Text>
-            </View>
-          </View>
-          <View className="items-center mt-1">
-            <Pressable onPress={requestLocationPermission}>
-              <TextInput
-                className="pt-1 bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10 text-black"
-                value={text}
-                editable={false}
-                onPress={requestLocationPermission}
-              />
-            </Pressable>
-          </View>
+
           {/* Height */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Height</Text>
-              <Text className="pt-25 absolute right-10 text-[20px] text-[#7AB2B2]">
-                cm
-              </Text>
+          <View className="mb-5">
+            <View className="flex-row justify-between">
+              <Text className="text-lg">Height</Text>
+              <Text className="ml-2 text-tertiary">cm</Text>
             </View>
-            <View className="items-center mt-1">
+            <View className="flex-row items-center">
               <TextInput
-                className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="Enter Height"
+                value={height.toString()}
+                onChangeText={(value) => setHeight(Number(value))}
               />
             </View>
           </View>
+
           {/* Weight */}
-          <View className="mt-11">
-            <View className="flex-row">
-              <Text className="pt-30 px-5 text-[16px]">Weight</Text>
-              <Text className="pt-25 absolute right-10 text-[20px] text-[#7AB2B2]">
-                kg
-              </Text>
+          <View className="mb-5">
+            <View className="flex-row justify-between">
+              <Text className="text-lg">Weight</Text>
+              <Text className="ml-2 text-tertiary">kg</Text>
             </View>
-            <View className="mt-1 items-center">
+            <View className="flex-row items-center">
               <TextInput
-                className="bg-[#D9D9D9] bh-[42px] rounded-[10px] px-4 w-80 h-10"
+                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="Enter Weight"
+                value={weight.toString()}
+                onChangeText={(value) => setWeight(Number(value))}
               />
             </View>
+          </View>
+
+          {/* Location */}
+          <View className="mb-5">
+            <Text className="text-lg">Location</Text>
+            <TouchableOpacity onPress={requestLocationPermission}>
+              <View className="border-[#F3F3F3] bg-[#F3F3F3] p-3 rounded-lg">
+                <Text>{text}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>

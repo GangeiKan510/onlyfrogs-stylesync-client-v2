@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
-import { clothes } from "@/components/dummy/clothes";
 import PiecesCard from "@/components/cards/PiecesCard";
+import { useUser } from "@/components/config/user-context";
 
 const PiecesTab = () => {
+  const { user } = useUser();
   const [search, setSearch] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -47,14 +48,18 @@ const PiecesTab = () => {
     "shoes",
   ].map((filter) => capitalizeFirstLetter(filter));
 
-  const filteredClothes = clothes.filter(
-    (item) =>
-      (selectedFilters.length === 0 ||
+  const filteredClothes =
+    user?.clothes.filter((item) => {
+      const matchesSearch =
+        item.name?.toLowerCase().includes(search.toLowerCase()) ?? true;
+      const matchesFilters =
+        selectedFilters.length === 0 ||
         selectedFilters.some((filter) =>
           item.tags.includes(filter.toLowerCase())
-        )) &&
-      item.name.toLowerCase().includes(search.toLowerCase())
-  );
+        );
+
+      return matchesSearch && matchesFilters;
+    }) ?? [];
 
   return (
     <SafeAreaView>
@@ -79,7 +84,6 @@ const PiecesTab = () => {
           </Pressable>
         </View>
 
-        {/* Floating Dropdown filter options */}
         {dropdownVisible && (
           <View className="absolute top-16 right-0 left-0 z-50 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
             <View className="flex-row justify-between">
@@ -118,11 +122,14 @@ const PiecesTab = () => {
       <FlatList
         className="mt-5 z-20"
         data={filteredClothes}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PiecesCard
-            uri="https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-            name={item.name}
+            uri={
+              item.image_url ||
+              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+            }
+            name={""}
           />
         )}
         numColumns={3}

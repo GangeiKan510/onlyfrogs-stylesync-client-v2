@@ -19,6 +19,7 @@ type Closet = {
 };
 
 type Clothes = {
+  name: string;
   id: string;
   serial: number;
   image_url: string;

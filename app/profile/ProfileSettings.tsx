@@ -70,19 +70,18 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-[#ffffff]">
-      <View className="items-center">
+      <View className=" flex-1 justify-center mb-11">
         <Text className="text-center font-medium text-[16px]">
           Profile Settings
         </Text>
       </View>
 
-      <View className="items-center">
+      <View className="items-center flex-1 mt-4">
         <Pressable
           onPress={uploadProfileImage}
           className="absolute -bottom-[50px] z-10"
         >
-          <View className="h-[110px] w-[110px] rounded-full bg-[#F2F2F2] items-center justify-center ">
-            
+          <View className=" h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center ">
             {profileImage ? (
               <Image
                 source={{ uri: profileImage }}
@@ -91,44 +90,44 @@ const ProfileSettings = () => {
               />
             ) : (
               <View>
-              <NoProfileImg width={110} height={110} />
-              <View className="absolute right-0 bottom-0">
-                <CameraIcon width={30} height={30} />
-              </View>
+                <NoProfileImg width={130} height={130} />
               </View>
             )}
+            <View className="absolute right-0 bottom-0">
+              <CameraIcon width={30} height={30} />
+            </View>
           </View>
         </Pressable>
       </View>
 
       {/* First Name */}
-      <View className=" flex mx-4  mt-20  ">
-        <Text className="font-medium text-[16px] mb-2 text-[#B7B7B7]">
+      <View className=" flex mx-5 mt-20  ">
+        <Text className="font-medium text-[14px] mb-2 text-[#B7B7B7]">
           First Name
         </Text>
-        <TextInput className=" items-center bg-[#F9F9F9] mx-auto w-[325px] h-[42px] rounded-[10px] px-5 border border-solid border-[#7AB2B2]" />
+        <TextInput className="items-center bg-[#F9F9F9] mx-auto w-[325px] h-[42px] rounded-[10px] px-5 border border-solid border-[#7AB2B2]" />
       </View>
 
-      <View className=" flex mx-4  mt-10  ">
-        <Text className="font-medium text-[16px] mb-2 text-[#B7B7B7]">
+      <View className=" flex mx-5 mt-10">
+        <Text className="font-medium text-[14px] mb-2 text-[#B7B7B7]">
           Last Name
         </Text>
-        <TextInput className=" items-center bg-[#F9F9F9] mx-auto w-[325px] h-[42px] rounded-[10px] px-5 border border-solid border-[#7AB2B2]" />
+        <TextInput className="items-center bg-[#F9F9F9] mx-auto w-[325px] h-[42px] rounded-[10px] px-5 border border-solid border-[#7AB2B2]" />
       </View>
 
-      <View className=" flex mx-4  mt-10  ">
-        <Text className="font-medium text-[16px] mb-2 text-[#B7B7B7]">
+      <View className=" flex mx-5  mt-10">
+        <Text className="font-medium text-[14px] mb-2 text-[#B7B7B7]">
           Email
         </Text>
         <TextInput className="items-center bg-[#F9F9F9] mx-auto w-[325px] h-[42px] rounded-[10px] px-5 border border-solid border-[#7AB2B2]" />
       </View>
 
-      <View className="flex-row justify-between mx-auto ">
+      <View className="flex-row justify-between mx-auto mb-2 ">
         <Pressable
           onPress={handleCancel}
           className="flex mx-2 mt-40 bg-[#F9F9F9] rounded-[10px] border border-solid border-[#7AB2B2]"
         >
-          <Text className="text-center text-[#7AB2B2] text-[16px] px-auto w-[160px] h-[42px] px-4 py-2">
+          <Text className="text-center text-[#7AB2B2] text-[16px]  w-[160px] h-[42px] py-2">
             Cancel
           </Text>
         </Pressable>

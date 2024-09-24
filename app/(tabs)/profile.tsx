@@ -54,18 +54,22 @@ const Profile = () => {
           </Text>
 
           <View className="ml-2">
-              <Link push href={routes.profileSettings as Href<string | object>} asChild>
-                <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
-                  <View className="flex-row">
-                      <UserSettingIcon width={25.5} height={24.82} />
+            <Link
+              push
+              href={routes.profileSettings as Href<string | object>}
+              asChild
+            >
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <UserSettingIcon width={25.5} height={24.82} />
                   <Text className="font-medium text-[16px] ml-3">
                     Profile Settings
                   </Text>
-                  </View>
-                
-                  <ArrowRightIcon width={15} height={15} />
-                </Pressable>
-              </Link>
+                </View>
+
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
 
             <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
               <View className="flex-row">
@@ -105,15 +109,21 @@ const Profile = () => {
               <ArrowRightIcon width={15} height={15} />
             </Pressable>
 
-            <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
-              <View className="flex-row">
-                <LockIcon width={20} height={20} />
-                <Text className="font-medium text-[16px] ml-3">
-                  Change Password
-                </Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} />
-            </Pressable>
+            <Link
+              push
+              href={routes.resetPassword as Href<string | object>}
+              asChild
+            >
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <LockIcon width={20} height={20} />
+                  <Text className="font-medium text-[16px] ml-3">
+                    Change Password
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
 
             <Pressable
               onPress={() => router.push(routes.login as Href<string | object>)}

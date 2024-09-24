@@ -7,6 +7,7 @@ export const routes = {
   closet: "closet",
 
   profileSettings: "profile/ProfileSettings",
+  resetPassword: "profile/ResetPassword",
 
   expandedCloset: "(tabs)/closet/",
 };

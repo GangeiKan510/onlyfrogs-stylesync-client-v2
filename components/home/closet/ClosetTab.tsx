@@ -84,7 +84,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
           const imageUri =
             clothingInCloset && clothingInCloset.length > 0
               ? clothingInCloset[0].image_url
-              : "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg";
+              : "https://lh3.googleusercontent.com/pw/AP1GczMpwiLxbGQkZGPAbApzNsZPrj7I8aqlXXj1gVqKU4UindflHV1YdgnaH3yWBP35nufvm1dZNmYcoCBg1XrBed4zrYPt8VuOgpWjZk0vZfW56vuptA=w2400";
 
           return (
             <ClosetCard

@@ -49,6 +49,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile/ProfileSettings" options={{headerShown: false}}/> 
         <Stack.Screen name="profile/PersonalInformation" options={{headerShown: false}}/> 
         <Stack.Screen name="profile/ResetPassword" options={{headerShown: false}}/>
+        <Stack.Screen name="profile/BodyType" options={{headerShown: false}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

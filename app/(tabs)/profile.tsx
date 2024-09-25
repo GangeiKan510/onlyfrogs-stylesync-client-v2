@@ -106,14 +106,17 @@ const Profile = () => {
               </View>
               <ArrowRightIcon width={15} height={15} />
             </Pressable>
-
-            <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
-              <View className="flex-row">
-                <BodyTypeIcon width={20.63} height={25.97} />
-                <Text className="font-medium text-[16px] ml-3">Body Type</Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} />
-            </Pressable>
+            <Link push href={routes.bodyType as Href<string | object>} asChild>
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <BodyTypeIcon width={20.63} height={25.97} />
+                  <Text className="font-medium text-[16px] ml-3">
+                    Body Type
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
 
             <Link
               push

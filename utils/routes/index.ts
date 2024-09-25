@@ -11,6 +11,7 @@ export const routes = {
   personalInformation: "profile/PersonalInformation",
   preferencesAndBudget: "profile/PreferencesAndBudget",
   bodyType: "profile/BodyType",
+  subscription: "/subscription",
 
   expandedCloset: "(tabs)/closet/",
 };

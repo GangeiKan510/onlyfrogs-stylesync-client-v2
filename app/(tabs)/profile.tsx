@@ -35,13 +35,16 @@ const Profile = () => {
           </Text>
           <Text>deybalivio09@gmail.com </Text>
         </View>
-        <Pressable className="flex-row bg-[#F2F2F2] h-[32px] w-[300px] rounded-[4px] mt-10 px-5 py-1 justify-between items-center">
-          <View className="flex-row items-center">
-            <CheckmarkIcon width={20} height={20} />
-            <Text className="ml-5">Get Premium</Text>
-          </View>
-          <ArrowRightIcon width={15} height={15} />
-        </Pressable>
+
+        <Link push href={routes.subscription as Href<string | object>} asChild>
+          <Pressable className="flex-row bg-[#F2F2F2] h-[32px] w-[300px] rounded-[4px] mt-10 px-5 py-1 justify-between items-center">
+            <View className="flex-row items-center">
+              <CheckmarkIcon width={20} height={20} />
+              <Text className="ml-5">Get Premium</Text>
+            </View>
+            <ArrowRightIcon width={15} height={15} />
+          </Pressable>
+        </Link>
       </View>
 
       <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />

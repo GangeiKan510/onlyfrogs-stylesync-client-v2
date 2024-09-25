@@ -1,7 +1,7 @@
 export type UpdateClothingData = {
   id: string | null;
   name: string;
-  brand: string;
+  brand: string | string[];
   season: string[];
   occasion: string[];
   category: {

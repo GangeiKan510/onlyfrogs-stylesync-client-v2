@@ -19,6 +19,10 @@ type Closet = {
 };
 
 type Clothes = {
+  pattern: null;
+  material: null;
+  occasion: never[];
+  season: never[];
   color: string | string[];
   brand: string | string[];
   name: string;
@@ -27,7 +31,10 @@ type Clothes = {
   image_url: string;
   user_id: string;
   closet_id: string;
-  category: string[];
+  category: {
+    name: string | null;
+    type: string | null;
+  };
   tags: string[];
 };
 

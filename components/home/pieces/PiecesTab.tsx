@@ -50,15 +50,21 @@ const PiecesTab = () => {
 
   const filteredClothes =
     user?.clothes.filter((item) => {
+      const hasDetails = item.name && item.category && item.brand && item.color;
+
+      const isSearchActive = search.length > 0;
+
       const matchesSearch =
-        item.name?.toLowerCase().includes(search.toLowerCase()) ?? true;
+        !isSearchActive ||
+        (item.name?.toLowerCase().includes(search.toLowerCase()) ?? false);
+
       const matchesFilters =
         selectedFilters.length === 0 ||
         selectedFilters.some((filter) =>
           item.tags.includes(filter.toLowerCase())
         );
 
-      return matchesSearch && matchesFilters;
+      return matchesSearch && matchesFilters && (!isSearchActive || hasDetails);
     }) ?? [];
 
   return (

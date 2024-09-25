@@ -19,6 +19,8 @@ type Closet = {
 };
 
 type Clothes = {
+  color: string | string[];
+  brand: string | string[];
   name: string;
   id: string;
   serial: number;

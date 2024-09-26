@@ -1,31 +1,26 @@
-import { View, Text, Pressable } from "react-native";
-import { Href, useRouter } from "expo-router";
-import useSignOut from "@/network/firebase/sign-out";
-import { auth } from "@/firebaseConfig";
-import { routes } from "@/utils/routes";
-import { useUser } from "@/components/config/user-context";
+import React from "react";
+import Header from "@/components/common/Header";
+import { View, ScrollView } from "react-native";
+import Bubble from "@/components/chat/bubble";
+
+const messages = [
+  { id: 1, type: "user", message: "This is a message bubble" },
+  { id: 2, type: "bot", message: "Hi I am Ali!" },
+  { id: 3, type: "user", message: "What can you do?" },
+  { id: 4, type: "bot", message: "I can help you with various tasks!" },
+];
 
 export default function HomeScreen() {
-  const router = useRouter();
-  const { user } = useUser();
-  const [signOut] = useSignOut(auth);
-
-  const handleLogout = async () => {
-    const isSignoutSuccessful = await signOut();
-
-    if (isSignoutSuccessful) {
-      router.replace(routes.login as Href<string | object>);
-    }
-  };
-
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text>Welcome back, {user?.first_name}!</Text>
-      <Pressable onPress={handleLogout}>
-        <Text className="text-[#7ab2b2] text-[16px] underline mt-3">
-          Logout
-        </Text>
-      </Pressable>
+    <View className="flex-1 bg-[#ffffff]">
+      <Header />
+      <ScrollView className="flex mx-7 mt-3">
+        {messages.map((msg) => (
+          <View key={msg.id} className="mb-4">
+            <Bubble type={msg.type} message={msg.message} />
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }

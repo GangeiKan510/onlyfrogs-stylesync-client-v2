@@ -12,6 +12,7 @@ import Bubble from "@/components/chat/bubble";
 import { messages } from "@/components/dummy/messages";
 import SendMessageIcon from "../../assets/icons/chat/send-icon.svg";
 import EmptyChat from "@/components/chat/empty-chat";
+import UploadIcon from "../../assets/icons/chat/upload-icon.svg";
 
 export default function HomeScreen() {
   const [message, setMessage] = useState("");
@@ -39,9 +40,10 @@ export default function HomeScreen() {
             </ScrollView>
           )}
         </View>
-        <View className="flex flex-row items-center h-[42px] pl-5 pr-1 bg-light-gray mx-7 mt-3 rounded-[10px] mb-7">
+        <View className="flex flex-row items-center h-[42px] pl-3 pr-1 bg-light-gray mx-7 mt-3 rounded-[10px] mb-7">
+          <UploadIcon />
           <TextInput
-            className="flex-1 h-[42px] bg-transparent"
+            className="flex-1 h-[42px] bg-transparent ml-2"
             placeholder="Chat with Ali..."
             value={message}
             onChangeText={setMessage}

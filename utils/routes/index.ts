@@ -10,6 +10,7 @@ export const routes = {
   resetPassword: "profile/ResetPassword",
   personalInformation: "profile/PersonalInformation",
   preferencesAndBudget: "profile/PreferencesAndBudget",
+  skinToneAnalysis: "profile/SkinToneAnalysis",
   bodyType: "profile/BodyType",
   subscription: "/subscription",
 

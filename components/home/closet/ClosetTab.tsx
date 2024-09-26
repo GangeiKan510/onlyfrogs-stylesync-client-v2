@@ -136,7 +136,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
                   onChangeText={(input) => setDescription(input)}
                 />
               </View>
-              <View className="flex-row my-7 gap-3 items-center">
+              <View className="flex-row my-7 gap-3 items-center justify-center px-3">
                 <MoreInfoIcon />
                 <Text className="text-text-secondary">
                   Make your closet name reflect the type of clothes you want to

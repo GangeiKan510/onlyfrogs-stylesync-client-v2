@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -13,6 +13,10 @@ import { messages } from "@/components/dummy/messages";
 import SendMessageIcon from "../../assets/icons/chat/send-icon.svg";
 
 export default function HomeScreen() {
+  const [message, setMessage] = useState("");
+
+  const isSendButtonDisabled = message.trim() === "";
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -32,8 +36,20 @@ export default function HomeScreen() {
           <TextInput
             className="flex-1 h-[42px] bg-transparent"
             placeholder="Chat with Ali..."
+            value={message}
+            onChangeText={setMessage}
           />
-          <Pressable className="h-[35px] w-[35px] bg-tertiary justify-center items-center rounded-[10px] ml-2">
+          <Pressable
+            className="h-[35px] w-[35px] bg-tertiary justify-center items-center rounded-[10px] ml-2"
+            disabled={isSendButtonDisabled}
+            style={{ opacity: isSendButtonDisabled ? 0.25 : 1 }}
+            onPress={() => {
+              if (!isSendButtonDisabled) {
+                console.log("Message sent:", message);
+                setMessage("");
+              }
+            }}
+          >
             <SendMessageIcon width={14} height={14} />
           </Pressable>
         </View>

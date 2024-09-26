@@ -20,6 +20,7 @@ import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
+import Toast from "react-native-toast-message";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -96,7 +97,12 @@ const Page = () => {
           }
 
           const imageUploaded = await uploadClothing(formData);
-
+          Toast.show({
+            type: "success",
+            text1: "Clothing sucessfully uploaded!",
+            position: "top",
+            swipeable: true,
+          });
           refetchMe();
         } catch (error) {
           console.error("Error while uploading clothing:", error);

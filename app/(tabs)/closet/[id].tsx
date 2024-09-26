@@ -154,20 +154,6 @@ const Page = () => {
     handleCloseModal();
   };
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
-
-  const headerMarginBottom = scrollY.interpolate({
-    inputRange: [0, 200],
-    outputRange: [30, -30],
-    extrapolate: "clamp",
-  });
-
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
 
   const filteredClothes =
@@ -184,12 +170,8 @@ const Page = () => {
             <BackButton />
           </View>
         )}
-        <Animated.View
-          style={{
-            opacity: headerOpacity,
-            marginBottom: headerMarginBottom,
-          }}
-          className="items-center border-b pb-5 mx-5 border-[#F3F3F3]"
+        <View
+          className="items-center border-b pb-5 border-[#F3F3F3]"
         >
           <Text className="text-xl font-bold text-center">
             {currentCloset?.name || "Closet Title"}
@@ -197,7 +179,7 @@ const Page = () => {
           <Text className="text-base">
             {currentCloset?.description || "Closet Description"}
           </Text>
-        </Animated.View>
+        </View>
         {filteredClothes.length === 0 ? (
           <View className="items-center">
             <Text className="text-[#B7B7B7]">
@@ -215,6 +197,7 @@ const Page = () => {
               />
             )}
             numColumns={3}
+            className="mb-48"
           />
         )}
       </View>

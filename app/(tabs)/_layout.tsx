@@ -69,7 +69,7 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: () => (
               <View style={styles.iconLabelContainer}>
-                <DesignIcon width={23.36} height={22} />
+                <DesignIcon width={23.36} height={22} color="black" />
                 <Text style={styles.tabLabel}>Design</Text>
               </View>
             ),

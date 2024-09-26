@@ -11,6 +11,7 @@ import Header from "@/components/common/Header";
 import Bubble from "@/components/chat/bubble";
 import { messages } from "@/components/dummy/messages";
 import SendMessageIcon from "../../assets/icons/chat/send-icon.svg";
+import EmptyChat from "@/components/chat/empty-chat";
 
 export default function HomeScreen() {
   const [message, setMessage] = useState("");
@@ -25,13 +26,19 @@ export default function HomeScreen() {
     >
       <View className="flex-1 bg-[#ffffff]">
         <Header />
-        <ScrollView className="flex mx-5 mt-3">
-          {messages.map((msg) => (
-            <View key={msg.id} className="mb-4">
-              <Bubble type={msg.type} message={msg.message} />
-            </View>
-          ))}
-        </ScrollView>
+        <View className="flex-1">
+          {messages.length === 0 ? (
+            <EmptyChat />
+          ) : (
+            <ScrollView className="flex mx-5 mt-3">
+              {messages.map((msg) => (
+                <View key={msg.id} className="mb-4">
+                  <Bubble type={msg.type} message={msg.message} />
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
         <View className="flex flex-row items-center h-[42px] pl-5 pr-1 bg-light-gray mx-7 mt-3 rounded-[10px] mb-7">
           <TextInput
             className="flex-1 h-[42px] bg-transparent"

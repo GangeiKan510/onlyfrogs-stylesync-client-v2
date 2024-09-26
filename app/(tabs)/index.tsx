@@ -25,7 +25,7 @@ export default function HomeScreen() {
     >
       <View className="flex-1 bg-[#ffffff]">
         <Header />
-        <ScrollView className="flex mx-7 mt-3">
+        <ScrollView className="flex mx-5 mt-3">
           {messages.map((msg) => (
             <View key={msg.id} className="mb-4">
               <Bubble type={msg.type} message={msg.message} />

@@ -25,7 +25,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 18;
+    const itemHeight = 16;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? PATTERN_LIST.length * itemHeight + 50 : 0,
       duration: 300,
@@ -70,6 +70,13 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
                   }`}
                   onPress={() => togglePatternSelection(pattern.name)}
                 >
+                  <View className="mr-2 rounded-lg overflow-hidden">
+                    <pattern.reference
+                      width={20}
+                      height={20}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </View>
                   <Text
                     className={`text-base ${
                       selectedPattern === pattern.name

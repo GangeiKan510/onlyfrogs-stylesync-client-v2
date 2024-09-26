@@ -29,7 +29,7 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
   };
 
   useEffect(() => {
-    const itemHeight = 9;
+    const itemHeight = 12;
     const categoriesHeight = selectedCategory?.name
       ? categoryTypes[selectedCategory.name]?.length * itemHeight + 40
       : 0;

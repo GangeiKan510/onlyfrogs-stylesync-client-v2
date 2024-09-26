@@ -204,12 +204,12 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 />
               </View>
               <Text className="text-lg text-[#484848] font-bold mt-5">
-                Additional information (optional)
+                Additional information
               </Text>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
-                  placeholder="Give it a name"
+                  placeholder="Give it a name (optional)"
                   value={itemName}
                   onChangeText={(text) => {
                     setItemName(text);
@@ -220,19 +220,25 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
+                <Text className="text-[16px] text-[#484848] mb-2">
+                  Number of wears
+                </Text>
+                <Text className="text-[16px] text-[#B7B7B7]">0</Text>
+              </View>
             </View>
           </View>
-        </ScrollView>
 
-        {/* Floating Save Button */}
-        <TouchableOpacity
-          onPress={handleSave}
-          className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 self-center rounded-[10px] mb-4"
-        >
-          <Text className="text-center text-white">
-            {isSaving ? <Spinner type={"primary"} /> : "Save"}
-          </Text>
-        </TouchableOpacity>
+          {/* Floating Save Button */}
+          <TouchableOpacity
+            onPress={handleSave}
+            className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 self-center rounded-[10px] mb-4"
+          >
+            <Text className="text-center text-white">
+              {isSaving ? <Spinner type={"primary"} /> : "Save"}
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
       </SafeAreaView>
     </Modal>
   );

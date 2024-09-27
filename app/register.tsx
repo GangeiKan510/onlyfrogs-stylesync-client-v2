@@ -63,10 +63,10 @@ export default function Register() {
   };
 
   const validatePassword = (value: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
     if (!passwordRegex.test(value)) {
       setPasswordError(
-        "Password must contain at least 1 uppercase letter, 1 special character, and be at least 6 characters long."
+        "Password must contain at least 1 uppercase letter, 1 special character, 1 number, and be at least 6 characters long."
       );
     } else {
       setPasswordError("");

@@ -32,12 +32,11 @@ export const validateForm = (
     return { success: false, message: "Invalid email address" };
   }
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/; // Updated regex
   if (!passwordRegex.test(password)) {
     return {
       success: false,
-      message:
-        "Password must contain at least 1 uppercase letter, 1 special character, and be at least 6 characters long",
+      message: "Password requirements are not met",
     };
   }
 

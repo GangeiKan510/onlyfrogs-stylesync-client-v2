@@ -13,7 +13,7 @@ const Bubble = ({ type, message }: BubbleProps) => {
     <View
       className={`flex-row ${type === "user" ? "justify-end" : "justify-start"} mb-4`}
     >
-      {type === "bot" && <BotIcon width={45} height={45} className="mr-2" />}
+      {type !== "user" && <BotIcon width={45} height={45} className="mr-2" />}
       <View
         className={`rounded-[10px] p-3 max-w-[80%] ${
           type === "user" ? "bg-tertiary" : "bg-light-gray"

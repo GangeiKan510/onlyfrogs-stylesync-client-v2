@@ -19,17 +19,26 @@ export const validateForm = (
   if (!nameRegex.test(firstName)) {
     return {
       success: false,
-      message: "First name should contain only letters",
+      message: "First name should contain only letters and spaces",
     };
   }
 
   if (!nameRegex.test(lastName)) {
-    return { success: false, message: "Last name should contain only letters" };
+    return { success: false, message: "Last name should contain only letters and spaces" };
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return { success: false, message: "Invalid email address" };
+  }
+
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+  if (!passwordRegex.test(password)) {
+    return {
+      success: false,
+      message:
+        "Password must contain at least 1 uppercase letter, 1 special character, and be at least 6 characters long",
+    };
   }
 
   if (password !== confirmPassword) {

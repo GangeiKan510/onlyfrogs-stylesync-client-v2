@@ -86,26 +86,32 @@ export default function Login() {
               onChangeText={(input) => setEmail(input)}
             />
           </View>
-          <View className="mb-8">
-            <Text className="text-[16px]">Password</Text>
-            <View className="mb-8 relative">
-              <TextInput
-                className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
-                value={password}
-                onChangeText={(input) => setPassword(input)}
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity
-                className="absolute right-0 items-center justify-center px-4 h-[42px]"
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeSlash width={20} height={20} fill="#B7B7B7" />
-                ) : (
-                  <Eye width={20} height={20} fill="#B7B7B7" />
-                )}
-              </TouchableOpacity>
-            </View>
+          <Text className="text-[16px] mb-1">Password</Text>
+          <View className="relative">
+            <TextInput
+              className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
+              value={password}
+              onChangeText={(input) => setPassword(input)}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              className="absolute right-0 items-center justify-center px-4 h-[42px]"
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeSlash width={20} height={20} fill="#B7B7B7" />
+              ) : (
+                <Eye width={20} height={20} fill="#B7B7B7" />
+              )}
+            </TouchableOpacity>
+          </View>
+          <View className="items-end mt-1 mb-8">
+            <Link
+              href={routes.forgotPassword as Href<string | object>}
+              className="text-[#0d0e0e] text-[16px] underline mt-1"
+            >
+              <Text>Forgot your password?</Text>
+            </Link>
           </View>
           <View>
             <CustomButton

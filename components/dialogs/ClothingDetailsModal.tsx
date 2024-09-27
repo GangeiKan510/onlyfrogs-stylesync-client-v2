@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -20,6 +20,7 @@ import MaterialAccordion from "../clothing-detail-accordion/Material";
 import PatternAccordion from "../clothing-detail-accordion/Pattern";
 import { updateClothing } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
+import { useUser } from "../config/user-context";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -34,19 +35,43 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   clothingImage,
   clothingId,
 }) => {
+  const { user } = useUser();
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
-  const [brandName, setBrandName] = useState("");
+  const [brandName, setBrandName] = useState<string | string[]>("");
   const [isTyping, setIsTyping] = useState(false);
   const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
-  const [selectedColor, setSelectedcolor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<{
     name: string | null;
     type: string | null;
   }>({ name: null, type: null });
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (clothingId && user?.clothes) {
+      const matchingClothing = user.clothes.find(
+        (item) => item.id === clothingId
+      );
+
+      if (matchingClothing) {
+        console.log("Matching Clothing Item:", matchingClothing);
+        setItemName(matchingClothing.name || "");
+        setBrandName(matchingClothing.brand || "");
+        setSelectedSeasons(matchingClothing.season || []);
+        setSelectedOccasions(matchingClothing.occasion || []);
+        setSelectedColor((matchingClothing.color as string) || null);
+        setSelectedCategory({
+          name: matchingClothing.category?.name || null,
+          type: matchingClothing.category?.type || null,
+        });
+        setSelectedMaterial(matchingClothing.material || null);
+        setSelectedPattern(matchingClothing.pattern || null);
+      }
+    }
+  }, [clothingId, user?.clothes]);
 
   const handleSave = async () => {
     const clothingDetails = {
@@ -149,7 +174,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <View className="mt-4 w-full mb-4">
                 <ColorAccordion
                   selectedColor={selectedColor}
-                  setSelectedColor={setSelectedcolor}
+                  setSelectedColor={setSelectedColor}
                 />
               </View>
               <View className="w-full mb-4">
@@ -168,7 +193,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
                 <TextInput
                   placeholder="Enter brand name"
-                  value={brandName}
+                  value={brandName as string}
                   onChangeText={(text) => {
                     setBrandName(text);
                     setIsTyping(text.length > 0);
@@ -179,12 +204,12 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 />
               </View>
               <Text className="text-lg text-[#484848] font-bold mt-5">
-                Additional information (optional)
+                Additional information
               </Text>
               <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
-                  placeholder="Give it a name"
+                  placeholder="Give it a name (optional)"
                   value={itemName}
                   onChangeText={(text) => {
                     setItemName(text);
@@ -195,19 +220,25 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
+              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
+                <Text className="text-[16px] text-[#484848] mb-2">
+                  Number of wears
+                </Text>
+                <Text className="text-[16px] text-[#B7B7B7]">0</Text>
+              </View>
             </View>
           </View>
-        </ScrollView>
 
-        {/* Floating Save Button */}
-        <TouchableOpacity
-          onPress={handleSave}
-          className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 self-center rounded-[10px] mb-4"
-        >
-          <Text className="text-center text-white">
-            {isSaving ? <Spinner type={"primary"} /> : "Save"}
-          </Text>
-        </TouchableOpacity>
+          {/* Floating Save Button */}
+          <TouchableOpacity
+            onPress={handleSave}
+            className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 self-center rounded-[10px] mb-4"
+          >
+            <Text className="text-center text-white">
+              {isSaving ? <Spinner type={"primary"} /> : "Save"}
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
       </SafeAreaView>
     </Modal>
   );

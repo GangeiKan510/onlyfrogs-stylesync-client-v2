@@ -25,9 +25,9 @@ const ColorAccordion: React.FC<ColorAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 16;
+    const itemHeight = 13;
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? COLOR_LIST.length * itemHeight + 50 : 0,
+      toValue: isOpen ? COLOR_LIST.length * itemHeight + 40 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();

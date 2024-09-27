@@ -35,6 +35,7 @@ const Profile = () => {
           </Text>
           <Text>deybalivio09@gmail.com </Text>
         </View>
+       <Link push href={routes.subscription as Href<string | object>} asChild>
         <Pressable className="flex-row h-10 w-96 mt-10 px-5 justify-between items-center">
           <LinearGradient
             colors={["#7AB2B2", "#B088CD"]}
@@ -57,6 +58,7 @@ const Profile = () => {
             <ArrowRightIcon width={15} height={15} color="white" />
           </LinearGradient>
         </Pressable>
+        </Link>
       </View>
 
       <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />
@@ -100,33 +102,50 @@ const Profile = () => {
               </Pressable>
             </Link>
 
-            <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
-              <View className="flex-row">
-                <CustomizeIcon width={20} height={20} />
-                <Text className="font-medium text-[16px] ml-3">
-                  Preferences and Budget
-                </Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} color="black" />
-            </Pressable>
+            <Link
+              push
+              href={routes.preferencesAndBudget as Href<string | object>}
+              asChild
+            >
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <CustomizeIcon width={20} height={20} />
+                  <Text className="font-medium text-[16px] ml-3">
+                    Preferences and Budget
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
 
-            <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
-              <View className="flex-row">
-                <SparkleIcon width={25} height={25} />
-                <Text className="font-medium text-[16px] ml-2">
-                  Skin Tone Analysis
-                </Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} color="black" />
-            </Pressable>
+            <Link
+              push
+              href={routes.skinToneAnalysis as Href<string | object>}
+              asChild
+            >
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <SparkleIcon width={25} height={25} />
+                  <Text className="font-medium text-[16px] ml-2">
+                    Skin Tone Analysis
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
 
-            <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
-              <View className="flex-row">
-                <BodyTypeIcon width={20.63} height={25.97} />
-                <Text className="font-medium text-[16px] ml-3">Body Type</Text>
-              </View>
-              <ArrowRightIcon width={15} height={15} color="black" />
-            </Pressable>
+            <Link push href={routes.bodyType as Href<string | object>} asChild>
+              <Pressable className="flex-row my-2 h-[32px] w-[280px] justify-between items-center">
+                <View className="flex-row">
+                  <BodyTypeIcon width={20.63} height={25.97} />
+                  <Text className="font-medium text-[16px] ml-3">
+                    Body Type
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} />
+              </Pressable>
+            </Link>
+          
 
             <Link
               push

@@ -9,6 +9,10 @@ export const routes = {
   profileSettings: "profile/ProfileSettings",
   resetPassword: "profile/ResetPassword",
   personalInformation: "profile/PersonalInformation",
+  preferencesAndBudget: "profile/PreferencesAndBudget",
+  skinToneAnalysis: "profile/SkinToneAnalysis",
+  bodyType: "profile/BodyType",
+  subscription: "/subscription",
 
   expandedCloset: "(tabs)/closet/",
 };

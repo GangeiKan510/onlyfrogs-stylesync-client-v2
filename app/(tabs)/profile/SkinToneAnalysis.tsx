@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, Alert, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import SkinToneAnalysisImage from "../../assets/images/svg/skin-tone-analysis-hero.svg";
+import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import SkinToneImageOptions from "../../components/buttons/SkinToneImageOptionButton";
-import LoadingScreen from "../../components/common/LoadingScreen";
+import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
+import LoadingScreen from "../../../components/common/LoadingScreen";
 import { analyzeUserSkinTone } from "@/network/web/user";
-import Result from "../../components/survey/result";
+import Result from "../../../components/survey/result";
 
 const SkinToneAnalysis = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

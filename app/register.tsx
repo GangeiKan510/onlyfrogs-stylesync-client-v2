@@ -187,6 +187,7 @@ export default function Register() {
                   value={firstName}
                   onChangeText={handleFirstNameChange}
                   maxLength={40}
+                  autoCapitalize="words"
                 />
                 {firstNameError ? (
                   <Text className="text-[#EE4E4E] italic">

@@ -64,10 +64,9 @@ export default function SetUpNewPassword() {
 
   const handleSetUpNewPassword = () => {
     if (passwordError || confirmPasswordError) {
-      return; // Do not proceed if there are validation errors
+      return;
     }
 
-    // Proceed with password setup logic
     Toast.show({
       type: "success",
       text1: "Password Set",

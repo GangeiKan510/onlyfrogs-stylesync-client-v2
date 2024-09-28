@@ -7,9 +7,9 @@ import {
   Pressable,
   KeyboardAvoidingView,
 } from "react-native";
-import Background from "../../assets/icons/profile/background.svg";
-import EyeIcon from "../../assets/icons/profile/eye-icon.svg";
-import Header from "../../components/common/Header";
+import Background from "../../../assets/icons/profile/background.svg";
+import EyeIcon from "../../../assets/icons/profile/eye-icon.svg";
+import Header from "../../../components/common/Header";
 import BackButton from "@/components/buttons/BackButton";
 
 const ResetPassword = () => {

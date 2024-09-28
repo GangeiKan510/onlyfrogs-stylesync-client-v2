@@ -1,7 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
-import BodyTypeAImage from "../../assets/images/svg/body-type-a.svg";
-import BodyTypeBImage from "../../assets/images/svg/body-type-b.svg";
+import BodyTypeAImage from "../../../assets/images/svg/body-type-a.svg";
+import BodyTypeBImage from "../../../assets/images/svg/body-type-b.svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface BodyTypeProps {

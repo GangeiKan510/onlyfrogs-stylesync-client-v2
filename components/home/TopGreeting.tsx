@@ -48,10 +48,20 @@ const TopGreeting = () => {
         <View className="ml-3">
           <View className="flex-row items-center gap-1">
             <Text className="font-bold text-base">
-              Welcome Back, {user?.first_name.split(" ")[0]}!
+              Welcome Back,{" "}
+              {user?.first_name
+                ? user.first_name
+                    .split(" ")[0]
+                    .toLowerCase()
+                    .charAt(0)
+                    .toUpperCase() +
+                  user.first_name.split(" ")[0].toLowerCase().slice(1)
+                : "Guest"}
+              !
             </Text>
             {isEmailVerified ? <EmailVerifiedIcon /> : null}
           </View>
+
           <Pressable onPress={() => setModalVisible(true)}>
             <Text className="text-base text-text-tertiary underline">
               Log out
@@ -63,7 +73,7 @@ const TopGreeting = () => {
       <View className="flex items-end">
         <View className="flex-row items-center">
           <MoreInfoIcon width={20} height={20} />
-          <Text className="text-base ml-1">Tokens:</Text>
+          <Text className="text-base ml-1">Tokens</Text>
         </View>
         <View className="flex-row items-center mt-1">
           <TokensIcon width={20} height={20} />

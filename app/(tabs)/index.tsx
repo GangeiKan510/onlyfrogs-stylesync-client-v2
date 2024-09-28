@@ -51,18 +51,27 @@ export default function HomeScreen() {
 
   const handleSendMessage = async () => {
     if (user?.id && message.trim()) {
+      const newMessage = {
+        id: new Date().toISOString(),
+        role: "user",
+        content: message,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+      setMessage("");
+
       setIsSending(true);
+
       try {
         const response = await sendMessage(user.id, message);
 
-        const newMessages = [
-          ...messages,
-          { id: new Date().toISOString(), role: "user", content: message },
-          { id: response.id, role: "assistant", content: response.message },
-        ];
+        const assistantMessage = {
+          id: response.id,
+          role: "assistant",
+          content: response.message,
+        };
 
-        setMessages(newMessages);
-        setMessage("");
+        setMessages((prevMessages) => [...prevMessages, assistantMessage]);
       } catch (error) {
         console.error("Failed to send message:", error);
       } finally {

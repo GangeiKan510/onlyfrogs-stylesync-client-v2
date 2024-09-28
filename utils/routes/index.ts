@@ -2,6 +2,8 @@ export const routes = {
   login: "/login",
   register: "/register",
   forgotPassword: "/forgotPassword",
+  verificationCode: "/verificationCode",
+  setUpNewPassword: "/setUpNewPassword",
   survey: "(tabs)/survey/survey",
   tabs: "(tabs)",
   welcome: "/welcome",

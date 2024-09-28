@@ -14,6 +14,8 @@ import EmptyChat from "@/components/chat/empty-chat";
 import UploadIcon from "../../assets/icons/chat/upload-icon.svg";
 import { getUserChatSession, sendMessage } from "@/network/web/chat";
 import { useUser } from "@/components/config/user-context";
+import ReplyLoading from "@/components/chat/reply-loading";
+import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 
 interface MessageProps {
   id: string;
@@ -27,6 +29,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
 
   const isSendButtonDisabled = message.trim() === "" || isSending;
 
@@ -60,6 +63,8 @@ export default function HomeScreen() {
 
       setMessage("");
 
+      setIsReplying(true);
+
       setIsSending(true);
 
       try {
@@ -76,6 +81,7 @@ export default function HomeScreen() {
         console.error("Failed to send message:", error);
       } finally {
         setIsSending(false);
+        setIsReplying(false);
       }
     }
   };
@@ -89,10 +95,9 @@ export default function HomeScreen() {
       <View className="flex-1 bg-[#ffffff]">
         <Header />
 
-        {/* Chat content */}
         <View className="flex-1">
           {loading ? (
-            <EmptyChat /> // Show an empty state or loading indicator
+            <EmptyChat />
           ) : messages.length === 0 ? (
             <EmptyChat />
           ) : (
@@ -100,11 +105,20 @@ export default function HomeScreen() {
               {messages.map((msg) => (
                 <View key={msg.id} className="mb-4">
                   <Bubble
-                    type={msg.role === "user" ? "user" : "assistant"} // Check role for Bubble component
+                    type={msg.role === "user" ? "user" : "assistant"}
                     message={msg.content}
                   />
                 </View>
               ))}
+              {isReplying && (
+                <View
+                  key="reply-loading"
+                  className="flex-row justify-start items-center mb-4"
+                >
+                  <BotIcon width={45} height={45} className="mr-2" />
+                  <ReplyLoading />
+                </View>
+              )}
             </ScrollView>
           )}
         </View>

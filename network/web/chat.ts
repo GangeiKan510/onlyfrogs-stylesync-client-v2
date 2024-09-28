@@ -20,3 +20,22 @@ export const getUserChatSession = async (userId: string) => {
     throw error;
   }
 };
+
+export const sendMessage = async (userId: string, userMessage: string) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/chat/prompt-gpt", {
+      userId,
+      userMessage,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating clothing: ${response.statusText}`);
+    }
+
+    const messageSent = await response.json();
+    return messageSent;
+  } catch (error) {
+    console.error("Failed to send message", error);
+    throw error;
+  }
+};

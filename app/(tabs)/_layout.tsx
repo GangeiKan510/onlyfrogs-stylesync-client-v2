@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
 import { UserProvider } from "@/components/config/user-context";
 import HomeIcon from "../../assets/icons/tabs/home.svg";
-import HomeFilled from "../../assets/icons/tabs/home-filled.svg";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";

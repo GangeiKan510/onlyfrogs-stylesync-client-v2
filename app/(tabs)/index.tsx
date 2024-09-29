@@ -112,7 +112,7 @@ export default function HomeScreen() {
               ))}
               {isReplying && (
                 <View
-                  key="reply-loading"
+                  key={`reply-loading-${new Date().getTime()}`}
                   className="flex-row justify-start items-center mb-4"
                 >
                   <BotIcon width={45} height={45} className="mr-2" />

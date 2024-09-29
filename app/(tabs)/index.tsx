@@ -118,7 +118,7 @@ export default function HomeScreen() {
         <View className="flex-1">
           {loading ? (
             <View className="flex-1 justify-center items-center">
-              <Spinner type={"primary"} />
+              <Spinner type={"secondary"} />
             </View>
           ) : messages.length === 0 ? (
             <EmptyChat />

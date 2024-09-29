@@ -44,7 +44,11 @@ const Survey = () => {
     birthday: "",
     height_cm: 0,
     weight_kg: 0,
-    location: null,
+    location: {
+      name: "",
+      lat: "",
+      lon: "",
+    },
   });
 
   const handleAnalyzeComplete = () => {
@@ -83,6 +87,8 @@ const Survey = () => {
       budget_min: preferences.budget_range?.min,
       budget_max: preferences.budget_range?.max,
     };
+
+    console.log(surveyData);
 
     try {
       setLoading(true);

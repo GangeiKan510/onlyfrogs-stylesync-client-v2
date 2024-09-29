@@ -4,7 +4,11 @@ export interface UpdateUserData {
   gender?: string;
   height_cm?: number;
   weight_kg?: number;
-  location?: string | null;
+  location?: {
+    name: string;
+    lat: string;
+    lon: string;
+  } | null;
   skin_tone_classification?: string;
   season?: string;
   sub_season?: string;
@@ -22,7 +26,11 @@ export interface PersonalInfo {
   birthday: string;
   height_cm: number;
   weight_kg: number;
-  location: string | null;
+  location: {
+    name: string;
+    lat: string;
+    lon: string;
+  } | null;
 }
 
 export interface SkinToneAnalysisResult {

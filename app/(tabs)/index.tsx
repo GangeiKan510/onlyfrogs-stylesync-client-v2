@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   ScrollView,
@@ -16,6 +17,7 @@ import { getUserChatSession, sendMessage } from "@/network/web/chat";
 import { useUser } from "@/components/config/user-context";
 import ReplyLoading from "@/components/chat/reply-loading";
 import BotIcon from "../../assets/icons/chat/bot-icon.svg";
+import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
 
 interface MessageProps {
   id: string;
@@ -30,6 +32,9 @@ export default function HomeScreen() {
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
+  const [showScrollDown, setShowScrollDown] = useState(false);
+
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const isSendButtonDisabled = message.trim() === "" || isSending;
 
@@ -64,7 +69,6 @@ export default function HomeScreen() {
       setMessage("");
 
       setIsReplying(true);
-
       setIsSending(true);
 
       try {
@@ -85,6 +89,21 @@ export default function HomeScreen() {
       }
     }
   };
+  const handleScroll = (event: any) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+
+    if (layoutMeasurement.height + contentOffset.y < contentSize.height - 20) {
+      setShowScrollDown(true);
+    } else {
+      setShowScrollDown(false);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -101,7 +120,12 @@ export default function HomeScreen() {
           ) : messages.length === 0 ? (
             <EmptyChat />
           ) : (
-            <ScrollView className="flex mx-5 mt-3">
+            <ScrollView
+              className="flex mx-5 mt-3"
+              ref={scrollViewRef}
+              onScroll={handleScroll}
+              scrollEventThrottle={16}
+            >
               {messages.map((msg) => (
                 <View key={msg.id} className="mb-4">
                   <Bubble
@@ -120,6 +144,16 @@ export default function HomeScreen() {
                 </View>
               )}
             </ScrollView>
+          )}
+
+          {/* Scroll down icon */}
+          {showScrollDown && (
+            <Pressable
+              className="absolute bottom-10 right-10"
+              onPress={scrollToBottom}
+            >
+              <ScrollDownIcon width={40} height={40} />
+            </Pressable>
           )}
         </View>
 

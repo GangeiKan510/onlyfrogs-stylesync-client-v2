@@ -20,6 +20,7 @@ import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
 import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
+import SettingsDropdown from "@/components/chat/settings-dropdown";
 
 interface MessageProps {
   id: string;
@@ -30,11 +31,12 @@ interface MessageProps {
 export default function HomeScreen() {
   const { user } = useUser();
   const [messages, setMessages] = useState<MessageProps[]>([]);
-  const [loading, setLoading] = useState(true); // Spinner control
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [showScrollDown, setShowScrollDown] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -110,20 +112,26 @@ export default function HomeScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      className="flex-1"
       keyboardVerticalOffset={0}
     >
-      <View className="flex-1 bg-[#ffffff]">
+      <View className="flex-1 bg-white">
         <View className="flex-row justify-between items-center px-4 py-2">
-          <View style={{ position: "absolute", right: 50, bottom: 33 }}>
-            <Pressable>
+          <View className="absolute right-[50px] bottom-[30px] z-30">
+            <Pressable onPress={() => setDropdownVisible(!dropdownVisible)}>
               <ChatSettingsIcon />
             </Pressable>
           </View>
-          <View style={{ flex: 1, alignItems: "center" }}>
+          <View className="flex-1 items-center z-10">
             <Header />
           </View>
         </View>
+
+        {/* Settings Dropdown*/}
+        <SettingsDropdown
+          visible={dropdownVisible}
+          onClose={() => setDropdownVisible(false)}
+        />
 
         <View className="flex-1">
           {loading ? (
@@ -180,9 +188,10 @@ export default function HomeScreen() {
             onChangeText={setMessage}
           />
           <Pressable
-            className="h-[35px] w-[35px] bg-tertiary justify-center items-center rounded-[10px] ml-2"
+            className={`h-9 w-9 bg-tertiary justify-center items-center rounded-lg ml-2 ${
+              isSendButtonDisabled ? "opacity-25" : "opacity-100"
+            }`}
             disabled={isSendButtonDisabled}
-            style={{ opacity: isSendButtonDisabled ? 0.25 : 1 }}
             onPress={handleSendMessage}
           >
             <SendMessageIcon width={14} height={14} />

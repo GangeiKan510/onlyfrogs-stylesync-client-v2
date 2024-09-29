@@ -14,7 +14,7 @@ export const validateForm = (
     return { success: false, message: "All fields are required" };
   }
 
-  const nameRegex = /^[A-Za-z]+$/;
+  const nameRegex = /^[A-Za-z\s]*$/;
 
   if (!nameRegex.test(firstName)) {
     return {
@@ -32,7 +32,7 @@ export const validateForm = (
     return { success: false, message: "Invalid email address" };
   }
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/; // Updated regex
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
   if (!passwordRegex.test(password)) {
     return {
       success: false,

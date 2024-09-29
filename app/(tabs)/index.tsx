@@ -18,6 +18,7 @@ import { useUser } from "@/components/config/user-context";
 import ReplyLoading from "@/components/chat/reply-loading";
 import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
+import Spinner from "@/components/common/Spinner";
 
 interface MessageProps {
   id: string;
@@ -28,7 +29,7 @@ interface MessageProps {
 export default function HomeScreen() {
   const { user } = useUser();
   const [messages, setMessages] = useState<MessageProps[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Spinner control
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
@@ -116,7 +117,9 @@ export default function HomeScreen() {
 
         <View className="flex-1">
           {loading ? (
-            <EmptyChat />
+            <View className="flex-1 justify-center items-center">
+              <Spinner type={"primary"} />
+            </View>
           ) : messages.length === 0 ? (
             <EmptyChat />
           ) : (

@@ -1,4 +1,7 @@
-import { postWithFirebaseJwt } from "../firebase/requests-with-firebase";
+import {
+  deleteWithFirebaseJwt,
+  postWithFirebaseJwt,
+} from "../firebase/requests-with-firebase";
 
 export const getUserChatSession = async (userId: string) => {
   try {
@@ -36,6 +39,27 @@ export const sendMessage = async (userId: string, userMessage: string) => {
     return messageSent;
   } catch (error) {
     console.error("Failed to send message", error);
+    throw error;
+  }
+};
+
+export const clearConversationMessages = async (userId: string) => {
+  try {
+    const response = await deleteWithFirebaseJwt(
+      "/delete-chat-session-messages",
+      {
+        userId,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error deleting messages: ${response.statusText}`);
+    }
+
+    const messageSent = await response.json();
+    return messageSent;
+  } catch (error) {
+    console.error("Failed to clear conversation", error);
     throw error;
   }
 };

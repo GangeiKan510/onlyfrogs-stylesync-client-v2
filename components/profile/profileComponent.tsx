@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserIcon from "../../assets/icons/profile/user-icon.svg";
 import CustomizeIcon from "../../assets/icons/profile/customize-icon.svg";
@@ -19,11 +19,26 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileComponent = () => {
   const router = useRouter();
+  const [isPressedSettings, setIsPressedSettings] = useState(false);
+  const [isPressedPersonalInfo, setIsPressedPersonalInfo] = useState(false);
+  const [isPressedPreferences, setIsPressedPreferences] = useState(false);
+  const [isPressedSkinTone, setIsPressedSkinTone] = useState(false);
+  const [isPressedBodyType, setIsPressedBodyType] = useState(false);
+  const [isPressedChangePassword, setIsPressedChangePassword] = useState(false);
+  const [isPressedLogout, setIsPressedLogout] = useState(false);
+
+  const handlePressIn = (setIsPressed) => {
+    setIsPressed(true);
+  };
+
+  const handlePressOut = (setIsPressed) => {
+    setIsPressed(false);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#ffffff]">
       <ScrollView>
-        <View className="">
+        <View>
           <CoverImg />
         </View>
         <View className="items-center">
@@ -34,7 +49,7 @@ const ProfileComponent = () => {
             <Text className="text-black font-bold text-[16px]">
               Dave Jhaeson Alivio
             </Text>
-            <Text>deybalivio09@gmail.com </Text>
+            <Text>deybalivio09@gmail.com</Text>
           </View>
           <Link
             push
@@ -70,7 +85,7 @@ const ProfileComponent = () => {
 
         <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />
 
-        <View className=" px-6 mt-2">
+        <View className="px-6 mt-2">
           <Text className="text-[#B7B7B7] font-bold text-[16px] ">
             Account Settings
           </Text>
@@ -81,14 +96,19 @@ const ProfileComponent = () => {
               href={routes.profileSettings as Href<string | object>}
               asChild
             >
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedSettings)}
+                onPressOut={() => handlePressOut(setIsPressedSettings)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedSettings ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <UserSettingIcon width={25.5} height={24.82} />
                   <Text className="font-medium text-[16px] ml-3">
                     Profile Settings
                   </Text>
                 </View>
-
                 <ArrowRightIcon width={15} height={15} color="black" />
               </Pressable>
             </Link>
@@ -98,7 +118,13 @@ const ProfileComponent = () => {
               href={routes.personalInformation as Href<string | object>}
               asChild
             >
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedPersonalInfo)}
+                onPressOut={() => handlePressOut(setIsPressedPersonalInfo)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedPersonalInfo ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <UserIcon width={20.5} height={20.5} />
                   <Text className="font-medium text-[16px] ml-3">
@@ -114,7 +140,13 @@ const ProfileComponent = () => {
               href={routes.preferencesAndBudget as Href<string | object>}
               asChild
             >
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedPreferences)}
+                onPressOut={() => handlePressOut(setIsPressedPreferences)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedPreferences ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <CustomizeIcon width={20} height={20} />
                   <Text className="font-medium text-[16px] ml-3">
@@ -130,7 +162,13 @@ const ProfileComponent = () => {
               href={routes.skinToneAnalysis as Href<string | object>}
               asChild
             >
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedSkinTone)}
+                onPressOut={() => handlePressOut(setIsPressedSkinTone)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedSkinTone ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <SparkleIcon width={25} height={25} />
                   <Text className="font-medium text-[16px] ml-2">
@@ -142,7 +180,13 @@ const ProfileComponent = () => {
             </Link>
 
             <Link push href={routes.bodyType as Href<string | object>} asChild>
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedBodyType)}
+                onPressOut={() => handlePressOut(setIsPressedBodyType)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedBodyType ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <BodyTypeIcon width={20.63} height={25.97} />
                   <Text className="font-medium text-[16px] ml-3">
@@ -158,7 +202,13 @@ const ProfileComponent = () => {
               href={routes.resetPassword as Href<string | object>}
               asChild
             >
-              <Pressable className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <Pressable
+                onPressIn={() => handlePressIn(setIsPressedChangePassword)}
+                onPressOut={() => handlePressOut(setIsPressedChangePassword)}
+                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                  isPressedChangePassword ? "opacity-30" : ""
+                }`}
+              >
                 <View className="flex-row">
                   <LockIcon width={20} height={20} />
                   <Text className="font-medium text-[16px] ml-3">
@@ -170,12 +220,16 @@ const ProfileComponent = () => {
             </Link>
 
             <Pressable
+              onPressIn={() => handlePressIn(setIsPressedLogout)}
+              onPressOut={() => handlePressOut(setIsPressedLogout)}
+              className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
+                isPressedLogout ? "opacity-30" : ""
+              }`}
               onPress={() => router.push(routes.login as Href<string | object>)}
-              className="flex-row my-2 h-[32px] w-full justify-between items-center"
             >
               <View className="flex-row">
-                <LogOutIcon width={18.63} height={23.97} color="red" />
-                <Text className="text-red font-medium text-[16px] ml-3">
+                <LogOutIcon width={20} height={20} color="#FE3B3B" />
+                <Text className="font-medium text-[16px] ml-3 text-red">
                   Log Out
                 </Text>
               </View>

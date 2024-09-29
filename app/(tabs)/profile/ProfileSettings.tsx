@@ -36,6 +36,8 @@ const ProfileSettings = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isPressedSave, setIsPressedSave] = useState(false);
+  const [isPressedCancel, setIsPressedCancel] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -169,7 +171,7 @@ const ProfileSettings = () => {
             routes: [{ name: "profile" }],
           })
         );
-      }, 1000);
+      }, 500);
     }
   };
 
@@ -210,6 +212,14 @@ const ProfileSettings = () => {
         routes: [{ name: "profile" }],
       })
     );
+  };
+
+  const handlePressIn = (setIsPressed) => {
+    setIsPressed(true);
+  };
+
+  const handlePressOut = (setIsPressed) => {
+    setIsPressed(false);
   };
 
   return (
@@ -287,18 +297,25 @@ const ProfileSettings = () => {
           </View>
         </View>
       </ScrollView>
-
       <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
         <Pressable
+          onPressIn={() => handlePressIn(setIsPressedCancel)}
+          onPressOut={() => handlePressOut(setIsPressedCancel)}
           onPress={handleCancel}
-          className="flex mx-2 bg-[#F9F9F9] rounded-[10px] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
+          className={`flex mx-2 rounded-[10px] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center ${
+            isPressedCancel ? "bg-[#b3b3b3] opacity-40" : "bg-[#F9F9F9]"
+          }`}
         >
-          <Text className="text-center text-[#7AB2B2] text-[16px]">Cancel</Text>
+          <Text className="text-center text-[#7AB2B2]">Cancel</Text>
         </Pressable>
 
         <Pressable
+          onPressIn={() => handlePressIn(setIsPressedSave)}
+          onPressOut={() => handlePressOut(setIsPressedSave)}
           onPress={handleSave}
-          className="bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]"
+          className={`${
+            isPressedSave ? "bg-[#7AB2B2] opacity-40" : "bg-[#7AB2B2]"
+          } items-center justify-center rounded-[10px] w-[160px] h-[42px]`}
         >
           <View>
             {isSaving ? (

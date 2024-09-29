@@ -311,26 +311,26 @@ const ProfileSettings = () => {
       </View>
 
       <Modal transparent={true} visible={showModal}>
-        <View className="flex-1 justify-center items-center bg-black opacity-80">
-          <View className="bg-white rounded-[20px] p-6">
+        <View className="flex-1 justify-center items-center bg-black opacity-90">
+          <View className="bg-white rounded-[10px] p-6">
             <Text className="text-center text-[18px] font-bold">
               Discard Changes?
             </Text>
             <Text className="mt-2 text-center">
               You have unsaved changes. Do you want to discard them?
             </Text>
-            <View className="flex-row justify-around mt-4">
+            <View className="flex-row justify-between items-center mt-4">
               <Pressable
                 onPress={() => setShowModal(false)}
-                className="border border-solid border-[#7AB2B2] rounded-[10px] px-6 py-2"
+                className="border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
               >
-                <Text className="text-[#7AB2B2]">No</Text>
+                <Text className="text-[#7AB2B2] text-[16px]">Edit</Text>
               </Pressable>
               <Pressable
                 onPress={confirmDiscardChanges}
-                className="bg-[#7AB2B2] rounded-[10px] px-6 py-2"
+                className="bg-[#7AB2B2] border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
               >
-                <Text className="text-white">Yes</Text>
+                <Text className="text-white text-[16px]">Discard</Text>
               </Pressable>
             </View>
           </View>

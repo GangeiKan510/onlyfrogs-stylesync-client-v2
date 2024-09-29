@@ -19,8 +19,20 @@ const SettingsDropdown = ({ visible, onClose }: any) => {
     try {
       await clearConversationMessages(user.id);
       await refetchMe();
+
+      Toast.show({
+        type: "success",
+        text1: "Conversation cleared!",
+        text2: "All messages have been removed successfully.",
+      });
     } catch (error) {
       console.error("Error clearing conversation:", error);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to clear conversation!",
+      });
     } finally {
       setLoading(false);
       onClose();

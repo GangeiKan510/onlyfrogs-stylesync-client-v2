@@ -149,10 +149,10 @@ export default function HomeScreen() {
           {/* Scroll down icon */}
           {showScrollDown && (
             <Pressable
-              className="absolute bottom-10 right-10"
+              className="absolute bottom-1 left-1/2 -translate-x-1/2"
               onPress={scrollToBottom}
             >
-              <ScrollDownIcon width={40} height={40} />
+              <ScrollDownIcon width={24} height={24} />
             </Pressable>
           )}
         </View>

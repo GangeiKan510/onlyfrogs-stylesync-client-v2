@@ -18,6 +18,7 @@ import { useUser } from "@/components/config/user-context";
 import ReplyLoading from "@/components/chat/reply-loading";
 import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
+import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 
 interface MessageProps {
@@ -113,7 +114,16 @@ export default function HomeScreen() {
       keyboardVerticalOffset={0}
     >
       <View className="flex-1 bg-[#ffffff]">
-        <Header />
+        <View className="flex-row justify-between items-center px-4 py-2">
+          <View style={{ position: "absolute", right: 50, bottom: 33 }}>
+            <Pressable>
+              <ChatSettingsIcon />
+            </Pressable>
+          </View>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Header />
+          </View>
+        </View>
 
         <View className="flex-1">
           {loading ? (

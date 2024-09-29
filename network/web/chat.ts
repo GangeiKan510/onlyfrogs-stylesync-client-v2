@@ -46,9 +46,9 @@ export const sendMessage = async (userId: string, userMessage: string) => {
 export const clearConversationMessages = async (userId: string) => {
   try {
     const response = await deleteWithFirebaseJwt(
-      "/delete-chat-session-messages",
+      "/web/chat/delete-chat-session-messages",
       {
-        userId,
+        userId: userId,
       }
     );
 

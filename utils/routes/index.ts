@@ -7,6 +7,7 @@ export const routes = {
   survey: "(tabs)/survey/survey",
   tabs: "(tabs)",
   welcome: "/welcome",
+  profile: "/profile",
   closet: "closet",
 
   profileSettings: "profile/ProfileSettings",

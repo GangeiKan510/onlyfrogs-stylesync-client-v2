@@ -4,22 +4,27 @@ import { useNavigation, CommonActions } from "@react-navigation/native";
 import {
   View,
   Text,
-  Pressable,
+  TouchableOpacity,
   TextInput,
   Image,
   Modal,
   ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+
 import Toast from "react-native-toast-message";
 import NoProfileImg from "../../../assets/icons/profile/no-profile-img.svg";
 import Back from "../../../assets/icons/back-icon.svg";
 import CameraIcon from "../../../assets/icons/profile/camera-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
+import { UpdateUserName } from "@/utils/types/UpdateUser";
+import { useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
 
 const ProfileSettings = () => {
   const { user } = useUser();
+  const router = useRouter();
   const [initialFirstName, setInitialFirstName] = useState(
     user?.first_name || ""
   );
@@ -36,8 +41,6 @@ const ProfileSettings = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isPressedSave, setIsPressedSave] = useState(false);
-  const [isPressedCancel, setIsPressedCancel] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -205,29 +208,13 @@ const ProfileSettings = () => {
     );
   };
 
-  const handleBack = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "profile" }],
-      })
-    );
-  };
-
-  const handlePressIn = (setIsPressed) => {
-    setIsPressed(true);
-  };
-
-  const handlePressOut = (setIsPressed) => {
-    setIsPressed(false);
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="absolute left-10 top-16 z-10">
-        <Pressable onPress={handleBack}>
+        <TouchableOpacity onPress={handleCancel}>
           <Back width={20} height={20} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       <View className="top-8">
@@ -239,7 +226,7 @@ const ProfileSettings = () => {
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-6">
           <View className="items-center my-16">
-            <Pressable onPress={uploadProfileImage} className="absolute z-10">
+            <TouchableOpacity onPress={uploadProfileImage} className="absolute z-10">
               <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
                 {profileImage ? (
                   <Image
@@ -254,7 +241,7 @@ const ProfileSettings = () => {
                   <CameraIcon width={30} height={30} />
                 </View>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View className="mt-28">
             <View className="mb-3">
@@ -298,25 +285,16 @@ const ProfileSettings = () => {
         </View>
       </ScrollView>
       <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
-        <Pressable
-          onPressIn={() => handlePressIn(setIsPressedCancel)}
-          onPressOut={() => handlePressOut(setIsPressedCancel)}
+        <TouchableOpacity
           onPress={handleCancel}
-          className={`flex mx-2 rounded-[10px] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center ${
-            isPressedCancel ? "bg-[#b3b3b3] opacity-40" : "bg-[#F9F9F9]"
-          }`}
+          className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
         >
           <Text className="text-center text-[#7AB2B2]">Cancel</Text>
-        </Pressable>
+        </TouchableOpacity>
 
-        <Pressable
-          onPressIn={() => handlePressIn(setIsPressedSave)}
-          onPressOut={() => handlePressOut(setIsPressedSave)}
+        <TouchableOpacity
           onPress={handleSave}
-          className={`${
-            isPressedSave ? "bg-[#7AB2B2] opacity-40" : "bg-[#7AB2B2]"
-          } items-center justify-center rounded-[10px] w-[160px] h-[42px]`}
-        >
+          className= "bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]">
           <View>
             {isSaving ? (
               <Spinner type={"primary"} />
@@ -324,7 +302,7 @@ const ProfileSettings = () => {
               <Text className="text-[16px] text-white">Save</Text>
             )}
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       <Modal transparent={true} visible={showModal}>
@@ -337,18 +315,18 @@ const ProfileSettings = () => {
               You have unsaved changes. Do you want to discard them?
             </Text>
             <View className="flex-row justify-between items-center mt-4">
-              <Pressable
+              <TouchableOpacity
                 onPress={() => setShowModal(false)}
                 className="border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
               >
                 <Text className="text-[#7AB2B2] text-[16px]">Edit</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={confirmDiscardChanges}
                 className="bg-[#7AB2B2] border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
               >
                 <Text className="text-white text-[16px]">Discard</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

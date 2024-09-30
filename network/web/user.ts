@@ -1,5 +1,5 @@
 import { CreateUserData } from "@/utils/types/CreateUser";
-import { UpdateUserData } from "@/utils/types/UpdateUser";
+import { UpdateUserData, UpdateUserName } from "@/utils/types/UpdateUser";
 import {
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,

@@ -1,5 +1,5 @@
-import { View, Text, Pressable, ScrollView } from "react-native";
-import React, { useState } from "react"; // Import useState
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserIcon from "../../assets/icons/profile/user-icon.svg";
 import CustomizeIcon from "../../assets/icons/profile/customize-icon.svg";
@@ -9,7 +9,7 @@ import BodyTypeIcon from "../../assets/icons/profile/body-type-icon.svg";
 import LogOutIcon from "../../assets/icons/profile/log-out-icon.svg";
 import ArrowRightIcon from "../../assets/icons/profile/arrow-right-icon.svg";
 import CheckmarkIcon from "../../assets/icons/profile/checkmark-icon.svg";
-import { useRouter, Link } from "expo-router";
+import { useRouter } from "expo-router";
 import type { Href } from "expo-router";
 import { routes } from "@/utils/routes";
 import NoProfileImg from "../../assets/icons/dave.svg";
@@ -19,21 +19,6 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileComponent = () => {
   const router = useRouter();
-  const [isPressedSettings, setIsPressedSettings] = useState(false);
-  const [isPressedPersonalInfo, setIsPressedPersonalInfo] = useState(false);
-  const [isPressedPreferences, setIsPressedPreferences] = useState(false);
-  const [isPressedSkinTone, setIsPressedSkinTone] = useState(false);
-  const [isPressedBodyType, setIsPressedBodyType] = useState(false);
-  const [isPressedChangePassword, setIsPressedChangePassword] = useState(false);
-  const [isPressedLogout, setIsPressedLogout] = useState(false);
-
-  const handlePressIn = (setIsPressed) => {
-    setIsPressed(true);
-  };
-
-  const handlePressOut = (setIsPressed) => {
-    setIsPressed(false);
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#ffffff]">
@@ -51,12 +36,11 @@ const ProfileComponent = () => {
             </Text>
             <Text>deybalivio09@gmail.com</Text>
           </View>
-          <Link
-            push
-            href={routes.subscription as Href<string | object>}
-            asChild
-          >
-            <Pressable className="flex-row h-10 w-96 mt-10 px-5 justify-between items-center">
+          <View>
+            <TouchableOpacity
+              className="flex-row h-10 w-96 mt-10 px-5 justify-between items-center"
+              onPress={() => router.push(routes.subscription as Href<string>)}
+            >
               <LinearGradient
                 colors={["#7AB2B2", "#B088CD"]}
                 start={[0, 0]}
@@ -79,8 +63,8 @@ const ProfileComponent = () => {
                 </View>
                 <ArrowRightIcon width={15} height={15} color="white" />
               </LinearGradient>
-            </Pressable>
-          </Link>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />
@@ -91,140 +75,84 @@ const ProfileComponent = () => {
           </Text>
 
           <View className="px-2 mt-4">
-            <Link
-              push
-              href={routes.profileSettings as Href<string | object>}
-              asChild
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
+              onPress={() =>
+                router.push(routes.profileSettings as Href<string>)
+              }
             >
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedSettings)}
-                onPressOut={() => handlePressOut(setIsPressedSettings)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedSettings ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <UserSettingIcon width={25.5} height={24.82} />
-                  <Text className="font-medium text-[16px] ml-3">
-                    Profile Settings
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
+              <View className="flex-row">
+                <UserSettingIcon width={25.5} height={24.82} />
+                <Text className="font-medium text-[16px] ml-3">
+                  Profile Settings
+                </Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
 
-            <Link
-              push
-              href={routes.personalInformation as Href<string | object>}
-              asChild
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
+              onPress={() =>
+                router.push(routes.personalInformation as Href<string>)
+              }
             >
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedPersonalInfo)}
-                onPressOut={() => handlePressOut(setIsPressedPersonalInfo)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedPersonalInfo ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <UserIcon width={20.5} height={20.5} />
-                  <Text className="font-medium text-[16px] ml-3">
-                    Personal Information
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
+              <View className="flex-row">
+                <UserIcon width={20.5} height={20.5} />
+                <Text className="font-medium text-[16px] ml-3">
+                  Personal Information
+                </Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
 
-            <Link
-              push
-              href={routes.preferencesAndBudget as Href<string | object>}
-              asChild
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
+              onPress={() =>
+                router.push(routes.preferencesAndBudget as Href<string>)
+              }
             >
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedPreferences)}
-                onPressOut={() => handlePressOut(setIsPressedPreferences)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedPreferences ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <CustomizeIcon width={20} height={20} />
-                  <Text className="font-medium text-[16px] ml-3">
-                    Preferences and Budget
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
-
-            <Link
-              push
-              href={routes.skinToneAnalysis as Href<string | object>}
-              asChild
+              <View className="flex-row">
+                <CustomizeIcon width={20} height={20} />
+                <Text className="font-medium text-[16px] ml-3">
+                  Preferences and Budget
+                </Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
+              onPress={() =>
+                router.push(routes.skinToneAnalysis as Href<string>)
+              }
             >
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedSkinTone)}
-                onPressOut={() => handlePressOut(setIsPressedSkinTone)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedSkinTone ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <SparkleIcon width={25} height={25} />
-                  <Text className="font-medium text-[16px] ml-2">
-                    Skin Tone Analysis
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
+              <View className="flex-row">
+                <SparkleIcon width={25} height={25} />
+                <Text className="font-medium text-[16px] ml-2">
+                  Skin Tone Analysis
+                </Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <View className="flex-row">
+                <BodyTypeIcon width={20.63} height={25.97} />
+                <Text className="font-medium text-[16px] ml-3">Body Type</Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
 
-            <Link push href={routes.bodyType as Href<string | object>} asChild>
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedBodyType)}
-                onPressOut={() => handlePressOut(setIsPressedBodyType)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedBodyType ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <BodyTypeIcon width={20.63} height={25.97} />
-                  <Text className="font-medium text-[16px] ml-3">
-                    Body Type
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
+            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center">
+              <View className="flex-row">
+                <LockIcon width={20} height={20} />
+                <Text className="font-medium text-[16px] ml-3">
+                  Change Password
+                </Text>
+              </View>
+              <ArrowRightIcon width={15} height={15} color="black" />
+            </TouchableOpacity>
 
-            <Link
-              push
-              href={routes.resetPassword as Href<string | object>}
-              asChild
-            >
-              <Pressable
-                onPressIn={() => handlePressIn(setIsPressedChangePassword)}
-                onPressOut={() => handlePressOut(setIsPressedChangePassword)}
-                className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                  isPressedChangePassword ? "opacity-30" : ""
-                }`}
-              >
-                <View className="flex-row">
-                  <LockIcon width={20} height={20} />
-                  <Text className="font-medium text-[16px] ml-3">
-                    Change Password
-                  </Text>
-                </View>
-                <ArrowRightIcon width={15} height={15} color="black" />
-              </Pressable>
-            </Link>
-
-            <Pressable
-              onPressIn={() => handlePressIn(setIsPressedLogout)}
-              onPressOut={() => handlePressOut(setIsPressedLogout)}
-              className={`flex-row my-2 h-[32px] w-full justify-between items-center ${
-                isPressedLogout ? "opacity-30" : ""
-              }`}
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
               onPress={() => router.push(routes.login as Href<string | object>)}
             >
               <View className="flex-row">
@@ -234,7 +162,7 @@ const ProfileComponent = () => {
                 </Text>
               </View>
               <ArrowRightIcon width={15} height={15} color="black" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

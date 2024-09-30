@@ -17,7 +17,11 @@ interface PersonalInformationProps {
 interface PersonalInfoData {
   birthday: string;
   gender: string;
-  location: string | null;
+  location: {
+    name: string;
+    lat: string;
+    lon: string;
+  } | null;
   height_cm: number;
   weight_kg: number;
 }
@@ -30,7 +34,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     null
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
+  const [address, setAddress] = useState<{
+    name: string;
+    lat: string;
+    lon: string;
+  } | null>(null);
   const [height, setHeight] = useState<number>(0);
   const [weight, setWeight] = useState<number>(0);
   const [birthDate, setBirthDate] = useState("");
@@ -119,9 +127,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
         if (reverseGeocode.length > 0) {
           let firstResult = reverseGeocode[0];
-          setAddress(
-            `${firstResult.city}, ${firstResult.region}, ${firstResult.country}`
-          );
+
+          const locationObject = {
+            name: `${firstResult.city}, ${firstResult.region}, ${firstResult.country}`,
+            lat: location.coords.latitude.toString(),
+            lon: location.coords.longitude.toString(),
+          };
+
+          setAddress(locationObject);
         } else {
           setErrorMsg("Unable to retrieve address from location.");
         }
@@ -160,7 +173,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
   if (errorMsg) {
     text = errorMsg;
   } else if (address) {
-    text = `${address}`;
+    text = `${address.name}`;
   } else if (location) {
     text = `Coordinates: ${JSON.stringify(location.coords)}`;
   }

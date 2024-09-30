@@ -48,14 +48,7 @@ export default function RootLayout() {
         <Stack.Screen name="forgotPassword" options={{ headerShown: false }} />
         <Stack.Screen name="verificationCode" options={{ headerShown: false }} />
         <Stack.Screen name="setUpNewPassword" options={{ headerShown: false }} />
-        <Stack.Screen name="survey/survey" options={{ headerShown: false }} />
         <Stack.Screen name="subscription" options={{ headerShown: false }} />
-        <Stack.Screen name="profile/ProfileSettings" options={{headerShown: false}}/> 
-        <Stack.Screen name="profile/PersonalInformation" options={{headerShown: false}}/> 
-        <Stack.Screen name="profile/PreferencesAndBudget" options={{headerShown: false}}/>
-        <Stack.Screen name="profile/ResetPassword" options={{headerShown: false}}/>
-        <Stack.Screen name="profile/SkinToneAnalysis" options={{headerShown: false}}/>
-        <Stack.Screen name="profile/BodyType" options={{headerShown: false}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

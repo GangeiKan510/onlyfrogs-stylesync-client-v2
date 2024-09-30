@@ -19,6 +19,7 @@ import {
   Preferences,
 } from "@/utils/types/UpdateUser";
 import Spinner from "@/components/common/Spinner";
+import Toast from "react-native-toast-message";
 
 const Survey = () => {
   const { user, refetchMe } = useUser();
@@ -44,7 +45,11 @@ const Survey = () => {
     birthday: "",
     height_cm: 0,
     weight_kg: 0,
-    location: null,
+    location: {
+      name: "",
+      lat: "",
+      lon: "",
+    },
   });
 
   const handleAnalyzeComplete = () => {
@@ -83,6 +88,13 @@ const Survey = () => {
       budget_min: preferences.budget_range?.min,
       budget_max: preferences.budget_range?.max,
     };
+
+    Toast.show({
+      type: "success",
+      text1: "Successfully finished survey!",
+      position: "top",
+      swipeable: true,
+    });
 
     try {
       setLoading(true);

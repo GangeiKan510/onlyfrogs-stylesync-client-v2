@@ -34,9 +34,24 @@ const uploadWithFirebaseJwt = async (
   });
 };
 
-const deleteWithFirebaseJwt = async (endpoint: string): Promise<Response> => {
+const deleteWithFirebaseJwt = async (
+  endpoint: string,
+  body: any = null // Allow body parameter (optional)
+): Promise<Response> => {
   const url = `${process.env.EXPO_PUBLIC_API_SERVER}${endpoint}`;
-  return fetchWithFirebaseJwt(url, { method: "DELETE" });
+
+  const options: RequestInit = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  return fetchWithFirebaseJwt(url, options);
 };
 
 export {

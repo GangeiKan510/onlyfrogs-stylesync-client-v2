@@ -78,3 +78,23 @@ export const updateUser = async (userData: UpdateUserData) => {
     throw error;
   }
 };
+
+export const updateUserName = async (userData: UpdateUserName) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-user-name",
+      userData
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error updating user name: ${response.statusText}`);
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to update user name", error);
+    throw error;
+  }
+};
+

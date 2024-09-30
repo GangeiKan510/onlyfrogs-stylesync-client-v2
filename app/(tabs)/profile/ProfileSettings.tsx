@@ -9,6 +9,7 @@ import {
   Image,
   Modal,
   ScrollView,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
@@ -19,12 +20,10 @@ import CameraIcon from "../../../assets/icons/profile/camera-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
 import { UpdateUserName } from "@/utils/types/UpdateUser";
-import { useRouter } from "expo-router";
-import { routes } from "@/utils/routes";
+import { updateUserName } from "@/network/web/user";
 
 const ProfileSettings = () => {
   const { user } = useUser();
-  const router = useRouter();
   const [initialFirstName, setInitialFirstName] = useState(
     user?.first_name || ""
   );
@@ -51,14 +50,26 @@ const ProfileSettings = () => {
 
   const uploadProfileImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
+  
     if (status === "denied") {
-      Toast.show({
-        type: "error",
-        text1: "Permission Required",
-        text2:
-          "Permission to access the media library is required. Please enable it in settings.",
-      });
+      Alert.alert(
+        "Permission Required",
+        "Permission to access the media library is required. Please enable it in settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Try Again",
+            onPress: async () => {
+              const newPermissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (newPermissionResult.granted) {
+                launchImagePicker();
+              } else {
+                Alert.alert("Permission still denied. Please enable it in settings.");
+              }
+            },
+          },
+        ]
+      );
       return;
     }
 
@@ -66,6 +77,7 @@ const ProfileSettings = () => {
       launchImagePicker();
     }
   };
+
 
   const launchImagePicker = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -153,31 +165,48 @@ const ProfileSettings = () => {
     return true;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
-      Toast.show({
-        type: "success",
-        text1: "Profile Saved",
-        text2: "Your profile changes have been saved successfully.",
-      });
-
-      setInitialFirstName(firstName);
-      setInitialLastName(lastName);
-      setInitialProfileImage(profileImage);
-
-      setTimeout(() => {
-        setIsSaving(false);
+  
+      const userData: UpdateUserName = {
+        first_name: firstName,
+        last_name: lastName,
+      };
+  
+      try {
+        // Send the updated user data to the backend
+        const updatedUser = await updateUserName(userData);
+  
+        // Update the initial state to reflect the saved changes
+        setInitialFirstName(updatedUser.first_name);
+        setInitialLastName(updatedUser.last_name);
+        setInitialProfileImage(profileImage);
+  
+        Toast.show({
+          type: "success",
+          text1: "Profile Saved",
+          text2: "Your profile changes have been saved successfully.",
+        });
+  
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [{ name: "profile" }],
           })
         );
-      }, 500);
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Save Failed",
+          text2: "Failed to save your profile. Please try again.",
+        });
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
-
+  
   const handleCancel = () => {
     if (
       firstName !== initialFirstName ||

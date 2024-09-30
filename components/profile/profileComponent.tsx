@@ -82,7 +82,7 @@ const ProfileComponent = () => {
               }
             >
               <View className="flex-row">
-                <UserSettingIcon width={25.5} height={24.82} />
+                <UserSettingIcon width={23} height={24} />
                 <Text className="font-medium text-[16px] ml-3">
                   Profile Settings
                 </Text>
@@ -141,7 +141,8 @@ const ProfileComponent = () => {
               <ArrowRightIcon width={15} height={15} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center">
+            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center"
+            onPress={() => router.push(routes.resetPassword as Href<string | object>)}>
               <View className="flex-row">
                 <LockIcon width={20} height={20} />
                 <Text className="font-medium text-[16px] ml-3">

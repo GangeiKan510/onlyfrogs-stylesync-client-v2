@@ -19,8 +19,6 @@ const ResetPassword = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  
-  // Error state
   const [passwordError, setPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
 
@@ -86,7 +84,7 @@ const ResetPassword = () => {
         text1: "Password reset successful",
         position: "top",
       });
-      navigation.goBack(); // Optionally navigate back after reset
+      navigation.goBack();
     } catch (error) {
       setLoading(false);
       Toast.show({

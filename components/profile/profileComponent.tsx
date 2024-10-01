@@ -1,5 +1,8 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import useSignOut from "@/network/firebase/sign-out";
+import { auth } from "@/firebaseConfig";
+import { useUser } from "../config/user-context";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserIcon from "../../assets/icons/profile/user-icon.svg";
 import CustomizeIcon from "../../assets/icons/profile/customize-icon.svg";
@@ -16,9 +19,23 @@ import NoProfileImg from "../../assets/icons/dave.svg";
 import LockIcon from "../../assets/icons/profile/lock-icon.svg";
 import CoverImg from "../../assets/icons/profile/cover-img.svg";
 import { LinearGradient } from "expo-linear-gradient";
+import ConfirmationModal from "../dialogs/ConfirmationModal";
 
 const ProfileComponent = () => {
   const router = useRouter();
+  const { user } = useUser();
+  const [signOut, loading] = useSignOut(auth);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleLogout = async () => {
+    setModalVisible(false);
+
+    const isSignoutSuccessful = await signOut();
+
+    if (isSignoutSuccessful) {
+      router.replace(routes.login as Href<string | object>);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#ffffff]">
@@ -32,9 +49,11 @@ const ProfileComponent = () => {
           </View>
           <View className="mt-16 items-center">
             <Text className="text-black font-bold text-[16px]">
-              Dave Jhaeson Alivio
+              {user?.first_name && user?.last_name
+                ? `${user.first_name} ${user.last_name}`
+                : "Guest"}
             </Text>
-            <Text>deybalivio09@gmail.com</Text>
+            <Text>{user?.email}</Text>
           </View>
           <View>
             <TouchableOpacity
@@ -141,7 +160,7 @@ const ProfileComponent = () => {
               <ArrowRightIcon width={15} height={15} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center"
+            {/* <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center"
             onPress={() => router.push(routes.resetPassword as Href<string | object>)}>
               <View className="flex-row">
                 <LockIcon width={20} height={20} />
@@ -150,11 +169,11 @@ const ProfileComponent = () => {
                 </Text>
               </View>
               <ArrowRightIcon width={15} height={15} color="black" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               className="flex-row my-2 h-[32px] w-full justify-between items-center"
-              onPress={() => router.push(routes.login as Href<string | object>)}
+              onPress={() => setModalVisible(true)}
             >
               <View className="flex-row">
                 <LogOutIcon width={20} height={20} color="#FE3B3B" />
@@ -166,6 +185,17 @@ const ProfileComponent = () => {
             </TouchableOpacity>
           </View>
         </View>
+
+        <ConfirmationModal
+          visible={modalVisible}
+          onConfirm={handleLogout}
+          onCancel={() => setModalVisible(false)}
+          message="Wait, just a sec!"
+          description={"Are you sure you want to log out?"}
+          isLoading={loading}
+          type={"primary"}
+          confirmMessage={"Logout"}
+        />
       </ScrollView>
     </SafeAreaView>
   );

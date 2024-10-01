@@ -1,4 +1,17 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
+// import { SafeAreaView } from "react-native-safe-area-context";
+// import { useNavigation, CommonActions } from "@react-navigation/native";
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   TextInput,
+//   Image,
+//   Modal,
+//   ScrollView,
+//   Alert,
+// } from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import {
@@ -24,72 +37,38 @@ import { updateUserName } from "@/network/web/user";
 
 const ProfileSettings = () => {
   const { user } = useUser();
-  const [initialFirstName, setInitialFirstName] = useState(
-    user?.first_name || ""
-  );
-  const [initialLastName, setInitialLastName] = useState(user?.last_name || "");
-  const [initialProfileImage, setInitialProfileImage] = useState<string | null>(
-    null
-  );
-  const [profileImage, setProfileImage] = useState<string | null>(
-    initialProfileImage
-  );
-  const [firstName, setFirstName] = useState(initialFirstName);
-  const [lastName, setLastName] = useState(initialLastName);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState(user?.first_name || "");
+  const [lastName, setLastName] = useState(user?.last_name || "");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    setInitialFirstName(user?.first_name || "");
-    setInitialLastName(user?.last_name || "");
-    setInitialProfileImage(null);
-  }, [user]);
-
   const uploadProfileImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
+
     if (status === "denied") {
       Alert.alert(
         "Permission Required",
-        "Permission to access the media library is required. Please enable it in settings.",
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Try Again",
-            onPress: async () => {
-              const newPermissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-              if (newPermissionResult.granted) {
-                launchImagePicker();
-              } else {
-                Alert.alert("Permission still denied. Please enable it in settings.");
-              }
-            },
-          },
-        ]
+        "Permission to access the media library is required. Please enable it in settings."
       );
       return;
     }
 
     if (status === "granted") {
-      launchImagePicker();
-    }
-  };
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-
-  const launchImagePicker = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-      setProfileImage(uri);
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const uri = result.assets[0].uri;
+        setProfileImage(uri);
+      }
     }
   };
 
@@ -137,11 +116,6 @@ const ProfileSettings = () => {
     }
     if (!nameRegex.test(firstName)) {
       setFirstNameError("Only letters and spaces are allowed.");
-      Toast.show({
-        type: "error",
-        text1: "Validation Error",
-        text2: "First name contains invalid characters.",
-      });
       return false;
     }
 
@@ -155,11 +129,6 @@ const ProfileSettings = () => {
     }
     if (!nameRegex.test(lastName)) {
       setLastNameError("Only letters and spaces are allowed.");
-      Toast.show({
-        type: "error",
-        text1: "Validation Error",
-        text2: "Last name contains invalid characters.",
-      });
       return false;
     }
     return true;
@@ -168,27 +137,21 @@ const ProfileSettings = () => {
   const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
-  
+
       const userData: UpdateUserName = {
         first_name: firstName,
         last_name: lastName,
       };
-  
+
       try {
-        // Send the updated user data to the backend
         const updatedUser = await updateUserName(userData);
-  
-        // Update the initial state to reflect the saved changes
-        setInitialFirstName(updatedUser.first_name);
-        setInitialLastName(updatedUser.last_name);
-        setInitialProfileImage(profileImage);
-  
+
         Toast.show({
           type: "success",
           text1: "Profile Saved",
           text2: "Your profile changes have been saved successfully.",
         });
-  
+
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -206,12 +169,12 @@ const ProfileSettings = () => {
       }
     }
   };
-  
+
   const handleCancel = () => {
     if (
-      firstName !== initialFirstName ||
-      lastName !== initialLastName ||
-      profileImage !== initialProfileImage
+      firstName !== user?.first_name ||
+      lastName !== user?.last_name ||
+      profileImage !== null
     ) {
       setShowModal(true);
     } else {
@@ -225,9 +188,9 @@ const ProfileSettings = () => {
   };
 
   const confirmDiscardChanges = () => {
-    setFirstName(initialFirstName);
-    setLastName(initialLastName);
-    setProfileImage(initialProfileImage);
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
+    setProfileImage(null);
     setShowModal(false);
     navigation.dispatch(
       CommonActions.reset({
@@ -236,7 +199,6 @@ const ProfileSettings = () => {
       })
     );
   };
-
 
   return (
     <SafeAreaView className="flex-1 bg-white">

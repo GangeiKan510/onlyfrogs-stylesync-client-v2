@@ -15,7 +15,7 @@ import CheckmarkIcon from "../../assets/icons/profile/checkmark-icon.svg";
 import { useRouter } from "expo-router";
 import type { Href } from "expo-router";
 import { routes } from "@/utils/routes";
-import NoProfileImg from "../../assets/icons/dave.svg";
+import NoProfileImg from "../../assets/icons/profile/no-profile-img.svg";
 import LockIcon from "../../assets/icons/profile/lock-icon.svg";
 import CoverImg from "../../assets/icons/profile/cover-img.svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -53,7 +53,7 @@ const ProfileComponent = () => {
                 ? `${user.first_name} ${user.last_name}`
                 : "Guest"}
             </Text>
-            <Text>{user?.email}</Text>
+            <Text className="text-[#B7B7B7]">{user?.email}</Text>
           </View>
           <View>
             <TouchableOpacity

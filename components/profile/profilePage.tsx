@@ -21,7 +21,7 @@ import CoverImg from "../../assets/icons/profile/cover-img.svg";
 import { LinearGradient } from "expo-linear-gradient";
 import ConfirmationModal from "../dialogs/ConfirmationModal";
 
-const ProfileComponent = () => {
+const ProfilePage = () => {
   const router = useRouter();
   const { user } = useUser();
   const [signOut, loading] = useSignOut(auth);
@@ -201,4 +201,4 @@ const ProfileComponent = () => {
   );
 };
 
-export default ProfileComponent;
+export default ProfilePage;

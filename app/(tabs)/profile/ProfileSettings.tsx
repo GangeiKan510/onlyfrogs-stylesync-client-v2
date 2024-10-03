@@ -1,16 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { useNavigation, CommonActions } from "@react-navigation/native";
-// import {
-//   View,
-//   Text,
-//   TouchableOpacity,
-//   TextInput,
-//   Image,
-//   Modal,
-//   ScrollView,
-//   Alert,
-// } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, CommonActions } from "@react-navigation/native";
@@ -199,6 +186,7 @@ const ProfileSettings = () => {
       })
     );
   };
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">

@@ -1,11 +1,11 @@
 import { View } from "react-native";
 import React from "react";
-import ProfileComponent from "@/components/profile/profileComponent";
+import ProfilePage from "@/components/profile/profilePage";
 
 const Profile = () => {
   return (
     <View className="flex-1">
-      <ProfileComponent />
+      <ProfilePage />
     </View>
   );
 };

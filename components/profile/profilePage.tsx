@@ -138,6 +138,7 @@ const ProfilePage = () => {
               </View>
               <ArrowRightIcon width={15} height={15} color="black" />
             </TouchableOpacity>
+
             <TouchableOpacity
               className="flex-row my-2 h-[32px] w-full justify-between items-center"
               onPress={() =>
@@ -152,7 +153,13 @@ const ProfilePage = () => {
               </View>
               <ArrowRightIcon width={15} height={15} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="flex-row my-2 h-[32px] w-full justify-between items-center">
+
+            <TouchableOpacity
+              className="flex-row my-2 h-[32px] w-full justify-between items-center"
+              onPress={() =>
+                router.push(routes.bodyType as Href<string>)
+              }
+            >
               <View className="flex-row">
                 <BodyTypeIcon width={20.63} height={25.97} />
                 <Text className="font-medium text-[16px] ml-3">Body Type</Text>

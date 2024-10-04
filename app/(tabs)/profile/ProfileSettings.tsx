@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-
 import Toast from "react-native-toast-message";
 import NoProfileImg from "../../../assets/icons/profile/no-profile-img.svg";
 import Back from "../../../assets/icons/back-icon.svg";

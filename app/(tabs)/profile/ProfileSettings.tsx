@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import {
@@ -27,35 +27,70 @@ const ProfileSettings = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
+  const initialFirstName = useRef(user?.first_name || "");
+  const initialLastName = useRef(user?.last_name || "");
+  const initialProfileImage = useRef<string | null>(null);
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    resetToInitialState();
+  }, [user]);
+
+  const resetToInitialState = () => {
+    setFirstName(user?.first_name || '');
+    setLastName(user?.last_name || '');
+    setProfileImage(null);
+    initialFirstName.current = user?.first_name || '';
+    initialLastName.current = user?.last_name || '';
+    initialProfileImage.current = null;
+  };
+
   const uploadProfileImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
+  
     if (status === "denied") {
       Alert.alert(
         "Permission Required",
-        "Permission to access the media library is required. Please enable it in settings."
+        "Permission to access the media library is required. Please enable it in settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Try Again",
+            onPress: async () => {
+              const newPermissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (newPermissionResult.granted) {
+                launchImagePicker();
+              } else {
+                Alert.alert("Permission still denied. Please enable it in settings.");
+              }
+            },
+          },
+        ]
       );
       return;
     }
 
     if (status === "granted") {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
+      launchImagePicker();
+    }
+  };
 
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        setProfileImage(uri);
-      }
+
+  const launchImagePicker = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setProfileImage(uri);
     }
   };
 
@@ -103,6 +138,11 @@ const ProfileSettings = () => {
     }
     if (!nameRegex.test(firstName)) {
       setFirstNameError("Only letters and spaces are allowed.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "First name contains invalid characters.",
+      });
       return false;
     }
 
@@ -116,6 +156,11 @@ const ProfileSettings = () => {
     }
     if (!nameRegex.test(lastName)) {
       setLastNameError("Only letters and spaces are allowed.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Last name contains invalid characters.",
+      });
       return false;
     }
     return true;
@@ -124,21 +169,24 @@ const ProfileSettings = () => {
   const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
-
+  
       const userData: UpdateUserName = {
         first_name: firstName,
         last_name: lastName,
       };
-
+  
       try {
         const updatedUser = await updateUserName(userData);
-
+        setFirstName(updatedUser.first_name);
+        setLastName(updatedUser.last_name);
+        setProfileImage(profileImage);
+  
         Toast.show({
           type: "success",
           text1: "Profile Saved",
           text2: "Your profile changes have been saved successfully.",
         });
-
+  
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -155,15 +203,18 @@ const ProfileSettings = () => {
         setIsSaving(false);
       }
     }
+    console.log()
   };
-
+  
+  
   const handleCancel = () => {
+    // Compare the current values with the initial values stored in useRef
     if (
-      firstName !== user?.first_name ||
-      lastName !== user?.last_name ||
-      profileImage !== null
+      firstName !== initialFirstName.current ||
+      lastName !== initialLastName.current ||
+      profileImage !== initialProfileImage.current
     ) {
-      setShowModal(true);
+      setShowModal(true); // Show modal if changes are detected
     } else {
       navigation.dispatch(
         CommonActions.reset({
@@ -175,9 +226,7 @@ const ProfileSettings = () => {
   };
 
   const confirmDiscardChanges = () => {
-    setFirstName(user?.first_name || "");
-    setLastName(user?.last_name || "");
-    setProfileImage(null);
+    resetToInitialState();
     setShowModal(false);
     navigation.dispatch(
       CommonActions.reset({
@@ -285,7 +334,7 @@ const ProfileSettings = () => {
       </View>
 
       <Modal transparent={true} visible={showModal}>
-        <View className="flex-1 justify-center items-center bg-black opacity-90">
+        <View className="flex-1 justify-center items-center bg-black opacity-80">
           <View className="bg-white rounded-[10px] p-6">
             <Text className="text-center text-[18px] font-bold">
               Discard Changes?
@@ -315,3 +364,4 @@ const ProfileSettings = () => {
 };
 
 export default ProfileSettings;
+

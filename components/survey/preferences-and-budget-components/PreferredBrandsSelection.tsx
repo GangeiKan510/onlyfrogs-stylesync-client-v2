@@ -17,11 +17,11 @@ const PreferredBrandSelection = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showAll, setShowAll] = useState<boolean>(false);
 
-  const toggleBrandSelection = (brand: string) => {
-    if (selectedBrands.includes(brand)) {
-      setSelectedBrands(selectedBrands.filter((b) => b !== brand));
+  const toggleBrandSelection = (brandName: string) => {
+    if (selectedBrands.includes(brandName)) {
+      setSelectedBrands(selectedBrands.filter((brand) => brand !== brandName));
     } else {
-      setSelectedBrands([...selectedBrands, brand]);
+      setSelectedBrands([...selectedBrands, brandName]);
     }
   };
 
@@ -30,25 +30,27 @@ const PreferredBrandSelection = () => {
   return (
     <View>
       <View className="flex-wrap flex-row">
-        {visibleBrands.map((brand, index) => (
-          <View key={index} className="flex-row items-center mb-2">
+        {visibleBrands.map((brandName, index) => (
+          <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
-              className={`m-1 px-4 py-2 border-2 rounded-full flex-row items-center ${
-                selectedBrands.includes(brand.name)
-                  ? 'border-gray-900 bg-gray-200 border-[1px] text-white'
-                  : 'border-[#7AB2B2] border-[1px]'
+              className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
+                selectedBrands.includes(brandName.name)
+                  ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                  : "bg-white border-[#7AB2B2]"
               }`}
-              onPress={() => toggleBrandSelection(brand.name)}
+              onPress={() => toggleBrandSelection(brandName.name)}
             >
               <Image
-                source={brand.logo}
-                style={{ width: 24, height: 24, marginRight: 8,  borderRadius: 12, }}
+                source={brandName.logo}
+                style={{ width: 22, height: 22, marginRight: 8, borderRadius: 12 }}
                 resizeMode="contain"
               />
-              <Text className="text-base">{brand.name}</Text>
+              <Text className={`text-base ${
+                selectedBrands.includes(brandName.name) ? 'text-white' : 'text-[#7AB2B2]'
+              }`}>
+                {brandName.name}
+              </Text>
             </TouchableOpacity>
-
-            {/* Show More/Show Less Links */}
             {!showAll && brandsList.length > 4 && index === 3 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
                 <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show more...</Text>

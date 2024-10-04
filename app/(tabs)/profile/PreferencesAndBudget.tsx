@@ -19,15 +19,15 @@ const PreferencesAndBudget = () => {
           </Text>
           <StyleSelection />
           <Text className="text-lg font-bold mt-5 mb-2">
-            Favorite Color
+            Choose your preferred colors
           </Text>
           <FavColorSelection />
           <Text className="text-lg font-bold mt-5 mb-2">
-            Preffered Brands
+            Choose yout preffered brands
           </Text>
           <PreferredBrandSelection />
           <Text className="text-lg font-bold mt-5 mb-2">
-            Budget
+            Choose your preferred budget range
           </Text>
           <BudgetRange />
         </View>

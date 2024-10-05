@@ -56,7 +56,8 @@ const TopGreeting = () => {
                     .charAt(0)
                     .toUpperCase() +
                   user.first_name.split(" ")[0].toLowerCase().slice(1)
-                : "Guest"}!
+                : "Guest"}
+              !
             </Text>
             {isEmailVerified ? <EmailVerifiedIcon /> : null}
           </View>
@@ -83,6 +84,11 @@ const TopGreeting = () => {
             <Text>To Survey</Text>
           </Pressable>
         </View>
+        <Pressable
+          onPress={() => router.push(routes.survey as Href<string | object>)}
+        >
+          <Text>To Survey</Text>
+        </Pressable>
       </View>
 
       <ConfirmationModal

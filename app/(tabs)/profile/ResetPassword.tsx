@@ -1,143 +1,216 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  SafeAreaView,
-  TextInput,
-  Pressable,
-  KeyboardAvoidingView,
-} from "react-native";
-import Background from "../../../assets/icons/profile/background.svg";
-import EyeIcon from "../../../assets/icons/profile/eye-icon.svg";
-import Header from "../../../components/common/Header";
-import BackButton from "@/components/buttons/BackButton";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { auth } from "@/firebaseConfig";
+import { updatePassword } from "firebase/auth";
+import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
+import Back from "@/assets/icons/back-icon.svg";
+import CirclesIcon from "@/assets/icons/circles-icon.svg";
+import LockIcon from "@/assets/icons/lock-icon.svg";
+import Eye from "@/assets/icons/eye-icon.svg";
+import EyeSlash from "@/assets/icons/eye-slash-icon.svg";
+import Header from "@/components/common/Header";
 
 const ResetPassword = () => {
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [showCurrentPassword, setShowCurrentPassword] =
-    useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
 
-  const handleShowCurrentPassword = () => {
-    setShowCurrentPassword(!showCurrentPassword);
+  const navigation = useNavigation();
+
+  // Updated validatePassword function
+  const validatePassword = (value: string) => {
+    if (value === "") {
+      setPasswordError(""); // Clear error if the input is empty
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
+    if (!passwordRegex.test(value)) {
+      setPasswordError(
+        "Password must contain at least 1 uppercase letter, 1 special character, 1 number, and be at least 6 characters long."
+      );
+    } else {
+      setPasswordError("");
+    }
   };
 
-  const handleShowNewPassword = () => {
-    setShowNewPassword(!showNewPassword);
+  const handleNewPasswordChange = (value: string) => {
+    setNewPassword(value);
+    validatePassword(value);
+    // Validate confirm password
+    validateConfirmPassword(confirmPassword);
   };
 
-  const handleShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  // Updated validateConfirmPassword function
+  const validateConfirmPassword = (value: string) => {
+    if (value === "") {
+      setConfirmPasswordError(""); // Clear error if the input is empty
+      return;
+    }
+
+    if (value !== newPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+    } else {
+      setConfirmPasswordError("");
+    }
   };
 
-  const handleRevert = () => {
-    // Revert the password
+  const handleConfirmPasswordChange = (value: string) => {
+    setConfirmPassword(value);
+    validateConfirmPassword(value);
   };
 
-  const handleReset = () => {};
+  const handleResetPassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Toast.show({
+        type: "error",
+        text1: "All fields are required",
+        position: "top",
+      });
+      return;
+    }
+
+    if (passwordError || confirmPasswordError) {
+      Toast.show({
+        type: "error",
+        text1: "Please fix the errors before proceeding.",
+        position: "top",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const user = auth.currentUser;
+      await updatePassword(user, newPassword);
+      setLoading(false);
+      Toast.show({
+        type: "success",
+        text1: "Password reset successful",
+        position: "top",
+      });
+      navigation.goBack();
+    } catch (error) {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Failed to reset password",
+        text2: "Please try again.",
+        position: "top",
+      });
+      console.log("Error resetting password:", error);
+    }
+  };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#ffffff]">
-      <View className="items-center">
-        <Background />
+    <View className="flex-1 bg-white">
+      <View className="absolute left-10 top-16 z-10">
+        <TouchableOpacity onPress={() => navigation.goBack()} className="mb-6">
+          <Back width={20} height={20} />
+        </TouchableOpacity>
       </View>
-      <View className="absolute flex-1 mt-10 mx-10">
-        <BackButton />
-      </View>
-      <View className="absolute top-10 left-0 right-0 flex items-center z-10">
-        <Text className="flex-1 text-center font-medium text-[16px]">
-          Reset Password
-        </Text>
-        <View className="mt-5 items-center">
-          <Header />
+      <Header />
+      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+        <View className="absolute top-[11%] left-[31.5%] z-10">
+          <LockIcon />
         </View>
-      </View>
+        <View className="justify-center items-center mt-16">
+          <CirclesIcon />
+        </View>
 
-      {/* Input Fields */}
-      <KeyboardAvoidingView>
-        <View className="flex-1 mx-5">
-          <Text className="text-[14px] mx-2 text-[#B7B7B7] ">
-            Current Password
-          </Text>
-          <View className="bg-[#F2F2F2] border border-[#7AB2B2] rounded-[10px] mt-2 mb-8 w-[95%] h-[40px] mx-auto">
+        <View className="flex-1 mt-16 mx-10">
+          <View className="justify-center items-center mb-10">
+            <Text className="text-[24px] font-bold">Reset Your Password</Text>
+            <Text className="text-[16px] mt-4 text-center">
+              Please enter your current password and your new password below.
+            </Text>
+          </View>
+
+          <Text className="mb-1">Current Password</Text>
+          <View className="relative">
             <TextInput
-              placeholder="Current Password"
-              secureTextEntry={!showCurrentPassword}
-              className="px-5 py-2"
+              className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 mb-4"
               value={currentPassword}
-              onChangeText={(text) => setCurrentPassword(text)}
+              onChangeText={(input) => setCurrentPassword(input)}
+              secureTextEntry={!showCurrentPassword}
             />
-            <Pressable
-              onPress={handleShowCurrentPassword}
-              className="absolute right-0 mr-2 mt-2"
+            <TouchableOpacity
+              className="absolute right-0 items-center justify-center px-4 h-[42px]"
+              onPress={() => setShowCurrentPassword(!showCurrentPassword)}
             >
-              <EyeIcon width={20} height={20} />
-            </Pressable>
+              {showCurrentPassword ? (
+                <EyeSlash width={20} height={20} fill="#B7B7B7" />
+              ) : (
+                <Eye width={20} height={20} fill="#B7B7B7" />
+              )}
+            </TouchableOpacity>
           </View>
 
-          <Text className="text-[14px] mx-2 text-[#B7B7B7]">New Password</Text>
-          <View className="bg-[#F2F2F2] border border-[#7AB2B2] rounded-[10px] mt-2 mb-8 w-[95%] h-[40px] mx-auto">
+          <Text className="mb-1">New Password</Text>
+          <View className="relative">
             <TextInput
-              placeholder="New Password"
-              secureTextEntry={!showNewPassword}
-              className="px-5 py-2 w-full h-full"
+              className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
               value={newPassword}
-              onChangeText={setNewPassword}
+              onChangeText={handleNewPasswordChange}
+              secureTextEntry={!showNewPassword}
             />
-            <Pressable
-              onPress={handleShowNewPassword}
-              className="absolute right-0 mr-2 mt-2"
+            <TouchableOpacity
+              className="absolute right-0 items-center justify-center px-4 h-[42px]"
+              onPress={() => setShowNewPassword(!showNewPassword)}
             >
-              <EyeIcon width={20} height={20} />
-            </Pressable>
+              {showNewPassword ? (
+                <EyeSlash width={20} height={20} fill="#B7B7B7" />
+              ) : (
+                <Eye width={20} height={20} fill="#B7B7B7" />
+              )}
+            </TouchableOpacity>
           </View>
+          {passwordError ? (
+            <Text className="text-rose-500 mb-4">{passwordError}</Text>
+          ) : null}
 
-          <Text className="text-[14px] mx-2 text-[#B7B7B7]">
-            Confirm Password
-          </Text>
-          <View className="bg-[#F2F2F2] border border-[#7AB2B2] rounded-[10px] mt-2 w-[95%] h-[40px] mx-auto">
+          <Text className="mb-1">Confirm Password</Text>
+          <View className="relative">
             <TextInput
-              placeholder="Confirm Password"
-              secureTextEntry={!showConfirmPassword}
-              className="px-5 py-2 w-full h-full"
+              className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
               value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              onChangeText={handleConfirmPasswordChange}
+              secureTextEntry={!showConfirmPassword}
             />
-            <Pressable
-              onPress={handleShowConfirmPassword}
-              className="absolute right-0 mr-2 mt-2"
+            <TouchableOpacity
+              className="absolute right-0 items-center justify-center px-4 h-[42px]"
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <EyeIcon width={20} height={20} />
-            </Pressable>
+              {showConfirmPassword ? (
+                <EyeSlash width={20} height={20} fill="#B7B7B7" />
+              ) : (
+                <Eye width={20} height={20} fill="#B7B7B7" />
+              )}
+            </TouchableOpacity>
           </View>
+          {confirmPasswordError ? (
+            <Text className="text-rose-500 mb-4">{confirmPasswordError}</Text>
+          ) : null}
 
-          {/* Revert Button */}
-          <View className="flex-row justify-between fixed mt-20">
-            <Pressable
-              onPress={handleRevert}
-              className="flex mx-2 bg-[#F9F9F9] rounded-[10px] border border-solid border-[#7AB2B2] w-[45%] h-[42px]"
-            >
-              <Text className="text-center text-[#7AB2B2] text-[16px] py-2">
-                Revert
-              </Text>
-            </Pressable>
-            {/* Reset Button */}
-            <Pressable
-              onPress={handleReset}
-              className="flex mr-2 bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px]"
-            >
-              <Text className="text-center text-[#FFFFFF] text-[16px] py-2">
-                Reset
-              </Text>
-            </Pressable>
-          </View>
+          <TouchableOpacity
+            className="bg-[#7ab2b2] h-[42px] rounded-[10px] px-4 mb-6 justify-center items-center"
+            onPress={handleResetPassword}
+            disabled={loading}
+          >
+            <Text className="text-white text-[16px]">
+              {loading ? "Resetting..." : "Reset Password"}
+            </Text>
+          </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </ScrollView>
+    </View>
   );
 };
 

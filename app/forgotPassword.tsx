@@ -90,12 +90,12 @@ export default function ForgotPassword() {
               {loading ? "Sending..." : "Send Code"}
             </Text>
           </Pressable>
-          <Link
+          {/* <Link
             href={routes.verificationCode as Href<string | object>}
             className="text-[#0d0e0e] text-[16px] underline text-center mt-3"
           >
             <Text>Proceed to verify code</Text>
-          </Link>
+          </Link> */}
         </View>
       </ScrollView>
     </View>

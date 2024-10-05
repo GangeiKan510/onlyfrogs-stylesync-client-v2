@@ -14,18 +14,18 @@ const FavColorSelection = () => {
     }
   };
 
-  const visibleColors = showAll ? COLOR_LIST : COLOR_LIST.slice(0, 8); // Show only the first 8 colors initially
+  const visibleColors = showAll ? COLOR_LIST : COLOR_LIST.slice(0, 8);
 
   return (
     <View>
       <View className="flex-wrap flex-row">
         {visibleColors.map((color, index) => (
-          <View key={index} className="flex-row items-center mb-2">
+          <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
-              className={`m-1 px-4 py-2 border-2 rounded-full flex-row items-center ${
+              className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
                 selectedColors.includes(color.name)
-                  ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                  : "border-[#7AB2B2] border-[1px]"
+                  ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                  : "bg-white border-[#7AB2B2]"
               }`}
               onPress={() => toggleColorSelection(color.name)}
             >
@@ -33,7 +33,15 @@ const FavColorSelection = () => {
                 style={{ backgroundColor: color.colorCode }}
                 className="w-4 h-4 rounded-full mr-2 border-gray-400 border-[0.5px]"
               />
-              <Text className="text-base">{color.name}</Text>
+              <Text
+                className={`text-base ${
+                  selectedColors.includes(color.name)
+                    ? "text-white"
+                    : "text-[#7AB2B2]"
+                }`}
+              >
+                {color.name}
+              </Text>
             </TouchableOpacity>
             {!showAll && COLOR_LIST.length > 8 && index === 7 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>

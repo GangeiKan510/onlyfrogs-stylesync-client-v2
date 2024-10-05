@@ -49,3 +49,8 @@ export interface Preferences {
     max: number;
   };
 }
+
+export interface UpdateUserName {
+  first_name: string;
+  last_name: string;
+}

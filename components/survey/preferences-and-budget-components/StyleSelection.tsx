@@ -6,32 +6,39 @@ const StyleSelection = () => {
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [showAll, setShowAll] = useState<boolean>(false);
 
-  const toggleStyleSelection = (style: string) => {
-    if (selectedStyles.includes(style)) {
-      setSelectedStyles(selectedStyles.filter((s) => s !== style));
+  const toggleStyleSelection = (styleName: string) => {
+    if (selectedStyles.includes(styleName)) {
+      setSelectedStyles(selectedStyles.filter((style) => style !== styleName));
     } else {
-      setSelectedStyles([...selectedStyles, style]);
+      setSelectedStyles([...selectedStyles, styleName]);
     }
   };
 
-  const visibleStyles = showAll ? STYLE_LIST : STYLE_LIST.slice(0, 8); // Show only the first 8 styles initially
+  const visibleStyles = showAll ? STYLE_LIST : STYLE_LIST.slice(0, 8);
 
   return (
     <View>
       <View className="flex-wrap flex-row">
         {visibleStyles.map((style, index) => (
-          <View key={index} className="flex-row items-center mb-2">
+          <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
-              className={`m-1 px-4 py-2 border-2 rounded-full flex-row items-center ${
-                selectedStyles.includes(style)
-                  ? "border-gray-900 bg-gray-200 border-[1px] text-white"
-                  : "border-[#7AB2B2] border-[1px]"
+              className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
+                selectedStyles.includes(style.name)
+                  ? "bg-[#7AB2B2] border-[#7AB2B2]"
+                  : "bg-white border-[#7AB2B2]"
               }`}
-              onPress={() => toggleStyleSelection(style)}
+              onPress={() => toggleStyleSelection(style.name)}
             >
-              <Text className="text-base">{style}</Text>
+              <Text
+                className={`text-base ${
+                  selectedStyles.includes(style.name)
+                    ? "text-white"
+                    : "text-[#7AB2B2]"
+                }`}
+              >
+                {style.name}
+              </Text>
             </TouchableOpacity>
-            {/* Show more/less link next to the style items */}
             {!showAll && STYLE_LIST.length > 8 && index === 7 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
                 <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
@@ -49,6 +56,27 @@ const StyleSelection = () => {
           </View>
         ))}
       </View>
+
+      {selectedStyles.length > 0 && (
+        <View className="">
+          {selectedStyles.map((styleName) => {
+            const style = STYLE_LIST.find((s) => s.name === styleName);
+            return (
+              style && (
+                <View
+                  key={styleName}
+                  className="bg-gray-100 px-2 mb-2 rounded-md"
+                >
+                  <Text className="font-bold text-[#7AB2B2]">
+                    {style.name}:
+                  </Text>
+                  <Text className="text-[#7AB2B2]">{style.description}</Text>
+                </View>
+              )
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };

@@ -20,7 +20,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.seannamo15.onlyfrogsstylesyncclientv2"
+      "package": "onlyfroggs.stylesync",
+      "googleServicesFile": "./google-services.json",
+      "permissions": ["INTERNET"]
     },
     "web": {
       "bundler": "metro",

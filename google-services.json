@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "983938891217",
+    "firebase_url": "https://onlyfroggs-stylesync-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "onlyfroggs-stylesync",
+    "storage_bucket": "onlyfroggs-stylesync.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983938891217:android:a2ee21d070fba4fd2e74f0",
+        "android_client_info": {
+          "package_name": "onlyfroggs.stylesync"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983938891217-i5k0iirdjvfmgq4hbbf54diieosimlo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbhI3PI4xZ2UsnBfYFpfLgBiOnXc6u8cg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983938891217-i5k0iirdjvfmgq4hbbf54diieosimlo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

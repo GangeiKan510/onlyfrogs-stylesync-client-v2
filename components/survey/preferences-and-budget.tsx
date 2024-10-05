@@ -46,8 +46,8 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
           </Text>
           <PreferredBrandsSelection />
         </View>
-        <View className="flex justify-start items-start mx-5 mt-10">
-          <Text className="text-lg font-bold mb-2">Budget</Text>
+        <View className="flex justify-start items-start mx-5 mt-10 mb-10">
+          <Text className="text-lg font-bold mb-2">What&apos;s your preferred budget range</Text>
           <BudgetRange />
         </View>
       </ScrollView>

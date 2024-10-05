@@ -20,6 +20,7 @@ import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
+import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
 
 const Page = () => {
@@ -29,6 +30,7 @@ const Page = () => {
   const routeName = path.split("/")[1];
   const includeBack = ["closet"];
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLinkModalVisible, setIsLinkModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedClothingImage, setSelectedClothingImage] = useState<
@@ -50,6 +52,10 @@ const Page = () => {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleCloseLinkModal = () => {
+    setIsLinkModalVisible(false); // Close link modal
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
@@ -156,8 +162,41 @@ const Page = () => {
     }
   };
 
-  const handleLinkUpload = () => {
-    handleCloseModal();
+  const handleLinkUpload = async (link: string) => {
+    const isValidImageLink = /\.(jpg|jpeg|png)(?=\?|$)/i.test(link);
+
+    if (isValidImageLink) {
+      const formData = new FormData();
+      formData.append("file", {
+        uri: link,
+        name: link.split("/").pop(),
+        type: "image/jpeg",
+      } as any);
+      formData.append("user_id", user?.id || "");
+      formData.append("closet_id", closetId || "");
+
+      try {
+        setLoading(true);
+        await uploadClothing(formData);
+        Toast.show({
+          type: "success",
+          text1: "Link successfully uploaded!",
+          position: "top",
+          swipeable: true,
+        });
+        refetchMe();
+      } catch (error) {
+        console.error("Error while uploading clothing from link:", error);
+      } finally {
+        setLoading(false);
+      }
+
+      handleCloseLinkModal();
+    } else {
+      alert(
+        "Please enter a valid image URL with .jpg, .jpeg, or .png"
+      );
+    }
   };
 
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
@@ -176,9 +215,7 @@ const Page = () => {
             <BackButton />
           </View>
         )}
-        <View
-          className="items-center border-b pb-5 border-[#F3F3F3]"
-        >
+        <View className="items-center border-b pb-5 border-[#F3F3F3]">
           <Text className="text-xl font-bold text-center">
             {currentCloset?.name || "Closet Title"}
           </Text>
@@ -212,7 +249,7 @@ const Page = () => {
           loading={loading}
           onCameraPress={handleTakePicture}
           onGalleryPress={handleUploadFromGallery}
-          onLinkPress={handleLinkUpload}
+          onLinkPress={() => setIsLinkModalVisible(true)}
         />
       </View>
 
@@ -221,6 +258,12 @@ const Page = () => {
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
+      />
+
+      <LinkUploadModal
+        isVisible={isLinkModalVisible}
+        onClose={handleCloseLinkModal}
+        onUpload={handleLinkUpload} // Pass upload handler
       />
     </SafeAreaView>
   );

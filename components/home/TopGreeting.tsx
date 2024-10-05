@@ -84,11 +84,6 @@ const TopGreeting = () => {
             <Text>To Survey</Text>
           </Pressable>
         </View>
-        <Pressable
-          onPress={() => router.push(routes.survey as Href<string | object>)}
-        >
-          <Text>To Survey</Text>
-        </Pressable>
       </View>
 
       <ConfirmationModal

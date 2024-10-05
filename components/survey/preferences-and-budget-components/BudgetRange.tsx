@@ -10,7 +10,7 @@ const App = () => {
   const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
 
   return (
-    <GestureHandlerRootView className="mt-1">
+    <GestureHandlerRootView className="mt-1 ">
       <View className="justify-center items-center">
         <View className="z-10">
           <View className="flex-row justify-between mx-2 ">
@@ -25,7 +25,7 @@ const App = () => {
           </View>
           <View className="px-4 py-2 mb-4  flex justify-center items-center">
             <RangeSlider
-              sliderWidth={350}
+              sliderWidth={330}
               min={MIN_DEFAULT}
               max={MAX_DEFAULT}
               step={10}

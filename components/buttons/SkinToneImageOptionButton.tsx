@@ -61,7 +61,17 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
       }}
       style={[animatedStyles]}
     >
-      <View className="w-[50px] h-[50px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-0.25 bottom-6">
+      <View
+        className="w-[50px] h-[50px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-0.25 bottom-6"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 0.5 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3,
+          elevation: 5,
+          transform: [{ translateY: -2 }],
+        }}
+      >
         <AntDesignIcons
           name={iconName as keyof typeof AntDesignIcons.glyphMap}
           size={25}
@@ -95,6 +105,16 @@ const SkinToneImageOptions: React.FC<{
       <AnimatedPressable
         onPress={handlePress}
         className={`${isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"}  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20`}
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 0.5 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3,
+          elevation: 5,
+          transform: [
+            { translateY: -2 },
+          ],
+        }}
       >
         <Animated.Text style={[plusIconStyle]}>
           <CameraIcon />

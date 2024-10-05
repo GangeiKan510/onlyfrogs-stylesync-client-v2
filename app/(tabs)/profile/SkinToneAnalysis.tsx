@@ -49,11 +49,6 @@ const SkinToneAnalysis = () => {
     await requestCameraPermissions();
 
     if (hasPermission) {
-      if (selectedImage) {
-        Alert.alert("Image Already Selected", "You can only select one image.");
-        return;
-      }
-
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
@@ -94,11 +89,6 @@ const SkinToneAnalysis = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status === "granted") {
-      if (selectedImage) {
-        Alert.alert("Image Already Selected", "You can only select one image.");
-        return;
-      }
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,

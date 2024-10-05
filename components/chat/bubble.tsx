@@ -1,12 +1,40 @@
-import { View, Text } from "react-native";
+/* eslint-disable no-useless-escape */
+import { View, Image } from "react-native";
 import React from "react";
 import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 import ChatAvatar from "../common/ChatAvatar";
+import Markdown from "react-native-markdown-display";
 
 interface BubbleProps {
   type: string;
   message: string;
 }
+
+const renderImages = (message: string) => {
+  const imageUrls = message.match(/\!\[.*?\]\((.*?)\)/g) || [];
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+      }}
+    >
+      {imageUrls.map((img, index) => {
+        const url = img.match(/\((.*?)\)/)?.[1];
+        return (
+          <View key={index} style={{ margin: 5 }}>
+            <Image
+              source={{ uri: url }}
+              style={{ width: 100, height: 100, resizeMode: "contain" }}
+            />
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
 const Bubble = ({ type, message }: BubbleProps) => {
   return (
@@ -15,18 +43,32 @@ const Bubble = ({ type, message }: BubbleProps) => {
     >
       {type !== "user" && <BotIcon width={45} height={45} className="mr-2" />}
       <View
-        className={`rounded-[10px] p-3 max-w-[80%] ${
+        className={`rounded-[10px] px-3 max-w-[80%] ${
           type === "user" ? "bg-tertiary" : "bg-light-gray"
         }`}
         style={{
           alignSelf: type === "user" ? "flex-end" : "flex-start",
         }}
       >
-        <Text
-          className={`text-base ${type === "user" ? "text-white text-right" : "text-black"}`}
+        <Markdown
+          style={{
+            body: {
+              color: type === "user" ? "#FFFFFF" : "#000000",
+              textAlign: type === "user" ? "right" : "left",
+            },
+            link: {
+              color: "#1E90FF",
+            },
+          }}
+          rules={{
+            image: () => {
+              return null;
+            },
+          }}
         >
           {message}
-        </Text>
+        </Markdown>
+        {renderImages(message)}
       </View>
       {type === "user" && (
         <ChatAvatar

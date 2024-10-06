@@ -11,6 +11,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
 import PiecesCard from "@/components/cards/PiecesCard";
 import { useUser } from "@/components/config/user-context";
+import { categoryTypes } from "@/components/constants/clothing-details/categories";
+import { occasion } from "@/components/constants/clothing-details/occasion";
 
 const PiecesTab = () => {
   const { user } = useUser();
@@ -34,37 +36,59 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const capitalizeFirstLetter = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
+  const categoryNames = Object.keys(categoryTypes);
 
-  const filters = [
-    "casual",
-    "denim",
-    "formal",
-    "basic",
-    "floral",
-    "utility",
-    "shoes",
-  ].map((filter) => capitalizeFirstLetter(filter));
+  const searchFieldMatch = (field: string | string[] | null | never) => {
+    if (typeof field === "string") {
+      return field.toLowerCase().includes(search.toLowerCase());
+    } else if (Array.isArray(field)) {
+      return field.some(
+        (f) =>
+          typeof f === "string" &&
+          f.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return false;
+  };
 
   const filteredClothes =
     user?.clothes.filter((item) => {
-      const hasDetails = item.name && item.category && item.brand && item.color;
+      const hasDetails =
+        item.name &&
+        item.category &&
+        item.brand &&
+        item.color &&
+        item.material &&
+        item.season &&
+        item.pattern;
 
       const isSearchActive = search.length > 0;
 
       const matchesSearch =
         !isSearchActive ||
-        (item.name?.toLowerCase().includes(search.toLowerCase()) ?? false);
+        [
+          item.name,
+          item.color,
+          item.brand,
+          item.season,
+          item.pattern,
+          item.material,
+        ].some((field) => searchFieldMatch(field));
+
+      const itemCategory = item.category?.name?.toLowerCase() ?? "";
+      const itemOccasion = Array.isArray(item.occasion)
+        ? item.occasion.map((o) => (o as string).toLowerCase())
+        : [];
 
       const matchesFilters =
         selectedFilters.length === 0 ||
-        selectedFilters.some((filter) =>
-          item.tags.includes(filter.toLowerCase())
+        selectedFilters.some(
+          (filter) =>
+            itemCategory.includes(filter.toLowerCase()) ||
+            itemOccasion.includes(filter.toLowerCase())
         );
 
-      return matchesSearch && matchesFilters && (!isSearchActive || hasDetails);
+      return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
     }) ?? [];
 
   return (
@@ -93,33 +117,62 @@ const PiecesTab = () => {
         {dropdownVisible && (
           <View className="absolute top-16 right-0 left-0 z-50 border border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
             <View className="flex-row justify-between">
-              <Text className="mb-2">FILTER</Text>
+              <Text className="mb-2">FILTER by</Text>
               <Pressable onPress={clearFilters}>
                 <Text className="mb-2 underline underline-offset-2">Clear</Text>
               </Pressable>
             </View>
             <View className="flex-row flex-wrap">
-              {filters.map((filter) => (
-                <Pressable
-                  key={filter}
-                  className={`m-1 px-4 py-1 border-[1.5px] border-[#7AB2B2] rounded-[10px] ${
-                    selectedFilters.includes(filter.toLowerCase())
-                      ? "bg-[#7AB2B2]"
-                      : "bg-white"
-                  }`}
-                  onPress={() => toggleFilter(filter.toLowerCase())}
-                >
-                  <Text
-                    className={`text-center ${
-                      selectedFilters.includes(filter.toLowerCase())
-                        ? "text-white"
-                        : "text-[#7AB2B2]"
+              <Text className="text-[#7AB2B2] text-[16px] mt-2">Category</Text>
+              <View className="flex-row flex-wrap">
+                {categoryNames.map((category) => (
+                  <Pressable
+                    key={category}
+                    onPress={() => toggleFilter(category)}
+                    className={`m-1 px-4 py-1 border-[1.5px] border-[#7AB2B2] rounded-[10px] ${
+                      selectedFilters.includes(category)
+                        ? "bg-[#7AB2B2]"
+                        : "bg-white"
                     }`}
                   >
-                    {filter}
-                  </Text>
-                </Pressable>
-              ))}
+                    <Text
+                      className={`${
+                        selectedFilters.includes(category)
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {category}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+            <View className="flex-row flex-wrap">
+              <Text className="text-[#7AB2B2] text-[16px] mt-2">Occasion</Text>
+              <View className="flex-row flex-wrap">
+                {occasion.map((occasion) => (
+                  <Pressable
+                    key={occasion}
+                    onPress={() => toggleFilter(occasion)}
+                    className={`m-1 px-4 py-1 border-[1.5px] border-[#7AB2B2] rounded-[10px] ${
+                      selectedFilters.includes(occasion)
+                        ? "bg-[#7AB2B2]"
+                        : "bg-white"
+                    }`}
+                  >
+                    <Text
+                      className={`${
+                        selectedFilters.includes(occasion)
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {occasion}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
           </View>
         )}
@@ -140,6 +193,10 @@ const PiecesTab = () => {
         )}
         numColumns={3}
       />
+
+      {filteredClothes.length === 0 && (
+        <Text className="text-center mt-5">No items found.</Text>
+      )}
     </SafeAreaView>
   );
 };

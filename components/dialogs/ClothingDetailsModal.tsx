@@ -271,25 +271,27 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <Modal transparent={true} visible={showModal}>
-          <View className="flex-1 justify-center items-center bg-black opacity-80">
-            <View className="bg-white rounded-[10px] p-6">
-              <Text className="text-center text-[18px] font-bold">
-                Confirm Delete
-              </Text>
+
+        <Modal animationType="fade" transparent={true} visible={showModal}>
+          <View
+            className="flex-1 justify-center items-center"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
+              <Text className="text-[18px] mb-1 font-bold">Confirm Delete</Text>
               <Text className="mt-2 text-center">
                 Are you sure you want to delete this item?
               </Text>
               <View className="flex-row justify-between items-center mt-4 space-x-4">
                 <TouchableOpacity
                   onPress={handleDelete}
-                  className="border border-solid border-[#7AB2B2] rounded-[10px] px-10 py-2.5"
+                  className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                 >
                   <Text className="text-[#7AB2B2] text-[16px]">Delete</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setShowModal(false)}
-                  className="bg-[#7AB2B2] border border-solid border-[#7AB2B2] rounded-[10px] px-10 py-2.5"
+                  className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                 >
                   <Text className="text-white text-[16px]">Keep</Text>
                 </TouchableOpacity>

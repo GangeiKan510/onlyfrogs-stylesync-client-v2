@@ -92,7 +92,7 @@ const PiecesTab = () => {
     }) ?? [];
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="flex-grow">
       <View className="w-full">
         <View className="flex-row items-center gap-2">
           <View className="flex-row items-center flex-1 border-b border-black">
@@ -177,22 +177,27 @@ const PiecesTab = () => {
           </View>
         )}
       </View>
-
-      <FlatList
-        className="mt-5 z-20"
-        data={filteredClothes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <PiecesCard
-            uri={
-              item.image_url ||
-              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-            }
-            name={""}
-          />
-        )}
-        numColumns={3}
-      />
+      <View className="h-[80%]">
+        <FlatList
+          className="mt-5 z-20"
+          scrollEnabled={true}
+          data={filteredClothes}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <PiecesCard
+              uri={
+                item.image_url ||
+                "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+              }
+              name={""}
+            />
+          )}
+          numColumns={3}
+          contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+        />
+      </View>
 
       {filteredClothes.length === 0 && (
         <Text className="text-center mt-5">No items found.</Text>

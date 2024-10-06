@@ -11,6 +11,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
 import PiecesCard from "@/components/cards/PiecesCard";
 import { useUser } from "@/components/config/user-context";
+// import { seasons } from "@/components/constants/clothing-details/seasons";
 
 const PiecesTab = () => {
   const { user } = useUser();
@@ -49,23 +50,29 @@ const PiecesTab = () => {
   ].map((filter) => capitalizeFirstLetter(filter));
 
   const filteredClothes =
-    user?.clothes.filter((item) => {
-      const hasDetails = item.name && item.category && item.brand && item.color;
+  user?.clothes.filter((item) => {
+    
+    const hasDetails = item.name && item.category && item.brand && item.color;
 
-      const isSearchActive = search.length > 0;
+    const isSearchActive = search.length > 0;
 
-      const matchesSearch =
-        !isSearchActive ||
-        (item.name?.toLowerCase().includes(search.toLowerCase()) ?? false);
+    const matchesSearch =
+      !isSearchActive ||
+      item.name?.toLowerCase().includes(search.toLowerCase()) ||
+      item.color?.toLowerCase().includes(search.toLowerCase()) || 
+      item.brand?.toLowerCase().includes(search.toLowerCase()) || 
+      item.pattern?.toLowerCase().includes(search.toLowerCase()) || 
+      item.material?.toLowerCase().includes(search.toLowerCase()); 
 
-      const matchesFilters =
-        selectedFilters.length === 0 ||
-        selectedFilters.some((filter) =>
-          item.tags.includes(filter.toLowerCase())
-        );
+    const matchesFilters =
+      selectedFilters.length === 0 ||
+      selectedFilters.some((filter) =>
+        item.tags.includes(filter.toLowerCase())
+      );
 
-      return matchesSearch && matchesFilters && (!isSearchActive || hasDetails);
-    }) ?? [];
+    return matchesSearch && matchesFilters && (!isSearchActive || hasDetails);
+  }) ?? [];
+
 
   return (
     <SafeAreaView>

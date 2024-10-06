@@ -1,82 +1,87 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { View, Text, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
-import BodyTypeAImage from "../../assets/images/svg/body-type-a.svg";
-import BodyTypeBImage from "../../assets/images/svg/body-type-b.svg";
+import NeatHourGlass from "../../assets/images/bodyTypes/neatHourGlass.svg";
+import FullHourGlass from "../../assets/images/bodyTypes/fullHourGlass.svg";
+import Pear from "../../assets/images/bodyTypes/pear.svg";
+import LeanColumn from "../../assets/images/bodyTypes/leanColumn.svg";
+import Apple from "../../assets/images/bodyTypes/apple.svg";
+import InvertedTriangle from "../../assets/images/bodyTypes/invertedTriangle.svg";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+const bodyTypes = [
+  { name: "Neat Hourglass", image: NeatHourGlass, type: "NeatHourGlass" },
+  { name: "Full Hourglass", image: FullHourGlass, type: "FullHourGlass" },
+  { name: "Pear", image: Pear, type: "Pear" },
+  {
+    name: "Inverted Triangle",
+    image: InvertedTriangle,
+    type: "InvertedTriangle",
+  },
+  { name: "Lean Column", image: LeanColumn, type: "LeanColumn" },
+  { name: "Apple", image: Apple, type: "Apple" },
+];
 
-const BodyType = ({ setBodyType }: any) => {
-  const [selectedBodyType, setSelectedBodyType] = useState<string>("TypeA");
+interface BodyTypeProps {
+  setBodyType?: (bodyType: string) => void;
+}
+
+const BodyType = ({ setBodyType }: BodyTypeProps) => {
+  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
 
   useEffect(() => {
-    setBodyType(selectedBodyType);
-  }, [selectedBodyType]);
+    if (setBodyType) {
+      setBodyType(selectedBodyType);
+    }
+  }, [selectedBodyType, setBodyType]);
+
 
   return (
-    <View>
+    <SafeAreaView className="flex-1 bg-white">
       <View className="flex justify-center items-center mt-10">
-        <Text className="text-[20px]">What is your body type?</Text>
+        <Text className="text-center text-[20px] font-bold">What is your body type?</Text>
       </View>
-      <View className="flex-row h-[75vh] items-center gap-3 mx-auto">
-        {/* Type A */}
-        <Pressable
-          onPress={() => setSelectedBodyType("TypeA")}
-          className={`border-[2px] rounded-[12px] ${
-            selectedBodyType === "TypeA"
-              ? "border-tertiary"
-              : "border-transparent"
-          }`}
+      <View className=" flex-1 justify-center items-center">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="h-[75vh]"
         >
-          <View className="py-28 px-5">
-            <Text className="text-[20px] text-center text-tertiary">
-              Type A
-            </Text>
-            <BodyTypeAImage />
-            <View className="flex items-center justify-center mt-4">
-              <Pressable
-                className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
-                onPress={() => setSelectedBodyType("TypeA")}
-              >
-                <View
-                  className={`h-3 w-3 rounded-full ${
-                    selectedBodyType === "TypeA" ? "bg-tertiary" : "bg-white"
-                  }`}
-                />
-              </Pressable>
-            </View>
-          </View>
-        </Pressable>
-
-        {/* Type B */}
-        <Pressable
-          onPress={() => setSelectedBodyType("TypeB")}
-          className={`border-[2px] rounded-[12px] ${
-            selectedBodyType === "TypeB"
-              ? "border-tertiary"
-              : "border-transparent"
-          }`}
-        >
-          <View className="py-28 px-5">
-            <Text className="text-[20px] text-center text-tertiary">
-              Type B
-            </Text>
-            <BodyTypeBImage />
-            <View className="flex items-center justify-center mt-4">
-              <Pressable
-                className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
-                onPress={() => setSelectedBodyType("TypeB")}
-              >
-                <View
-                  className={`h-3 w-3 rounded-full ${
-                    selectedBodyType === "TypeB" ? "bg-tertiary" : "bg-white"
-                  }`}
-                />
-              </Pressable>
-            </View>
-          </View>
-        </Pressable>
+          {bodyTypes.map((bodyType) => (
+            <TouchableOpacity
+              key={bodyType.type}
+              onPress={() => setSelectedBodyType(bodyType.type)}
+              className={`border-[2px] rounded-[12px] mx-2 my-10 mt-12 ${
+                selectedBodyType === bodyType.type
+                  ? "border-tertiary"
+                  : "border-transparent"
+              }`}
+            >
+              <View className="py-8 px-3">
+                <Text className="text-[20px] text-center text-tertiary">
+                  {bodyType.name}
+                </Text>
+                <bodyType.image />
+                <View className="flex items-center justify-center mt-4">
+                  <TouchableOpacity
+                    className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
+                    onPress={() => setSelectedBodyType(bodyType.type)}
+                  >
+                    <View
+                      className={`h-3 w-3 rounded-full items-center justify-center ${
+                        selectedBodyType === bodyType.type
+                          ? "bg-tertiary"
+                          : "bg-white"
+                      }`}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

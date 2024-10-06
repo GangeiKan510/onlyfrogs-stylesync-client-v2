@@ -11,7 +11,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
 import PiecesCard from "@/components/cards/PiecesCard";
 import { useUser } from "@/components/config/user-context";
-// import { seasons } from "@/components/constants/clothing-details/seasons";
 import { categoryTypes } from "@/components/constants/clothing-details/categories";
 import { occasion } from "@/components/constants/clothing-details/occasion";
 
@@ -37,40 +36,48 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  // const capitalizeFirstLetter = (str: string) => {
-  //   return str.charAt(0).toUpperCase() + str.slice(1);
-  // };
-
-  // const filters = [
-  //   "casual",
-  //   "denim",
-  //   "formal",
-  //   "basic",
-  //   "floral",
-  //   "utility",
-  //   "shoes",
-  // ].map((filter) => capitalizeFirstLetter(filter));
-
   const categoryNames = Object.keys(categoryTypes);
-  // const occasionNames = occasion;
+
+  const searchFieldMatch = (field: string | string[] | null | never) => {
+    if (typeof field === "string") {
+      return field.toLowerCase().includes(search.toLowerCase());
+    } else if (Array.isArray(field)) {
+      return field.some(
+        (f) =>
+          typeof f === "string" &&
+          f.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return false;
+  };
 
   const filteredClothes =
     user?.clothes.filter((item) => {
-      const hasDetails = item.name && item.category && item.brand && item.color;
+      const hasDetails =
+        item.name &&
+        item.category &&
+        item.brand &&
+        item.color &&
+        item.material &&
+        item.season &&
+        item.pattern;
 
       const isSearchActive = search.length > 0;
 
       const matchesSearch =
         !isSearchActive ||
-        item.name?.toLowerCase().includes(search.toLowerCase()) ||
-        item.color?.toLowerCase().includes(search.toLowerCase()) ||
-        item.brand?.toLowerCase().includes(search.toLowerCase()) ||
-        item.pattern?.toLowerCase().includes(search.toLowerCase()) ||
-        item.material?.toLowerCase().includes(search.toLowerCase());
+        [
+          item.name,
+          item.color,
+          item.brand,
+          item.season,
+          item.pattern,
+          item.material,
+        ].some((field) => searchFieldMatch(field));
 
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((o) => o.toLowerCase())
+        ? item.occasion.map((o) => (o as string).toLowerCase())
         : [];
 
       const matchesFilters =

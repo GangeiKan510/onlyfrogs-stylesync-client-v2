@@ -9,7 +9,6 @@ import {
   Platform,
 } from "react-native";
 import * as Location from "expo-location";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PersonalInformationProps {
   setPersonalInfo: (info: PersonalInfoData) => void;

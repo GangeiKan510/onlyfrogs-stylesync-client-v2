@@ -7,7 +7,6 @@ import Pear from "../../assets/images/bodyTypes/pear.svg";
 import LeanColumn from "../../assets/images/bodyTypes/leanColumn.svg";
 import Apple from "../../assets/images/bodyTypes/apple.svg";
 import InvertedTriangle from "../../assets/images/bodyTypes/invertedTriangle.svg";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const bodyTypes = [
   { name: "Neat Hourglass", image: NeatHourGlass, type: "NeatHourGlass" },

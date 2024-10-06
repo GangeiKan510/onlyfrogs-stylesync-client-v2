@@ -240,7 +240,7 @@ const Page = () => {
               />
             )}
             numColumns={3}
-            className="mb-48"
+            className="mb-52"
           />
         )}
       </View>

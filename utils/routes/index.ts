@@ -10,12 +10,12 @@ export const routes = {
   profile: "/profile",
   closet: "closet",
 
-  profileSettings: "profile/ProfileSettings",
-  resetPassword: "profile/ResetPassword",
-  personalInformation: "profile/PersonalInformation",
-  preferencesAndBudget: "profile/PreferencesAndBudget",
-  skinToneAnalysis: "profile/SkinToneAnalysis",
-  bodyType: "profile/BodyType",
+  profileSettings: "profile/profile-settings",
+  resetPassword: "profile/reset-password",
+  personalInformation: "profile/personal-information",
+  preferencesAndBudget: "profile/preferences-and-budget",
+  skinToneAnalysis: "profile/skin-tone-analysis",
+  bodyType: "profile/body-type",
   subscription: "/subscription",
 
   expandedCloset: "(tabs)/closet/",

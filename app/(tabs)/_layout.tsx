@@ -32,7 +32,7 @@ export default function TabLayout() {
   if (loading) {
     return <LoadingScreen message={"Preparing the app."} />;
   }
-  
+
   return (
     <UserProvider>
       <Tabs
@@ -57,8 +57,19 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ focused }) => (
               <View style={styles.iconLabelContainer}>
-                <HomeIcon width={22} height={22} color={focused ? "#7ab2b2" : "black"} />
-                <Text style={[styles.tabLabel, { color: focused ? "#7ab2b2" : "black" }]}>Home</Text>
+                <HomeIcon
+                  width={22}
+                  height={22}
+                  color={focused ? "#7ab2b2" : "black"}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: focused ? "#7ab2b2" : "black" },
+                  ]}
+                >
+                  Home
+                </Text>
               </View>
             ),
           }}
@@ -69,8 +80,19 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ focused }) => (
               <View style={styles.iconLabelContainer}>
-                <DesignIcon width={23.36} height={22} color={focused ? "#7ab2b2" : "black"} />
-                <Text style={[styles.tabLabel, { color: focused ? "#7ab2b2" : "black" }]}>Design</Text>
+                <DesignIcon
+                  width={23.36}
+                  height={22}
+                  color={focused ? "#7ab2b2" : "black"}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: focused ? "#7ab2b2" : "black" },
+                  ]}
+                >
+                  Design
+                </Text>
               </View>
             ),
           }}
@@ -92,8 +114,19 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ focused }) => (
               <View style={styles.iconLabelContainer}>
-                <NotificationsIcon width={22} height={22} color={focused ? "#7ab2b2" : "black"} />
-                <Text style={[styles.tabLabel, { color: focused ? "#7ab2b2" : "black" }]}>Notifications</Text>
+                <NotificationsIcon
+                  width={22}
+                  height={22}
+                  color={focused ? "#7ab2b2" : "black"}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: focused ? "#7ab2b2" : "black" },
+                  ]}
+                >
+                  Notifications
+                </Text>
               </View>
             ),
           }}
@@ -104,8 +137,19 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ focused }) => (
               <View style={styles.iconLabelContainer}>
-                <ProfileIcon width={22} height={22} color={focused ? "#7ab2b2" : "black"} />
-                <Text style={[styles.tabLabel, { color: focused ? "#7ab2b2" : "black" }]}>Profile</Text>
+                <ProfileIcon
+                  width={22}
+                  height={22}
+                  color={focused ? "#7ab2b2" : "black"}
+                />
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: focused ? "#7ab2b2" : "black" },
+                  ]}
+                >
+                  Profile
+                </Text>
               </View>
             ),
           }}
@@ -125,42 +169,42 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile/BodyType"
+          name="profile/body-type"
           options={{
             href: null,
             tabBarStyle: { display: "none" },
           }}
         />
         <Tabs.Screen
-          name="profile/PersonalInformation"
+          name="profile/personal-information"
           options={{
             href: null,
             tabBarStyle: { display: "none" },
           }}
         />
         <Tabs.Screen
-          name="profile/PreferencesAndBudget"
+          name="profile/preferences-and-budget"
           options={{
             href: null,
             tabBarStyle: { display: "none" },
           }}
         />
         <Tabs.Screen
-          name="profile/ResetPassword"
+          name="profile/reset-password"
           options={{
             href: null,
             tabBarStyle: { display: "none" },
           }}
         />
         <Tabs.Screen
-          name="profile/SkinToneAnalysis"
+          name="profile/skin-tone-analysis"
           options={{
             href: null,
             tabBarStyle: { display: "none" },
           }}
         />
         <Tabs.Screen
-          name="profile/ProfileSettings"
+          name="profile/profile-settings"
           options={{
             href: null,
             tabBarStyle: { display: "none" },

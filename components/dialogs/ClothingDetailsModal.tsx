@@ -21,6 +21,7 @@ import PatternAccordion from "../accordions/Pattern";
 import { updateClothing } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
+import DeleteIcon from "../../assets/icons/delete-icon.svg";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -49,6 +50,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   }>({ name: null, type: null });
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (clothingId && user?.clothes) {
@@ -110,6 +112,26 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     } finally {
       setIsSaving(false);
       onClose();
+    }
+  };
+
+  const handleDelete = async () => {
+    if (clothingId) {
+      Toast.show({
+        type: "success",
+        text1: "Clothing deleted successfully!",
+        position: "top",
+        swipeable: true,
+      });
+      onClose();
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Failed to delete clothing!",
+        position: "top",
+        swipeable: true,
+      });
+      console.error("Failed to delete clothing: Clothing ID is missing.");
     }
   };
 
@@ -230,15 +252,51 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           </View>
 
           {/* Floating Save Button */}
-          <TouchableOpacity
-            onPress={handleSave}
-            className="w-96 h-[42px] flex items-center justify-center bg-[#7ab3b3] absolute bottom-2 self-center rounded-[10px] mb-4"
-          >
-            <Text className="text-center text-white">
-              {isSaving ? <Spinner type={"primary"} /> : "Save"}
-            </Text>
-          </TouchableOpacity>
+          <View className="flex-row justify-center items-center px-4 mb-4 absolute bottom-2 self-center space-x-7">
+            <TouchableOpacity
+              onPress={() => {
+                console.log("Delete button pressed");
+                setShowModal(true);
+              }}
+            >
+              <DeleteIcon width={32} height={32} color={"red"} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave}
+              className="w-80 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
+            >
+              <Text className="text-center text-white">
+                {isSaving ? <Spinner type={"primary"} /> : "Save"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
+        <Modal transparent={true} visible={showModal}>
+          <View className="flex-1 justify-center items-center bg-black opacity-80">
+            <View className="bg-white rounded-[10px] p-6">
+              <Text className="text-center text-[18px] font-bold">
+                Confirm Delete
+              </Text>
+              <Text className="mt-2 text-center">
+                Are you sure you want to delete this item?
+              </Text>
+              <View className="flex-row justify-between items-center mt-4 space-x-4">
+                <TouchableOpacity
+                  onPress={handleDelete}
+                  className="border border-solid border-[#7AB2B2] rounded-[10px] px-10 py-2.5"
+                >
+                  <Text className="text-[#7AB2B2] text-[16px]">Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  className="bg-[#7AB2B2] border border-solid border-[#7AB2B2] rounded-[10px] px-10 py-2.5"
+                >
+                  <Text className="text-white text-[16px]">Keep</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </Modal>
   );

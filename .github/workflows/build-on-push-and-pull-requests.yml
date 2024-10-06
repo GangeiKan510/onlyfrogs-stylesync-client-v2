@@ -25,4 +25,6 @@ jobs:
         run: npm install
 
       - name: Run EAS Build for Android (Production)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas build --platform android --profile production --non-interactive

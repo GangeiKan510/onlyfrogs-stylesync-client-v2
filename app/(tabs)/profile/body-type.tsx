@@ -33,8 +33,7 @@ interface BodyTypeProps {
 
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user } = useUser();
-  const [selectedBodyType, setSelectedBodyType] =
-    useState("NeatHourglass");
+  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -55,7 +54,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         text1: "Body Type Saved",
         text2: "Your body type has been saved successfully.",
       });
-  
+
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -72,7 +71,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
       setIsSaving(false);
     }
   };
-  
+
   const handleCancel = () => {
     navigation.dispatch(
       CommonActions.reset({
@@ -90,9 +89,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         </TouchableOpacity>
       </View>
       <View className="flex justify-center items-center mt-8">
-        <Text className="text-center text-[20px] font-bold">
-          Body Type
-        </Text>
+        <Text className="text-center text-[20px] font-bold">Body Type</Text>
       </View>
       <View className=" flex-1 justify-center items-center">
         <ScrollView
@@ -134,25 +131,26 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
           ))}
         </ScrollView>
         <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
-        <TouchableOpacity
-          onPress={handleCancel}
-          className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
-        >
-          <Text className="text-center text-[#7AB2B2]">Cancel</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleCancel}
+            className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
+          >
+            <Text className="text-center text-[#7AB2B2]">Cancel</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={handleSave}
-          className= "bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]">
-          <View>
-            {isSaving ? (
-              <Spinner type={"primary"} />
-            ) : (
-              <Text className="text-[16px] text-white">Save</Text>
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={handleSave}
+            className="bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]"
+          >
+            <View>
+              {isSaving ? (
+                <Spinner type={"primary"} />
+              ) : (
+                <Text className="text-[16px] text-white">Save</Text>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

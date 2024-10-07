@@ -21,6 +21,7 @@ import PatternAccordion from "../accordions/Pattern";
 import { updateClothing } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
+import { useRouter } from "expo-router";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
 
 interface ClothingDetailsModalProps {
@@ -37,6 +38,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   clothingId,
 }) => {
   const { user } = useUser();
+  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState<string | string[]>("");
@@ -123,7 +125,8 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         position: "top",
         swipeable: true,
       });
-      onClose();
+      console.log("Deleted.");
+      // onClose();
     } else {
       Toast.show({
         type: "error",
@@ -131,7 +134,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         position: "top",
         swipeable: true,
       });
-      console.error("Failed to delete clothing: Clothing ID is missing.");
     }
   };
 

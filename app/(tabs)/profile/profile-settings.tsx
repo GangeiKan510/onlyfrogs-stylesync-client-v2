@@ -35,6 +35,8 @@ const ProfileSettings = () => {
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
 
@@ -53,8 +55,10 @@ const ProfileSettings = () => {
 
   const sendVerificationEmail = async () => {
     try {
+      setIsSendingVerification(true);
       if (auth.currentUser && !auth.currentUser.emailVerified) {
         await sendEmailVerification(auth.currentUser);
+        setVerificationSent(true);
         Toast.show({
           type: "success",
           text1: "Verification Email Sent",
@@ -74,6 +78,8 @@ const ProfileSettings = () => {
         text1: "Error",
         text2: "Failed to send verification email. Please try again later.",
       });
+    } finally {
+      setIsSendingVerification(false);
     }
   };
 
@@ -337,9 +343,18 @@ const ProfileSettings = () => {
                 <Text className="text-tertiary">{user?.email}</Text>
                 <TouchableOpacity
                   onPress={sendVerificationEmail}
-                  className="bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1"
+                  className={`${
+                    verificationSent ? "opacity-50" : "opacity-100"
+                  } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
+                  disabled={verificationSent || isSendingVerification}
                 >
-                  <Text className="text-white">Send Verification</Text>
+                  {isSendingVerification ? (
+                    <Spinner type="primary" />
+                  ) : (
+                    <Text className="text-white">
+                      {verificationSent ? "Email Sent!" : "Send Verification"}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

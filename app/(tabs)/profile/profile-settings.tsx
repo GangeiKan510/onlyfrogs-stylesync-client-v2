@@ -213,6 +213,14 @@ const ProfileSettings = () => {
     return true;
   };
 
+  const isSaveDisabled = () => {
+    return (
+      firstName === initialFirstName.current &&
+      lastName === initialLastName.current &&
+      profileImage === initialProfileImage.current
+    );
+  };
+
   const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
@@ -379,7 +387,10 @@ const ProfileSettings = () => {
       <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
         <TouchableOpacity
           onPress={handleSave}
-          className="bg-[#7AB2B2] items-center justify-center rounded-[10px] w-full h-[42px]"
+          disabled={isSaveDisabled()}
+          className={`items-center justify-center rounded-[10px] w-full h-[42px] ${
+            isSaveDisabled() ? "bg-[#9fcccc]" : "bg-[#7AB2B2]"
+          }`}
         >
           <View>
             {isSaving ? (

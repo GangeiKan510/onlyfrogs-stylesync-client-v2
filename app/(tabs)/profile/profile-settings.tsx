@@ -264,7 +264,7 @@ const ProfileSettings = () => {
                 ) : (
                   <NoProfileImg width={130} height={130} />
                 )}
-                <View className="absolute right-0 bottom-1">
+                <View className="absolute right-1 bottom-2">
                   <CameraIcon width={30} height={30} />
                 </View>
               </View>

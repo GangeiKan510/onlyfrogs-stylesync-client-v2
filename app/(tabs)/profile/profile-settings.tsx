@@ -40,17 +40,17 @@ const ProfileSettings = () => {
   }, [user]);
 
   const resetToInitialState = () => {
-    setFirstName(user?.first_name || '');
-    setLastName(user?.last_name || '');
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
     setProfileImage(null);
-    initialFirstName.current = user?.first_name || '';
-    initialLastName.current = user?.last_name || '';
+    initialFirstName.current = user?.first_name || "";
+    initialLastName.current = user?.last_name || "";
     initialProfileImage.current = null;
   };
 
   const uploadProfileImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
+
     if (status === "denied") {
       Alert.alert(
         "Permission Required",
@@ -60,11 +60,14 @@ const ProfileSettings = () => {
           {
             text: "Try Again",
             onPress: async () => {
-              const newPermissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              const newPermissionResult =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
               if (newPermissionResult.granted) {
                 launchImagePicker();
               } else {
-                Alert.alert("Permission still denied. Please enable it in settings.");
+                Alert.alert(
+                  "Permission still denied. Please enable it in settings."
+                );
               }
             },
           },
@@ -77,7 +80,6 @@ const ProfileSettings = () => {
       launchImagePicker();
     }
   };
-
 
   const launchImagePicker = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -168,24 +170,24 @@ const ProfileSettings = () => {
   const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
-  
+
       const userData: UpdateUserName = {
         first_name: firstName,
         last_name: lastName,
       };
-  
+
       try {
         const updatedUser = await updateUserName(userData);
         setFirstName(updatedUser.first_name);
         setLastName(updatedUser.last_name);
         setProfileImage(profileImage);
-  
+
         Toast.show({
           type: "success",
           text1: "Profile Saved",
           text2: "Your profile changes have been saved successfully.",
         });
-  
+
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -202,10 +204,9 @@ const ProfileSettings = () => {
         setIsSaving(false);
       }
     }
-    console.log()
+    console.log();
   };
-  
-  
+
   const handleCancel = () => {
     // Compare the current values with the initial values stored in useRef
     if (
@@ -237,14 +238,11 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="absolute left-10 top-16 z-10">
-        <TouchableOpacity onPress={handleCancel}>
+      <View className="w-full flex-row items-center top-10 px-6">
+        <TouchableOpacity onPress={handleCancel} className="absolute left-6">
           <Back width={20} height={20} />
         </TouchableOpacity>
-      </View>
-
-      <View className="top-8">
-        <Text className="text-center text-[20px] font-bold">
+        <Text className="flex-1 text-center text-[20px] font-bold">
           Profile Settings
         </Text>
       </View>
@@ -252,7 +250,10 @@ const ProfileSettings = () => {
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-6">
           <View className="items-center my-16">
-            <TouchableOpacity onPress={uploadProfileImage} className="absolute z-10">
+            <TouchableOpacity
+              onPress={uploadProfileImage}
+              className="absolute z-10"
+            >
               <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
                 {profileImage ? (
                   <Image
@@ -303,8 +304,8 @@ const ProfileSettings = () => {
             </View>
             <View className="mb-3">
               <Text className="mb-1">Email</Text>
-              <View className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 justify-center">
-                <Text className="text-[#B7B7B7]">{user?.email}</Text>
+              <View className="bg-[#def2f2] h-[42px] rounded-[10px] px-4 justify-center">
+                <Text className="text-tertiary">{user?.email}</Text>
               </View>
             </View>
           </View>
@@ -312,15 +313,9 @@ const ProfileSettings = () => {
       </ScrollView>
       <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
         <TouchableOpacity
-          onPress={handleCancel}
-          className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
-        >
-          <Text className="text-center text-[#7AB2B2]">Cancel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
           onPress={handleSave}
-          className= "bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]">
+          className="bg-[#7AB2B2] items-center justify-center rounded-[10px] w-full h-[42px]"
+        >
           <View>
             {isSaving ? (
               <Spinner type={"primary"} />
@@ -332,11 +327,12 @@ const ProfileSettings = () => {
       </View>
 
       <Modal animationType="fade" transparent={true} visible={showModal}>
-        <View className="flex-1 justify-center items-center" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
           <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
-            <Text className="text-[18px] mb-1 font-bold">
-              Discard Changes?
-            </Text>
+            <Text className="text-[18px] mb-1 font-bold">Discard Changes?</Text>
             <Text className="mt-2 text-center">
               You have unsaved changes. Do you want to discard them?
             </Text>
@@ -362,4 +358,3 @@ const ProfileSettings = () => {
 };
 
 export default ProfileSettings;
-

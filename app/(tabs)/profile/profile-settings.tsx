@@ -155,11 +155,22 @@ const ProfileSettings = () => {
   };
 
   const validateInputs = () => {
-    if (!firstName.trim() && !lastName.trim()) {
+    const hasNumbers = /\d/;
+
+    if (hasNumbers.test(firstName)) {
+      Toast.show({
+        type: "error",
+        text1: "Input Error",
+        text2: "Numbers are not allowed in the first name.",
+      });
+      return false;
+    }
+
+    if (hasNumbers.test(lastName)) {
       Toast.show({
         type: "error",
         text1: "Validation Error",
-        text2: "First name and last name cannot be empty.",
+        text2: "Numbers are not allowed in the last name.",
       });
       return false;
     }

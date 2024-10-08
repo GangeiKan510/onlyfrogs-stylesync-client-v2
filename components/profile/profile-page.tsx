@@ -185,7 +185,7 @@ const ProfilePage = () => {
         </ScrollView>
 
         {/* Log Out Button */}
-        <View className="px-6 mb-4">
+        <View className="px-8 mb-4">
           <TouchableOpacity
             className="flex-row h-[32px] w-full justify-between items-center"
             onPress={() => setModalVisible(true)}

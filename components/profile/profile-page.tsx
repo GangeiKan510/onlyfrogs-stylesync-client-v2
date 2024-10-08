@@ -54,17 +54,6 @@ const ProfilePage = () => {
                     ? `${user.first_name} ${user.last_name}`
                     : "Guest"}
                 </Text>
-                <View>
-                  {auth.currentUser?.emailVerified ? (
-                    <Text className="text-white bg-tertiary px-2 py-1 rounded-[8px]">
-                      Email Verified
-                    </Text>
-                  ) : (
-                    <Text className="underline text-tertiary">
-                      Verify Email
-                    </Text>
-                  )}
-                </View>
               </View>
               <Text className="text-[#B7B7B7]">{user?.email}</Text>
             </View>
@@ -103,7 +92,7 @@ const ProfilePage = () => {
           <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />
 
           <View className="px-6 mt-2">
-            <Text className="text-[#B7B7B7] text-[16px] ">
+            <Text className="text-[#B7B7B7] text-[16px] ml-2">
               Account Settings
             </Text>
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, CommonActions } from "@react-navigation/native";
@@ -20,6 +21,8 @@ import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
 import { UpdateUserName } from "@/utils/types/UpdateUser";
 import { updateUserName } from "@/network/web/user";
+import { auth } from "@/firebaseConfig";
+import { sendEmailVerification } from "firebase/auth";
 
 const ProfileSettings = () => {
   const { user } = useUser();
@@ -46,6 +49,32 @@ const ProfileSettings = () => {
     initialFirstName.current = user?.first_name || "";
     initialLastName.current = user?.last_name || "";
     initialProfileImage.current = null;
+  };
+
+  const sendVerificationEmail = async () => {
+    try {
+      if (auth.currentUser && !auth.currentUser.emailVerified) {
+        await sendEmailVerification(auth.currentUser);
+        Toast.show({
+          type: "success",
+          text1: "Verification Email Sent",
+          text2: "Check your email inbox to verify your email address.",
+        });
+      } else {
+        Toast.show({
+          type: "info",
+          text1: "Email Already Verified",
+          text2: "Your email address is already verified.",
+        });
+      }
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to send verification email. Please try again later.",
+      });
+    }
   };
 
   const uploadProfileImage = async () => {
@@ -204,17 +233,15 @@ const ProfileSettings = () => {
         setIsSaving(false);
       }
     }
-    console.log();
   };
 
   const handleCancel = () => {
-    // Compare the current values with the initial values stored in useRef
     if (
       firstName !== initialFirstName.current ||
       lastName !== initialLastName.current ||
       profileImage !== initialProfileImage.current
     ) {
-      setShowModal(true); // Show modal if changes are detected
+      setShowModal(true);
     } else {
       navigation.dispatch(
         CommonActions.reset({
@@ -303,14 +330,23 @@ const ProfileSettings = () => {
               ) : null}
             </View>
             <View className="mb-3">
-              <Text className="mb-1">Email</Text>
-              <View className="bg-[#def2f2] h-[42px] rounded-[10px] px-4 justify-center">
+              <View className="flex-row gap-1">
+                <Text className="mb-1">Email</Text>
+              </View>
+              <View className="flex-row items-center justify-between bg-[#edf9f9] h-[42px] rounded-[10px] pl-4 pr-2">
                 <Text className="text-tertiary">{user?.email}</Text>
+                <TouchableOpacity
+                  onPress={sendVerificationEmail}
+                  className="bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1"
+                >
+                  <Text className="text-white">Send Verification</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
+
       <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
         <TouchableOpacity
           onPress={handleSave}

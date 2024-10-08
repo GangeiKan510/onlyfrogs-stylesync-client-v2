@@ -25,7 +25,7 @@ import { auth } from "@/firebaseConfig";
 import { sendEmailVerification } from "firebase/auth";
 
 const ProfileSettings = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
@@ -207,6 +207,7 @@ const ProfileSettings = () => {
       setIsSaving(true);
 
       const userData: UpdateUserName = {
+        id: user?.id || "",
         first_name: firstName,
         last_name: lastName,
       };
@@ -229,6 +230,8 @@ const ProfileSettings = () => {
             routes: [{ name: "profile" }],
           })
         );
+
+        refetchMe();
       } catch (error) {
         Toast.show({
           type: "error",

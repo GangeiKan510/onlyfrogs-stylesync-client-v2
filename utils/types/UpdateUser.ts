@@ -51,6 +51,7 @@ export interface Preferences {
 }
 
 export interface UpdateUserName {
+  id: string;
   first_name: string;
   last_name: string;
 }

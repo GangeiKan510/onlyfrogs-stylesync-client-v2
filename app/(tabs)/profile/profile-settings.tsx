@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import NoProfileImg from "../../../assets/icons/profile/no-profile-img.svg";
 import Back from "../../../assets/icons/back-icon.svg";
 import CameraIcon from "../../../assets/icons/profile/camera-icon.svg";
+import EmailVerified from "../../../assets/icons/email-verified.svg";
 import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
 import { UpdateUserName } from "@/utils/types/UpdateUser";
@@ -363,22 +364,29 @@ const ProfileSettings = () => {
                 <Text className="mb-1">Email</Text>
               </View>
               <View className="flex-row items-center justify-between bg-[#edf9f9] h-[42px] rounded-[10px] pl-4 pr-2">
-                <Text className="text-tertiary">{user?.email}</Text>
-                <TouchableOpacity
-                  onPress={sendVerificationEmail}
-                  className={`${
-                    verificationSent ? "opacity-50" : "opacity-100"
-                  } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
-                  disabled={verificationSent || isSendingVerification}
-                >
-                  {isSendingVerification ? (
-                    <Spinner type="primary" />
-                  ) : (
-                    <Text className="text-white">
-                      {verificationSent ? "Email Sent!" : "Send Verification"}
-                    </Text>
-                  )}
-                </TouchableOpacity>
+                <Text className="text-tertiary flex-shrink">{user?.email}</Text>
+                {auth.currentUser?.emailVerified ? (
+                  <View className="flex-row bg-[#7AB2B2] items-center rounded-[8px] px-2 py-1">
+                    <Text className="text-white mr-1">Email Verified</Text>
+                    <EmailVerified width={16} height={16} />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    onPress={sendVerificationEmail}
+                    className={`${
+                      verificationSent ? "opacity-50" : "opacity-100"
+                    } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
+                    disabled={verificationSent || isSendingVerification}
+                  >
+                    {isSendingVerification ? (
+                      <Spinner type="primary" />
+                    ) : (
+                      <Text className="text-white">
+                        {verificationSent ? "Email Sent!" : "Send Verification"}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>

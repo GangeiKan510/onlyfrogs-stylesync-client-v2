@@ -7,6 +7,7 @@ import {
   Pressable,
   FlatList,
   ScrollView,
+  Modal,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
@@ -120,25 +121,33 @@ const PiecesTab = () => {
               className="mr-2"
             />
           </View>
-          <Pressable
-            onPress={toggleDropdownVisibility}
-            className="bg-slate-600 z-50"
-          >
+          <Pressable onPress={toggleDropdownVisibility}>
             <FilterIcon width={24} height={24} />
           </Pressable>
         </View>
 
-        {dropdownVisible && (
-          // <ScrollView className="z-20">
-          <View className="absolute top-16 right-0 left-0 z-50 border-2 border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
-            <View className="flex-row justify-between">
+        <Modal
+          transparent={true}
+          visible={dropdownVisible}
+          animationType="none"
+          onRequestClose={() => setDropdownVisible(false)} // Close the modal
+        >
+          <View className="flex-1 justify-center items-center bg-black opacity-0">
+            <Pressable
+              style={{ flex: 1, width: "100%" }}
+              onPress={() => setDropdownVisible(false)}
+            />
+          </View>
+          <ScrollView style={{ maxHeight: 400 }} className="absolute top-64 mx-7 z-50 border-2 border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
+          <View className="flex-row justify-between">
               <Text className="mb-2">FILTER</Text>
               <Pressable onPress={clearFilters}>
                 <Text className="mb-2 underline underline-offset-2">Clear</Text>
               </Pressable>
             </View>
+
+            <Text className="text-[#484848] text-[14px] mt-2">Season</Text>
             <View className="flex-row flex-wrap">
-              <Text className="text-[#484848] text-[16px] mt-2">Season</Text>
               <View className="flex-row flex-wrap">
                 {seasons.map((season) => (
                   <Pressable
@@ -151,11 +160,7 @@ const PiecesTab = () => {
                     }`}
                   >
                     <Text
-                      className={`${
-                        selectedFilters.includes(season)
-                          ? "text-white"
-                          : "text-[#7AB2B2]"
-                      }`}
+                      className={`${selectedFilters.includes(season) ? "text-white" : "text-[#7AB2B2]"}`}
                     >
                       {season}
                     </Text>
@@ -163,34 +168,9 @@ const PiecesTab = () => {
                 ))}
               </View>
             </View>
+
+            <Text className="text-[#484848] text-[14px] mt-2">Occasion</Text>
             <View className="flex-row flex-wrap">
-              <Text className="text-[#484848] text-[16px] mt-2">Category</Text>
-              <View className="flex-row flex-wrap">
-                {categoryNames.map((category) => (
-                  <Pressable
-                    key={category}
-                    onPress={() => toggleFilter(category)}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
-                      selectedFilters.includes(category)
-                        ? "bg-[#7AB2B2]"
-                        : "bg-white"
-                    }`}
-                  >
-                    <Text
-                      className={`${
-                        selectedFilters.includes(category)
-                          ? "text-white"
-                          : "text-[#7AB2B2]"
-                      }`}
-                    >
-                      {category}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-            <View className="flex-row flex-wrap">
-              <Text className="text-[#484848] text-[16px] mt-2">Occasion</Text>
               <View className="flex-row flex-wrap">
                 {occasion.map((occasion) => (
                   <Pressable
@@ -215,9 +195,34 @@ const PiecesTab = () => {
                 ))}
               </View>
             </View>
+
+            
+            <Text className="text-[#484848] text-[14px] mt-2">Category</Text>
             <View className="flex-row flex-wrap">
-              <Text className="text-[#484848] text-[16px] mt-2">Color</Text>
               <View className="flex-row flex-wrap">
+                {categoryNames.map((category) => (
+                  <Pressable
+                    key={category}
+                    onPress={() => toggleFilter(category)}
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                      selectedFilters.includes(category)
+                        ? "bg-[#7AB2B2]"
+                        : "bg-white"
+                    }`}
+                  >
+                    <Text
+                      className={`${selectedFilters.includes(category) ? "text-white" : "text-[#7AB2B2]"}`}
+                    >
+                      {category}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            <Text className="text-[#484848] text-[14px] mt-2">Color</Text>
+            <View className="flex-row flex-wrap">
+              <View className="flex-row flex-wrap mb-6">
                 {COLOR_LIST.map(({ name }) => (
                   <Pressable
                     key={name}
@@ -241,9 +246,10 @@ const PiecesTab = () => {
                 ))}
               </View>
             </View>
-          </View>
-        )}
+          </ScrollView>
+        </Modal>
       </View>
+
       <FlatList
         className="mt-5 z-20"
         data={filteredClothes}
@@ -258,9 +264,6 @@ const PiecesTab = () => {
           />
         )}
         numColumns={3}
-        contentContainerStyle={{
-          backgroundColor: "red", // Background color of the list
-        }}
         showsVerticalScrollIndicator={false}
       />
 

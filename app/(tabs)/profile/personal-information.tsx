@@ -17,14 +17,62 @@ function PersonalInformation() {
       ? new Date(user.birth_date).toLocaleDateString("en-US")
       : ""
   );
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [selectedGender, setSelectedGender] = useState<
     "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null
   >(user?.gender || null);
 
   const genderOptions = ["Male", "Female", "Non-Binary", "Rather Not Say"];
 
+  const validateBirthDate = (dateString: string) => {
+    const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;
+    if (!regex.test(dateString)) {
+      setBirthDateError("Please enter a valid date in MM/DD/YYYY format.");
+      return false;
+    }
+
+    const [month, day, year] = dateString.split("/").map(Number);
+    const enteredDate = new Date(year, month - 1, day);
+    const today = new Date();
+
+    if (isNaN(enteredDate.getTime())) {
+      setBirthDateError("Invalid date.");
+      return false;
+    }
+
+    if (enteredDate >= today) {
+      setBirthDateError("Birthdate must be in the past.");
+      return false;
+    }
+
+    setBirthDateError(null);
+    return true;
+  };
+
+  const handleBirthDateChange = (value: string) => {
+    const formattedDate = formatDateInput(value);
+    setBirthDate(formattedDate);
+    validateBirthDate(formattedDate);
+  };
+
+  const formatDateInput = (value: string) => {
+    let cleaned = value.replace(/\D/g, "");
+
+    if (cleaned.length >= 3 && cleaned.length <= 4) {
+      cleaned = cleaned.replace(/^(\d{2})(\d)/, "$1/$2");
+    } else if (cleaned.length >= 5) {
+      cleaned = cleaned.replace(/^(\d{2})(\d{2})(\d{0,4})/, "$1/$2/$3");
+    }
+
+    return cleaned.slice(0, 10);
+  };
+
   const handleSave = () => {
-    console.log({ height, weight, birthDate, selectedGender });
+    if (!birthDateError && validateBirthDate(birthDate)) {
+      console.log({ height, weight, birthDate, selectedGender });
+    } else {
+      console.log("Please correct the errors before saving.");
+    }
   };
 
   return (
@@ -46,12 +94,15 @@ function PersonalInformation() {
         <View className="mb-5">
           <Text>Birthday</Text>
           <TextInput
-            className="border border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="h-[42px] border border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="MM/DD/YYYY"
             value={birthDate}
-            onChangeText={setBirthDate}
+            onChangeText={handleBirthDateChange}
             keyboardType="numeric"
           />
+          {birthDateError && (
+            <Text style={{ color: "red", marginTop: 5 }}>{birthDateError}</Text>
+          )}
         </View>
 
         {/* Gender Selection */}
@@ -69,9 +120,7 @@ function PersonalInformation() {
                 onPress={() => setSelectedGender(gender as any)}
               >
                 <Text
-                  className={`text-center ${
-                    selectedGender === gender ? "text-white" : "text-tertiary"
-                  }`}
+                  className={`text-center ${selectedGender === gender ? "text-white" : "text-tertiary"}`}
                 >
                   {gender}
                 </Text>
@@ -84,7 +133,7 @@ function PersonalInformation() {
         <View className="mb-5">
           <Text>Height (cm)</Text>
           <TextInput
-            className="h-[40px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="h-[42px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="Enter height"
             value={height.toString()}
             onChangeText={(value) => setHeight(Number(value))}
@@ -96,7 +145,7 @@ function PersonalInformation() {
         <View className="mb-5">
           <Text>Weight (kg)</Text>
           <TextInput
-            className="h-[40px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="h-[42px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="Enter weight"
             value={weight.toString()}
             onChangeText={(value) => setWeight(Number(value))}

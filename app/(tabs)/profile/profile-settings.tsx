@@ -23,9 +23,12 @@ import { UpdateUserName } from "@/utils/types/UpdateUser";
 import { updateUserName } from "@/network/web/user";
 import { auth } from "@/firebaseConfig";
 import { sendEmailVerification } from "firebase/auth";
+import { Href, useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
 
 const ProfileSettings = () => {
   const { user, refetchMe } = useUser();
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
@@ -271,12 +274,7 @@ const ProfileSettings = () => {
     ) {
       setShowModal(true);
     } else {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "profile" }],
-        })
-      );
+      router.push(routes.profile as Href<string | object>);
     }
   };
 
@@ -293,8 +291,11 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="w-full flex-row items-center top-10 px-6">
-        <TouchableOpacity onPress={handleCancel} className="absolute left-6">
+      <View className="w-full flex-row items-center top-10 px-6 z-30">
+        <TouchableOpacity
+          onPress={handleCancel}
+          className="absolute left-6 z-40"
+        >
           <Back width={20} height={20} />
         </TouchableOpacity>
         <Text className="flex-1 text-center text-[20px] font-bold">

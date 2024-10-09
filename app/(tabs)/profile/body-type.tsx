@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Toast from "react-native-toast-message";
@@ -133,7 +134,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
           <TouchableOpacity
             onPress={handleCancel}
-            className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
+            className="flex mx-2 rounded-[10px] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
           >
             <Text className="text-center text-[#7AB2B2]">Cancel</Text>
           </TouchableOpacity>

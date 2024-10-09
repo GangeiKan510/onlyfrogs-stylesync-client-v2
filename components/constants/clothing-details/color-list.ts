@@ -1,4 +1,10 @@
-export const COLOR_LIST = [
+interface Color {
+  name: string;      // The name of the color
+  colorCode: string; // The hexadecimal color code (consider validating this format)
+}
+
+// Directly declare COLOR_LIST as an array of Color
+export const COLOR_LIST: Color[] = [
   { name: "White", colorCode: "#FFFFFF" },
   { name: "Cream", colorCode: "#FFFDD0" },
   { name: "Beige", colorCode: "#E2C79C" },

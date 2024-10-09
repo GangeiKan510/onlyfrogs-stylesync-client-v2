@@ -292,7 +292,7 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="w-full flex-row items-center top-10 px-6 z-30">
+      <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
           onPress={handleCancel}
           className="absolute left-6 z-40"
@@ -393,7 +393,7 @@ const ProfileSettings = () => {
         </View>
       </ScrollView>
 
-      <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
+      <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-2">
         <TouchableOpacity
           onPress={handleSave}
           disabled={isSaveDisabled()}

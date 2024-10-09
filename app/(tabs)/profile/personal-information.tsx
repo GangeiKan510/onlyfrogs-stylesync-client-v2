@@ -29,7 +29,7 @@ function PersonalInformation() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="w-full flex-row items-center top-10 px-6 z-30">
+      <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
           onPress={() => router.push(routes.profile as Href<string | object>)}
           className="absolute left-6 z-40"
@@ -46,7 +46,7 @@ function PersonalInformation() {
         <View className="mb-5">
           <Text>Birthday</Text>
           <TextInput
-            className="border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="border border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="MM/DD/YYYY"
             value={birthDate}
             onChangeText={setBirthDate}
@@ -57,12 +57,14 @@ function PersonalInformation() {
         {/* Gender Selection */}
         <View className="mb-5">
           <Text>Gender</Text>
-          <View className="flex-row justify-between mt-3">
+          <View className="flex flex-row flex-wrap justify-between mt-3">
             {genderOptions.map((gender) => (
               <TouchableOpacity
                 key={gender}
-                className={`flex-1 py-2 px-5 border rounded-[10px] mr-2 ${
-                  selectedGender === gender ? "bg-tertiary" : "border-tertiary"
+                className={`w-[48%] py-2 px-5 border rounded-[10px] mb-3 ${
+                  selectedGender === gender
+                    ? "border-tertiary bg-tertiary"
+                    : "border-tertiary"
                 }`}
                 onPress={() => setSelectedGender(gender as any)}
               >
@@ -105,7 +107,7 @@ function PersonalInformation() {
         {/* Save Button */}
         <View className="mt-auto pb-2">
           <TouchableOpacity
-            className="flex items-center justify-center h-[40px] bg-[#7AB2B2] rounded-lg"
+            className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
             onPress={handleSave}
           >
             <Text className="text-white">Save</Text>

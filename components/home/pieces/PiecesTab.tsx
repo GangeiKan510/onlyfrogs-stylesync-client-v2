@@ -17,7 +17,7 @@ import { categoryTypes } from "@/components/constants/clothing-details/categorie
 import { occasion } from "@/components/constants/clothing-details/occasion";
 import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
 import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
-import { pattern } from "@/components/constants/clothing-details/pattern";
+import { PATTERN_LIST } from "@/components/constants/clothing-details/pattern";
 import { seasons } from "@/components/constants/clothing-details/seasons";
 
 const PiecesTab = () => {
@@ -84,6 +84,7 @@ const PiecesTab = () => {
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
       const itemColor = item.color?.toLowerCase() ?? "";
       const itemMaterial = item.color?.toLowerCase() ?? "";
+      const itemPattern = item.color?.toLowerCase() ?? "";
       const itemOccasion = Array.isArray(item.occasion)
         ? item.occasion.map((o) => (o as string).toLowerCase())
         : [];
@@ -99,7 +100,8 @@ const PiecesTab = () => {
             itemOccasion.includes(filter.toLowerCase()) ||
             itemSeason.includes(filter.toLowerCase()) ||
             itemColor.includes(filter.toLowerCase()) ||
-            itemMaterial.includes(filter.toLowerCase())
+            itemMaterial.includes(filter.toLowerCase()) ||
+            itemPattern.includes(filter.toLowerCase())
         );
 
       return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
@@ -255,6 +257,33 @@ const PiecesTab = () => {
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
                 {MATERIAL_LIST.map(({ name }) => (
+                  <Pressable
+                    key={name}
+                    onPress={() => toggleFilter(name.toLowerCase())}
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                      selectedFilters.includes(name.toLowerCase())
+                        ? "bg-[#7AB2B2]"
+                        : "bg-white"
+                    }`}
+                  >
+                    <Text
+                      className={`${
+                        selectedFilters.includes(name.toLowerCase())
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {name}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            <Text className="text-[#484848] text-[14px] mt-2">Pattern</Text>
+            <View className="flex-row flex-wrap">
+              <View className="flex-row flex-wrap mb-6">
+                {PATTERN_LIST.map(({ name }) => (
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}

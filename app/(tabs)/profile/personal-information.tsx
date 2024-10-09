@@ -44,7 +44,7 @@ function PersonalInformation() {
       <View className="flex-1 px-6 mt-10">
         {/* Birthday Input */}
         <View className="mb-5">
-          <Text className="text-lg">Birthday</Text>
+          <Text>Birthday</Text>
           <TextInput
             className="border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="MM/DD/YYYY"
@@ -56,7 +56,7 @@ function PersonalInformation() {
 
         {/* Gender Selection */}
         <View className="mb-5">
-          <Text className="text-lg">Gender</Text>
+          <Text>Gender</Text>
           <View className="flex-row justify-between mt-3">
             {genderOptions.map((gender) => (
               <TouchableOpacity
@@ -80,9 +80,9 @@ function PersonalInformation() {
 
         {/* Height Input */}
         <View className="mb-5">
-          <Text className="text-lg">Height (cm)</Text>
+          <Text>Height (cm)</Text>
           <TextInput
-            className="border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="h-[40px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="Enter height"
             value={height.toString()}
             onChangeText={(value) => setHeight(Number(value))}
@@ -92,9 +92,9 @@ function PersonalInformation() {
 
         {/* Weight Input */}
         <View className="mb-5">
-          <Text className="text-lg">Weight (kg)</Text>
+          <Text>Weight (kg)</Text>
           <TextInput
-            className="border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
+            className="h-[40px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3 mt-2"
             placeholder="Enter weight"
             value={weight.toString()}
             onChangeText={(value) => setWeight(Number(value))}
@@ -103,12 +103,12 @@ function PersonalInformation() {
         </View>
 
         {/* Save Button */}
-        <View className="mt-auto">
+        <View className="mt-auto pb-2">
           <TouchableOpacity
-            className="bg-[#7AB2B2] rounded-lg p-3 items-center"
+            className="flex items-center justify-center h-[40px] bg-[#7AB2B2] rounded-lg"
             onPress={handleSave}
           >
-            <Text className="text-white text-lg font-bold">Save</Text>
+            <Text className="text-white">Save</Text>
           </TouchableOpacity>
         </View>
       </View>

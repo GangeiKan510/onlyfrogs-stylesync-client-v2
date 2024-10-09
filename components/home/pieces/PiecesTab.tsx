@@ -229,16 +229,20 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Color</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {COLOR_LIST.map(({ name }) => (
+                {COLOR_LIST.map(({ name, colorCode }) => (
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
                     }`}
                   >
+                    <View
+                      style={{ backgroundColor: colorCode }}
+                      className="w-4 h-4 rounded-full mr-2 border-gray-400 border-[0.5px]"
+                    />
                     <Text
                       className={`${
                         selectedFilters.includes(name.toLowerCase())
@@ -256,16 +260,23 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Material</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {MATERIAL_LIST.map(({ name }) => (
+                {MATERIAL_LIST.map(({ name, reference: IconComponent }) => (
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
                     }`}
                   >
+                    <View className="mr-2 rounded-lg overflow-hidden">
+                      <IconComponent
+                        width={20}
+                        height={20}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </View>
                     <Text
                       className={`${
                         selectedFilters.includes(name.toLowerCase())
@@ -283,16 +294,23 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Pattern</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap mb-6">
-                {PATTERN_LIST.map(({ name }) => (
+                {PATTERN_LIST.map(({ name, reference: IconComponent }) => (
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
                     }`}
                   >
+                    <View className="mr-2 rounded-lg overflow-hidden">
+                      <IconComponent
+                        width={20}
+                        height={20}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </View>
                     <Text
                       className={`${
                         selectedFilters.includes(name.toLowerCase())

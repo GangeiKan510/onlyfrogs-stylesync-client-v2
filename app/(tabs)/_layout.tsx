@@ -42,7 +42,7 @@ export default function TabLayout() {
           tabBarActiveTintColor: "#7ab2b2",
           headerShown: false,
           tabBarStyle: {
-            height: 90,
+            height: 70,
             backgroundColor: "#F3F3F3",
             paddingVertical: 20,
           },

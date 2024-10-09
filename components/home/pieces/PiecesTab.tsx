@@ -16,7 +16,7 @@ import { useUser } from "@/components/config/user-context";
 import { categoryTypes } from "@/components/constants/clothing-details/categories";
 import { occasion } from "@/components/constants/clothing-details/occasion";
 import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
-import { material } from "@/components/constants/clothing-details/material";
+import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
 import { pattern } from "@/components/constants/clothing-details/pattern";
 import { seasons } from "@/components/constants/clothing-details/seasons";
 
@@ -83,6 +83,7 @@ const PiecesTab = () => {
 
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
       const itemColor = item.color?.toLowerCase() ?? "";
+      const itemMaterial = item.color?.toLowerCase() ?? "";
       const itemOccasion = Array.isArray(item.occasion)
         ? item.occasion.map((o) => (o as string).toLowerCase())
         : [];
@@ -97,7 +98,8 @@ const PiecesTab = () => {
             itemCategory.includes(filter.toLowerCase()) ||
             itemOccasion.includes(filter.toLowerCase()) ||
             itemSeason.includes(filter.toLowerCase()) ||
-            itemColor.includes(filter.toLowerCase())
+            itemColor.includes(filter.toLowerCase()) ||
+            itemMaterial.includes(filter.toLowerCase())
         );
 
       return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
@@ -138,8 +140,11 @@ const PiecesTab = () => {
               onPress={() => setDropdownVisible(false)}
             />
           </View>
-          <ScrollView style={{ maxHeight: 400 }} className="absolute top-64 mx-7 z-50 border-2 border-[#F2F2F2] bg-white p-3 rounded-lg shadow">
-          <View className="flex-row justify-between">
+          <ScrollView
+            style={{ maxHeight: 400 }}
+            className="absolute top-64 mx-7 z-50 border-2 border-[#F2F2F2] bg-white p-3 rounded-lg shadow"
+          >
+            <View className="flex-row justify-between">
               <Text className="mb-2">FILTER</Text>
               <Pressable onPress={clearFilters}>
                 <Text className="mb-2 underline underline-offset-2">Clear</Text>
@@ -196,7 +201,6 @@ const PiecesTab = () => {
               </View>
             </View>
 
-            
             <Text className="text-[#484848] text-[14px] mt-2">Category</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
@@ -222,8 +226,35 @@ const PiecesTab = () => {
 
             <Text className="text-[#484848] text-[14px] mt-2">Color</Text>
             <View className="flex-row flex-wrap">
-              <View className="flex-row flex-wrap mb-6">
+              <View className="flex-row flex-wrap">
                 {COLOR_LIST.map(({ name }) => (
+                  <Pressable
+                    key={name}
+                    onPress={() => toggleFilter(name.toLowerCase())}
+                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                      selectedFilters.includes(name.toLowerCase())
+                        ? "bg-[#7AB2B2]"
+                        : "bg-white"
+                    }`}
+                  >
+                    <Text
+                      className={`${
+                        selectedFilters.includes(name.toLowerCase())
+                          ? "text-white"
+                          : "text-[#7AB2B2]"
+                      }`}
+                    >
+                      {name}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            <Text className="text-[#484848] text-[14px] mt-2">Material</Text>
+            <View className="flex-row flex-wrap">
+              <View className="flex-row flex-wrap">
+                {MATERIAL_LIST.map(({ name }) => (
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}

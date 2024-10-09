@@ -1,9 +1,8 @@
 interface Color {
-  name: string;      // The name of the color
-  colorCode: string; // The hexadecimal color code (consider validating this format)
+  name: string;
+  colorCode: string;
 }
 
-// Directly declare COLOR_LIST as an array of Color
 export const COLOR_LIST: Color[] = [
   { name: "White", colorCode: "#FFFFFF" },
   { name: "Cream", colorCode: "#FFFDD0" },

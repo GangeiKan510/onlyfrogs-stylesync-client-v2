@@ -21,8 +21,15 @@ import Cashmere from '../../../assets/images/materials/Cashmere.svg';
 import Mohair from '../../../assets/images/materials/Mohair.svg';
 import Angora from '../../../assets/images/materials/Angora.svg';
 import OtherMaterials from '../../../assets/images/materials/OtherMaterials.svg';
+import { SvgProps } from 'react-native-svg';
   
-export const MATERIAL_LIST = [
+interface Material {
+  name: string;
+  reference: React.FC<SvgProps>; 
+  description: string;
+}
+
+export const MATERIAL_LIST: Material[] = [
   { name: "Cotton", reference: Cotton, description: "Soft, breathable, and widely used fabric." },
   { name: "Polyester", reference: Polyester, description: "Durable, wrinkle-resistant, and quick-drying fabric." },
   { name: "Nylon", reference: Nylon, description: "Strong, lightweight, and elastic synthetic material." },

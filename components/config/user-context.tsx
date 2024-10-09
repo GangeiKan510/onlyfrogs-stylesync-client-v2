@@ -44,7 +44,7 @@ type UserDetails = {
   email: string;
   favorite_color: string | null;
   first_name: string;
-  gender: string | null;
+  gender: "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null;
   height: number | null;
   id: string;
   last_name: string;
@@ -54,6 +54,7 @@ type UserDetails = {
   tokens: number;
   closets: Closet[];
   clothes: Clothes[];
+  weight: string;
 };
 
 interface UserContextProps {

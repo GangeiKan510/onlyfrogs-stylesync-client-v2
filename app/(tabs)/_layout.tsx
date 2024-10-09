@@ -6,6 +6,7 @@ import DesignIcon from "../../assets/icons/tabs/design.svg";
 import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
+import AliActiveIcon from "../../assets/icons/tabs/ali-active.svg";
 import { View, Text, StyleSheet } from "react-native";
 import { Href, useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
@@ -101,9 +102,21 @@ export default function TabLayout() {
           name="index"
           options={{
             title: "",
-            tabBarIcon: () => (
-              <View style={styles.aliIconContainer}>
-                <AliIcon width={89} height={89} />
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.iconLabelContainer}>
+                {focused ? (
+                  <AliActiveIcon width={44} height={24.19} />
+                ) : (
+                  <AliIcon width={44} height={24.19} />
+                )}
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    { color: focused ? "#7ab2b2" : "black" },
+                  ]}
+                >
+                  Ali
+                </Text>
               </View>
             ),
           }}

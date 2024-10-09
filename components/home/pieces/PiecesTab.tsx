@@ -179,7 +179,7 @@ const PiecesTab = () => {
       </View>
       <View className="h-[80%]">
         <FlatList
-          className="mt-5 z-20"
+          className="mt-5 z-20 flex-grow"
           scrollEnabled={true}
           data={filteredClothes}
           keyExtractor={(item) => item.id}
@@ -194,7 +194,7 @@ const PiecesTab = () => {
           )}
           numColumns={3}
           contentContainerStyle={{
-            paddingBottom: 20,
+            paddingBottom: 52,
           }}
         />
       </View>

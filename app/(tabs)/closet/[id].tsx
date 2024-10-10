@@ -1,27 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Text,
-  View,
-  Animated,
-  Alert,
-  FlatList,
-  SafeAreaView,
-} from "react-native";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
+import { Text, View, FlatList, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { usePathname } from "expo-router";
 import Header from "../../../components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
-import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
+import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -39,7 +32,7 @@ const Page = () => {
   const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
     null
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // This controls the spinner and menu
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -55,7 +48,7 @@ const Page = () => {
   };
 
   const handleCloseLinkModal = () => {
-    setIsLinkModalVisible(false); // Close link modal
+    setIsLinkModalVisible(false);
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
@@ -79,7 +72,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true); // Show loading screen
+          setLoading(true); // Show loading spinner and disable action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -105,7 +98,7 @@ const Page = () => {
           const imageUploaded = await uploadClothing(formData);
           Toast.show({
             type: "success",
-            text1: "Clothing sucessfully uploaded!",
+            text1: "Clothing successfully uploaded!",
             position: "top",
             swipeable: true,
           });
@@ -113,7 +106,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Hide loading spinner and re-enable action menu
         }
 
         handleCloseModal();
@@ -128,20 +121,16 @@ const Page = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
-        allowsMultipleSelection: true,
-        selectionLimit: 5,
+        allowsMultipleSelection: false,
       });
 
-      if (!result.canceled && result.assets) {
-        const newImages = result.assets.map((asset) => asset.uri);
-        setSelectedImages((prevImages) => [...prevImages, ...newImages]);
-
-        const uri = newImages[0];
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const uri = result.assets[0].uri;
         const fileName = uri.split("/").pop();
         const formData = new FormData();
 
         try {
-          setLoading(true);
+          setLoading(true); // Show loading spinner and disable action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -150,11 +139,17 @@ const Page = () => {
           formData.append("user_id", user?.id || "");
           formData.append("closet_id", closetId || "");
           await uploadClothing(formData);
+          Toast.show({
+            type: "success",
+            text1: "Image successfully uploaded!",
+            position: "top",
+            swipeable: true,
+          });
           refetchMe();
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Hide loading spinner and re-enable action menu
         }
 
         handleCloseModal();
@@ -176,7 +171,7 @@ const Page = () => {
       formData.append("closet_id", closetId || "");
 
       try {
-        setLoading(true);
+        setLoading(true); // Show loading spinner and disable action menu
         await uploadClothing(formData);
         Toast.show({
           type: "success",
@@ -188,7 +183,7 @@ const Page = () => {
       } catch (error) {
         console.error("Error while uploading clothing from link:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Hide loading spinner and re-enable action menu
       }
 
       handleCloseLinkModal();
@@ -201,6 +196,24 @@ const Page = () => {
 
   const filteredClothes =
     user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
+
+  const actions = [
+    {
+      iconName: "camera",
+      onPress: handleTakePicture,
+      label: "",
+    },
+    {
+      iconName: "picture",
+      onPress: handleUploadFromGallery,
+      label: "",
+    },
+    {
+      iconName: "link",
+      onPress: () => setIsLinkModalVisible(true),
+      label: "",
+    },
+  ];
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -243,26 +256,18 @@ const Page = () => {
           />
         )}
       </View>
-      <View className="absolute z-10 bottom-8 right-10">
-        <Fab
-          loading={loading}
-          onCameraPress={handleTakePicture}
-          onGalleryPress={handleUploadFromGallery}
-          onLinkPress={() => setIsLinkModalVisible(true)}
-        />
-      </View>
-
+      <FloatingActionMenu actions={actions as any} loading={loading} />
+      {/* Use loading state */}
       <ClothingDetailsModal
         isVisible={isModalVisible}
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
       />
-
       <LinkUploadModal
         isVisible={isLinkModalVisible}
         onClose={handleCloseLinkModal}
-        onUpload={handleLinkUpload} // Pass upload handler
+        onUpload={handleLinkUpload}
       />
     </SafeAreaView>
   );

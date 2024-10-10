@@ -1,21 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
-import SkinToneAnalysisImage from "../../assets/images/svg/skin-tone-analysis-hero.svg";
+import { View, Text, Alert } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import SkinToneImageOptions from "../buttons/SkinToneImageOptionButton";
+import SkinToneAnalysisImage from "../../assets/images/svg/skin-tone-analysis-hero.svg";
 import LoadingScreen from "../common/LoadingScreen";
-import { analyzeUserSkinTone } from "@/network/web/user";
 import Result from "./result";
+import { analyzeUserSkinTone } from "@/network/web/user";
+import FloatingActionMenu from "../buttons/FloatingActionMenu";
 
 const SkinToneAnalysis = ({
   onAnalyzeComplete,
   setIsAnalyzing,
   setSkinToneAnalysisResult,
 }: any) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +28,6 @@ const SkinToneAnalysis = ({
       console.log("Captured Image URI:", selectedImage);
     }
   }, [selectedImage]);
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -52,7 +46,6 @@ const SkinToneAnalysis = ({
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-        handleCloseModal();
 
         const formData = new FormData();
         formData.append("file", {
@@ -92,7 +85,6 @@ const SkinToneAnalysis = ({
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-        handleCloseModal();
 
         const formData = new FormData();
         formData.append("file", {
@@ -119,6 +111,19 @@ const SkinToneAnalysis = ({
       }
     }
   };
+
+  const actions = [
+    {
+      iconName: "camera",
+      onPress: handleTakePicture,
+      label: "",
+    },
+    {
+      iconName: "picture",
+      onPress: handleUploadFromGallery,
+      label: "",
+    },
+  ];
 
   return (
     <>
@@ -147,14 +152,11 @@ const SkinToneAnalysis = ({
                 </Text>
               </View>
             </View>
-            <View className="absolute z-10 bottom-8 right-10">
-              <SkinToneImageOptions
-                onCameraPress={handleTakePicture}
-                onGalleryPress={handleUploadFromGallery}
-              />
-            </View>
           </View>
         </View>
+      )}
+      {!isLoading && !analysisResult && (
+        <FloatingActionMenu actions={actions as any} loading={isLoading} />
       )}
     </>
   );

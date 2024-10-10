@@ -8,7 +8,7 @@ import BudgetRange from "@/components/survey/preferences-and-budget-components/B
 const PreferencesAndBudget = () => {
   return (
     <ScrollView>
-      <SafeAreaView className="flex-1 g-[#FFFFFF]">
+      <SafeAreaView className="flex-1 bg-[#FFFFFF]">
         <View className="flex mt-10 items-center">
           <Text className=" text-[20px]">Preferences & Budget</Text>
         </View>
@@ -34,7 +34,9 @@ const PreferencesAndBudget = () => {
 
         <View className="flex-row justify-between mx-2 mb-4 ">
           <Pressable className="flex mx-2 mt-8 bg-[#F9F9F9] rounded-[10px] w-[160px] h-[42px] border border-solid border-[#7AB2B2]">
-            <Text className="text-center text-[#7AB2B2] text-[16px] py-2">Cancel</Text>
+            <Text className="text-center text-[#7AB2B2] text-[16px] py-2">
+              Cancel
+            </Text>
           </Pressable>
 
           <Pressable className=" bg-[#7AB2B2] mx-2 mt-8 rounded-[10px] w-[160px] h-[42px] border border-solid border-[#7AB2B2]">

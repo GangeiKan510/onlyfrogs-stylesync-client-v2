@@ -155,8 +155,9 @@ const SkinToneAnalysis = ({
           </View>
         </View>
       )}
-      <FloatingActionMenu actions={actions as any} loading={isLoading} />
-      {/* Add the floating action menu */}
+      {!isLoading && (
+        <FloatingActionMenu actions={actions as any} loading={isLoading} />
+      )}
     </>
   );
 };

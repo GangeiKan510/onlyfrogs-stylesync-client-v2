@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
 import AntDesignIcons from "@expo/vector-icons/AntDesign";
 import Animated, {
@@ -36,6 +36,12 @@ const FloatingActionMenu: React.FC<FloatingActionMenuProps> = ({
   loading = false,
 }) => {
   const isExpanded = useSharedValue(false);
+
+  useEffect(() => {
+    if (loading) {
+      isExpanded.value = false;
+    }
+  }, [loading]);
 
   const handlePress = () => {
     if (!loading) {
@@ -77,6 +83,7 @@ const FloatingActionMenu: React.FC<FloatingActionMenuProps> = ({
                 right: 10,
               },
             ]}
+            disabled={loading}
           >
             <View
               style={{

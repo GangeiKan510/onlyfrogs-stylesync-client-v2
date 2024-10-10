@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Text, View, FlatList, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -32,7 +32,7 @@ const Page = () => {
   const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
     null
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // This controls the spinner and menu
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -72,7 +72,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true);
+          setLoading(true); // Show loading spinner and disable action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -106,7 +106,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Hide loading spinner and re-enable action menu
         }
 
         handleCloseModal();
@@ -130,7 +130,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true);
+          setLoading(true); // Show loading spinner and disable action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -149,7 +149,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Hide loading spinner and re-enable action menu
         }
 
         handleCloseModal();
@@ -171,7 +171,7 @@ const Page = () => {
       formData.append("closet_id", closetId || "");
 
       try {
-        setLoading(true);
+        setLoading(true); // Show loading spinner and disable action menu
         await uploadClothing(formData);
         Toast.show({
           type: "success",
@@ -183,7 +183,7 @@ const Page = () => {
       } catch (error) {
         console.error("Error while uploading clothing from link:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Hide loading spinner and re-enable action menu
       }
 
       handleCloseLinkModal();
@@ -257,6 +257,7 @@ const Page = () => {
         )}
       </View>
       <FloatingActionMenu actions={actions as any} loading={loading} />
+      {/* Use loading state */}
       <ClothingDetailsModal
         isVisible={isModalVisible}
         onClose={handleCloseModal}

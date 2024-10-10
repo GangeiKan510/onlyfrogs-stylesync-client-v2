@@ -82,7 +82,7 @@ export const updateUser = async (userData: UpdateUserData) => {
 export const updateUserName = async (userData: UpdateUserName) => {
   try {
     const response = await postWithFirebaseJwt(
-      "/web/users/update-user-name",
+      "/web/users/update-name",
       userData
     );
 
@@ -97,4 +97,3 @@ export const updateUserName = async (userData: UpdateUserName) => {
     throw error;
   }
 };
-

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, CommonActions } from "@react-navigation/native";
@@ -16,13 +17,19 @@ import Toast from "react-native-toast-message";
 import NoProfileImg from "../../../assets/icons/profile/no-profile-img.svg";
 import Back from "../../../assets/icons/back-icon.svg";
 import CameraIcon from "../../../assets/icons/profile/camera-icon.svg";
+import EmailVerified from "../../../assets/icons/email-verified.svg";
 import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
 import { UpdateUserName } from "@/utils/types/UpdateUser";
 import { updateUserName } from "@/network/web/user";
+import { auth } from "@/firebaseConfig";
+import { sendEmailVerification } from "firebase/auth";
+import { Href, useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
 
 const ProfileSettings = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
@@ -32,6 +39,8 @@ const ProfileSettings = () => {
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
 
@@ -40,17 +49,47 @@ const ProfileSettings = () => {
   }, [user]);
 
   const resetToInitialState = () => {
-    setFirstName(user?.first_name || '');
-    setLastName(user?.last_name || '');
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
     setProfileImage(null);
-    initialFirstName.current = user?.first_name || '';
-    initialLastName.current = user?.last_name || '';
+    initialFirstName.current = user?.first_name || "";
+    initialLastName.current = user?.last_name || "";
     initialProfileImage.current = null;
+  };
+
+  const sendVerificationEmail = async () => {
+    try {
+      setIsSendingVerification(true);
+      if (auth.currentUser && !auth.currentUser.emailVerified) {
+        await sendEmailVerification(auth.currentUser);
+        setVerificationSent(true);
+        Toast.show({
+          type: "success",
+          text1: "Verification Email Sent",
+          text2: "Check your email inbox to verify your email address.",
+        });
+      } else {
+        Toast.show({
+          type: "info",
+          text1: "Email Already Verified",
+          text2: "Your email address is already verified.",
+        });
+      }
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to send verification email. Please try again later.",
+      });
+    } finally {
+      setIsSendingVerification(false);
+    }
   };
 
   const uploadProfileImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
+
     if (status === "denied") {
       Alert.alert(
         "Permission Required",
@@ -60,11 +99,14 @@ const ProfileSettings = () => {
           {
             text: "Try Again",
             onPress: async () => {
-              const newPermissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              const newPermissionResult =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
               if (newPermissionResult.granted) {
                 launchImagePicker();
               } else {
-                Alert.alert("Permission still denied. Please enable it in settings.");
+                Alert.alert(
+                  "Permission still denied. Please enable it in settings."
+                );
               }
             },
           },
@@ -77,7 +119,6 @@ const ProfileSettings = () => {
       launchImagePicker();
     }
   };
-
 
   const launchImagePicker = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -118,11 +159,22 @@ const ProfileSettings = () => {
   };
 
   const validateInputs = () => {
-    if (!firstName.trim() && !lastName.trim()) {
+    const hasNumbers = /\d/;
+
+    if (hasNumbers.test(firstName)) {
+      Toast.show({
+        type: "error",
+        text1: "Input Error",
+        text2: "Numbers are not allowed in the first name.",
+      });
+      return false;
+    }
+
+    if (hasNumbers.test(lastName)) {
       Toast.show({
         type: "error",
         text1: "Validation Error",
-        text2: "First name and last name cannot be empty.",
+        text2: "Numbers are not allowed in the last name.",
       });
       return false;
     }
@@ -165,33 +217,44 @@ const ProfileSettings = () => {
     return true;
   };
 
+  const isSaveDisabled = () => {
+    return (
+      firstName === initialFirstName.current &&
+      lastName === initialLastName.current &&
+      profileImage === initialProfileImage.current
+    );
+  };
+
   const handleSave = async () => {
     if (validateInputs()) {
       setIsSaving(true);
-  
+
       const userData: UpdateUserName = {
+        id: user?.id || "",
         first_name: firstName,
         last_name: lastName,
       };
-  
+
       try {
         const updatedUser = await updateUserName(userData);
         setFirstName(updatedUser.first_name);
         setLastName(updatedUser.last_name);
         setProfileImage(profileImage);
-  
+
         Toast.show({
           type: "success",
           text1: "Profile Saved",
           text2: "Your profile changes have been saved successfully.",
         });
-  
+
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [{ name: "profile" }],
           })
         );
+
+        refetchMe();
       } catch (error) {
         Toast.show({
           type: "error",
@@ -202,25 +265,17 @@ const ProfileSettings = () => {
         setIsSaving(false);
       }
     }
-    console.log()
   };
-  
-  
+
   const handleCancel = () => {
-    // Compare the current values with the initial values stored in useRef
     if (
       firstName !== initialFirstName.current ||
       lastName !== initialLastName.current ||
       profileImage !== initialProfileImage.current
     ) {
-      setShowModal(true); // Show modal if changes are detected
+      setShowModal(true);
     } else {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "profile" }],
-        })
-      );
+      router.push(routes.profile as Href<string | object>);
     }
   };
 
@@ -237,14 +292,14 @@ const ProfileSettings = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="absolute left-10 top-16 z-10">
-        <TouchableOpacity onPress={handleCancel}>
+      <View className="w-full flex-row items-center top-2 px-6 z-30">
+        <TouchableOpacity
+          onPress={handleCancel}
+          className="absolute left-6 z-40"
+        >
           <Back width={20} height={20} />
         </TouchableOpacity>
-      </View>
-
-      <View className="top-8">
-        <Text className="text-center text-[20px] font-bold">
+        <Text className="flex-1 text-center text-[20px] font-bold">
           Profile Settings
         </Text>
       </View>
@@ -252,7 +307,10 @@ const ProfileSettings = () => {
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-6">
           <View className="items-center my-16">
-            <TouchableOpacity onPress={uploadProfileImage} className="absolute z-10">
+            <TouchableOpacity
+              onPress={uploadProfileImage}
+              className="absolute z-10"
+            >
               <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
                 {profileImage ? (
                   <Image
@@ -263,7 +321,7 @@ const ProfileSettings = () => {
                 ) : (
                   <NoProfileImg width={130} height={130} />
                 )}
-                <View className="absolute right-0 bottom-1">
+                <View className="absolute right-1 bottom-2">
                   <CameraIcon width={30} height={30} />
                 </View>
               </View>
@@ -302,25 +360,47 @@ const ProfileSettings = () => {
               ) : null}
             </View>
             <View className="mb-3">
-              <Text className="mb-1">Email</Text>
-              <View className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 justify-center">
-                <Text className="text-[#B7B7B7]">{user?.email}</Text>
+              <View className="flex-row gap-1">
+                <Text className="mb-1">Email</Text>
+              </View>
+              <View className="flex-row items-center justify-between bg-[#edf9f9] h-[42px] rounded-[10px] pl-4 pr-2">
+                <Text className="text-tertiary flex-shrink">{user?.email}</Text>
+                {auth.currentUser?.emailVerified ? (
+                  <View className="flex-row bg-[#7AB2B2] items-center rounded-[8px] px-2 py-1">
+                    <Text className="text-white mr-1">Email Verified</Text>
+                    <EmailVerified width={16} height={16} />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    onPress={sendVerificationEmail}
+                    className={`${
+                      verificationSent ? "opacity-50" : "opacity-100"
+                    } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
+                    disabled={verificationSent || isSendingVerification}
+                  >
+                    {isSendingVerification ? (
+                      <Spinner type="primary" />
+                    ) : (
+                      <Text className="text-white">
+                        {verificationSent ? "Email Sent!" : "Send Verification"}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
-      <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
-        <TouchableOpacity
-          onPress={handleCancel}
-          className="flex mx-2 rounded-[10px] bg-[#F9F9F9] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
-        >
-          <Text className="text-center text-[#7AB2B2]">Cancel</Text>
-        </TouchableOpacity>
 
+      <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-2">
         <TouchableOpacity
           onPress={handleSave}
-          className= "bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]">
+          disabled={isSaveDisabled()}
+          className={`items-center justify-center rounded-[10px] w-full h-[42px] ${
+            isSaveDisabled() ? "bg-[#9fcccc]" : "bg-[#7AB2B2]"
+          }`}
+        >
           <View>
             {isSaving ? (
               <Spinner type={"primary"} />
@@ -332,11 +412,12 @@ const ProfileSettings = () => {
       </View>
 
       <Modal animationType="fade" transparent={true} visible={showModal}>
-        <View className="flex-1 justify-center items-center" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
           <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
-            <Text className="text-[18px] mb-1 font-bold">
-              Discard Changes?
-            </Text>
+            <Text className="text-[18px] mb-1 font-bold">Discard Changes?</Text>
             <Text className="mt-2 text-center">
               You have unsaved changes. Do you want to discard them?
             </Text>
@@ -362,4 +443,3 @@ const ProfileSettings = () => {
 };
 
 export default ProfileSettings;
-

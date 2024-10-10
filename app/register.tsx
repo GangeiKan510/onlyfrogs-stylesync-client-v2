@@ -179,7 +179,7 @@ export default function Register() {
       <KeyboardAvoidingView>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Header />
-          <View className="mx-8 mt-12">
+          <View className="mx-8 mt-10">
             <View className="mb-4">
               <Text className="text-[20px] font-bold">
                 Thank you for styling with us!
@@ -309,7 +309,7 @@ export default function Register() {
                 />
                 <Link
                   href={routes.login as Href<string | object>}
-                  className="text-[#7ab2b2] underline text-center mt-3"
+                  className="text-[#7ab2b2] text-center mt-3"
                 >
                   I already have an account
                 </Link>

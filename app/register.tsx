@@ -24,6 +24,7 @@ export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -43,6 +44,7 @@ export default function Register() {
   };
 
   const nameRegex = /^[A-Za-z\s]*$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleFirstNameChange = (value: string) => {
     if (!nameRegex.test(value)) {
@@ -60,6 +62,15 @@ export default function Register() {
       setLastNameError("");
     }
     setLastName(value);
+  };
+
+  const handleEmailChange = (value: string) => {
+    if (!emailRegex.test(value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+    setEmail(value);
   };
 
   const validatePassword = (value: string) => {
@@ -93,9 +104,9 @@ export default function Register() {
 
   const handleSignUp = async () => {
     setLoading(true);
-  
+
     const lowercasedEmail = email.toLowerCase();
-    
+
     const { success, message } = validateForm(
       firstName,
       lastName,
@@ -104,11 +115,11 @@ export default function Register() {
       confirmPassword
     );
 
-    if (!success) {
+    if (!success || emailError) {
       Toast.show({
         type: "error",
         text1: "Registration Error",
-        text2: message,
+        text2: emailError || message,
         position: "top",
         swipeable: true,
       });
@@ -127,20 +138,19 @@ export default function Register() {
       setLoading(false);
       return;
     }
-  
+
     try {
       const userData = {
         first_name: firstName,
         last_name: lastName,
         email: email.toLowerCase(),
       };
-  
+
       const firebaseAuthUser = await signUp(email.toLowerCase(), password);
-  
       const newUser = await createUser(userData);
-  
+
       setLoading(false);
-  
+
       if (firebaseAuthUser && newUser) {
         Toast.show({
           type: "success",
@@ -163,14 +173,13 @@ export default function Register() {
       setLoading(false);
     }
   };
-  
 
   return (
     <View className="flex-1 bg-[#ffffff]">
       <KeyboardAvoidingView>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Header />
-          <View className="mx-8 mt-16">
+          <View className="mx-8 mt-12">
             <View className="mb-4">
               <Text className="text-[20px] font-bold">
                 Thank you for styling with us!
@@ -178,6 +187,7 @@ export default function Register() {
               <Text>Please enter your details for registration:</Text>
             </View>
             <View>
+              {/* First Name */}
               <View className="mb-3">
                 <Text className="mb-1">
                   First Name<Text className="text-[#EE4E4E]"> *</Text>
@@ -195,6 +205,8 @@ export default function Register() {
                   </Text>
                 ) : null}
               </View>
+
+              {/* Last Name */}
               <View className="mb-3">
                 <Text className="mb-1">
                   Last Name<Text className="text-[#EE4E4E]"> *</Text>
@@ -209,6 +221,8 @@ export default function Register() {
                   <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
                 ) : null}
               </View>
+
+              {/* Email */}
               <View className="mb-3">
                 <Text className="mb-1">
                   Email<Text className="text-[#EE4E4E]"> *</Text>
@@ -216,9 +230,16 @@ export default function Register() {
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={handleEmailChange}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                 />
+                {emailError ? (
+                  <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+                ) : null}
               </View>
+
+              {/* Password */}
               <View className="mb-3">
                 <Text>
                   Password<Text className="text-[#EE4E4E]"> *</Text>
@@ -247,6 +268,8 @@ export default function Register() {
                   ) : null}
                 </View>
               </View>
+
+              {/* Confirm Password */}
               <View className="mb-8">
                 <Text>
                   Confirm Password<Text className="text-[#EE4E4E]"> *</Text>
@@ -275,6 +298,8 @@ export default function Register() {
                   ) : null}
                 </View>
               </View>
+
+              {/* Sign Up Button */}
               <View>
                 <CustomButton
                   isLoading={loading}

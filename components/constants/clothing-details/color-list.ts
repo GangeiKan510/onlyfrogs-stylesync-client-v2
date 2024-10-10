@@ -1,4 +1,9 @@
-export const COLOR_LIST = [
+interface Color {
+  name: string;
+  colorCode: string;
+}
+
+export const COLOR_LIST: Color[] = [
   { name: "White", colorCode: "#FFFFFF" },
   { name: "Cream", colorCode: "#FFFDD0" },
   { name: "Beige", colorCode: "#E2C79C" },

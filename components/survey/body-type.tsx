@@ -7,7 +7,6 @@ import Pear from "../../assets/images/bodyTypes/pear.svg";
 import LeanColumn from "../../assets/images/bodyTypes/leanColumn.svg";
 import Apple from "../../assets/images/bodyTypes/apple.svg";
 import InvertedTriangle from "../../assets/images/bodyTypes/invertedTriangle.svg";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const bodyTypes = [
   { name: "Neat Hourglass", image: NeatHourGlass, type: "NeatHourGlass" },
@@ -35,11 +34,12 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
     }
   }, [selectedBodyType, setBodyType]);
 
-
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <>
       <View className="flex justify-center items-center mt-10">
-        <Text className="text-center text-[20px] font-bold">What is your body type?</Text>
+        <Text className="text-center text-[20px] font-bold">
+          What is your body type?
+        </Text>
       </View>
       <View className=" flex-1 justify-center items-center">
         <ScrollView
@@ -81,7 +81,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
           ))}
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

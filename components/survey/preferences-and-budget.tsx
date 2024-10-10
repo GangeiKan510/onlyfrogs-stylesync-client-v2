@@ -6,6 +6,7 @@ import StyleSelection from "./preferences-and-budget-components/StyleSelection";
 import FavColorSelection from "./preferences-and-budget-components/FavColorSelection";
 import PreferredBrandsSelection from "./preferences-and-budget-components/PreferredBrandsSelection";
 import BudgetRange from "./preferences-and-budget-components/BudgetRange";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PreferencesAndBudget = ({ setPreferences }: any) => {
   const [styles, setStyles] = useState<string[]>(["casual", "modern"]);
@@ -25,7 +26,9 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
   return (
     <>
       <View className="flex justify-center items-center mt-10 mb-10">
-        <Text className="text-[20px] font-bold">Preferences & Budget</Text>
+        <Text className="text-center text-[20px] font-bold">
+          Preferences & Budget
+        </Text>
       </View>
       <ScrollView>
         <View className="flex justify-start items-start mx-5">
@@ -47,7 +50,9 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
           <PreferredBrandsSelection />
         </View>
         <View className="flex justify-start items-start mx-5 mt-10">
-          <Text className="text-lg font-bold mb-2">Choose your preferred budget range</Text>
+          <Text className="text-lg font-bold mb-2">
+            Choose your preferred budget range
+          </Text>
           <BudgetRange />
         </View>
       </ScrollView>

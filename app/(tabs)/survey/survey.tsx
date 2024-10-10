@@ -130,11 +130,11 @@ const Survey = () => {
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
         {/* Conditionally render the Back Button */}
-        {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
+        {/* {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
           <TouchableOpacity onPress={handleBack} className="p-2">
             <BackIcon />
           </TouchableOpacity>
-        )}
+        )} */}
 
         {/* Conditionally render the Skip Button */}
         {currentIndex === 1 && !isAnalyzing && !analysisComplete && (

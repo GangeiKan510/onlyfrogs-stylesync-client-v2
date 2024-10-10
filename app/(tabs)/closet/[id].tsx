@@ -1,27 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Text,
-  View,
-  Animated,
-  Alert,
-  FlatList,
-  SafeAreaView,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, FlatList, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { usePathname } from "expo-router";
 import Header from "../../../components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
-import Fab from "../../../components/buttons/Fab";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
+import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -55,7 +48,7 @@ const Page = () => {
   };
 
   const handleCloseLinkModal = () => {
-    setIsLinkModalVisible(false); // Close link modal
+    setIsLinkModalVisible(false);
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
@@ -79,7 +72,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true); // Show loading screen
+          setLoading(true);
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -105,7 +98,7 @@ const Page = () => {
           const imageUploaded = await uploadClothing(formData);
           Toast.show({
             type: "success",
-            text1: "Clothing sucessfully uploaded!",
+            text1: "Clothing successfully uploaded!",
             position: "top",
             swipeable: true,
           });
@@ -202,6 +195,24 @@ const Page = () => {
   const filteredClothes =
     user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
 
+  const actions = [
+    {
+      iconName: "camera",
+      onPress: handleTakePicture,
+      label: "",
+    },
+    {
+      iconName: "picture",
+      onPress: handleUploadFromGallery,
+      label: "",
+    },
+    {
+      iconName: "link",
+      onPress: () => setIsLinkModalVisible(true),
+      label: "",
+    },
+  ];
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5 flex-1">
@@ -243,26 +254,17 @@ const Page = () => {
           />
         )}
       </View>
-      <View className="absolute z-10 bottom-8 right-10">
-        <Fab
-          loading={loading}
-          onCameraPress={handleTakePicture}
-          onGalleryPress={handleUploadFromGallery}
-          onLinkPress={() => setIsLinkModalVisible(true)}
-        />
-      </View>
-
+      <FloatingActionMenu actions={actions as any} loading={loading} />
       <ClothingDetailsModal
         isVisible={isModalVisible}
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
       />
-
       <LinkUploadModal
         isVisible={isLinkModalVisible}
         onClose={handleCloseLinkModal}
-        onUpload={handleLinkUpload} // Pass upload handler
+        onUpload={handleLinkUpload}
       />
     </SafeAreaView>
   );

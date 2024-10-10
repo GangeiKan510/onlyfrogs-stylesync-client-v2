@@ -19,8 +19,14 @@ import Abstract from '../../../assets/images/patterns/Abstract.svg';
 import TieDye from '../../../assets/images/patterns/TieDye.svg';
 import Lace from '../../../assets/images/patterns/Lace.svg';
 import OtherPatterns from '../../../assets/images/patterns/OtherPatterns.svg';
+import { SvgProps } from 'react-native-svg';
 
-export const PATTERN_LIST = [
+interface Pattern {
+  name: string;
+  reference: React.FC<SvgProps>;
+}
+
+export const PATTERN_LIST: Pattern[] = [
     { name: "Solid", reference: Solid },
     { name: "Horizontal Striped", reference: HorizontalStriped },
     { name: "Vertical Striped", reference: VerticalStriped },

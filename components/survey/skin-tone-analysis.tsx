@@ -155,10 +155,9 @@ const SkinToneAnalysis = ({
           </View>
         </View>
       )}
-      {!isLoading ||
-        (analysisResult && (
-          <FloatingActionMenu actions={actions as any} loading={isLoading} />
-        ))}
+      {!isLoading && !analysisResult && (
+        <FloatingActionMenu actions={actions as any} loading={isLoading} />
+      )}
     </>
   );
 };

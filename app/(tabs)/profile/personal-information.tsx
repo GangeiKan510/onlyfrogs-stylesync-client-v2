@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Href, useRouter } from "expo-router";
 import { useUser } from "@/components/config/user-context";
 import Back from "../../../assets/icons/back-icon.svg";
 import { routes } from "@/utils/routes";
+import { updatePersonalInformation } from "@/network/web/user";
+import Toast from "react-native-toast-message";
 
 function PersonalInformation() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const [height, setHeight] = useState<number | string>(user?.height || "");
   const [weight, setWeight] = useState<number | string>(user?.weight || "");
   const [birthDate, setBirthDate] = useState<string>(
@@ -67,9 +69,57 @@ function PersonalInformation() {
     return cleaned.slice(0, 10);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!birthDateError && validateBirthDate(birthDate)) {
-      console.log({ height, weight, birthDate, selectedGender });
+      try {
+        const [month, day, year] = birthDate.split("/");
+        const formattedBirthDate = `${year}-${month}-${day}`;
+
+        const validDate = new Date(formattedBirthDate);
+        if (isNaN(validDate.getTime())) {
+          setBirthDateError("Invalid date format.");
+          return;
+        }
+
+        const userId = user?.id;
+
+        if (userId) {
+          const personalInformationData = {
+            id: userId,
+            birth_date: formattedBirthDate,
+            gender: selectedGender ?? "",
+            height: Number(height),
+            weight: Number(weight),
+          };
+
+          await updatePersonalInformation(personalInformationData);
+
+          refetchMe();
+
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Personal information updated successfully",
+            position: "top",
+          });
+          router.push(routes.profile as Href<string | object>);
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "User ID not found",
+            position: "top",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to update personal information", error);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to update personal information",
+          position: "top",
+        });
+      }
     } else {
       console.log("Please correct the errors before saving.");
     }

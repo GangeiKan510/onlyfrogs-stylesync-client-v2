@@ -121,15 +121,11 @@ const Page = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
-        allowsMultipleSelection: true,
-        selectionLimit: 5,
+        allowsMultipleSelection: false,
       });
 
-      if (!result.canceled && result.assets) {
-        const newImages = result.assets.map((asset) => asset.uri);
-        setSelectedImages((prevImages) => [...prevImages, ...newImages]);
-
-        const uri = newImages[0];
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const uri = result.assets[0].uri;
         const fileName = uri.split("/").pop();
         const formData = new FormData();
 
@@ -143,6 +139,12 @@ const Page = () => {
           formData.append("user_id", user?.id || "");
           formData.append("closet_id", closetId || "");
           await uploadClothing(formData);
+          Toast.show({
+            type: "success",
+            text1: "Image successfully uploaded!",
+            position: "top",
+            swipeable: true,
+          });
           refetchMe();
         } catch (error) {
           console.error("Error while uploading clothing:", error);

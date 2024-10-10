@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Href, useRouter } from "expo-router";
 import { useUser } from "@/components/config/user-context";
@@ -8,6 +8,7 @@ import Back from "../../../assets/icons/back-icon.svg";
 import { routes } from "@/utils/routes";
 import { updatePersonalInformation } from "@/network/web/user";
 import Toast from "react-native-toast-message";
+import Spinner from "@/components/common/Spinner";
 
 function PersonalInformation() {
   const router = useRouter();
@@ -23,6 +24,7 @@ function PersonalInformation() {
   const [selectedGender, setSelectedGender] = useState<
     "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null
   >(user?.gender || null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const genderOptions = ["Male", "Female", "Non-Binary", "Rather Not Say"];
 
@@ -71,6 +73,7 @@ function PersonalInformation() {
 
   const handleSave = async () => {
     if (!birthDateError && validateBirthDate(birthDate)) {
+      setLoading(true);
       try {
         const [month, day, year] = birthDate.split("/");
         const formattedBirthDate = `${year}-${month}-${day}`;
@@ -78,6 +81,7 @@ function PersonalInformation() {
         const validDate = new Date(formattedBirthDate);
         if (isNaN(validDate.getTime())) {
           setBirthDateError("Invalid date format.");
+          setLoading(false);
           return;
         }
 
@@ -119,6 +123,8 @@ function PersonalInformation() {
           text2: "Failed to update personal information",
           position: "top",
         });
+      } finally {
+        setLoading(false);
       }
     } else {
       console.log("Please correct the errors before saving.");
@@ -203,13 +209,17 @@ function PersonalInformation() {
           />
         </View>
 
-        {/* Save Button */}
         <View className="mt-auto pb-2">
           <TouchableOpacity
             className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
             onPress={handleSave}
+            disabled={loading}
           >
-            <Text className="text-white">Save</Text>
+            {loading ? (
+              <Spinner type="primary" />
+            ) : (
+              <Text className="text-white">Save</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

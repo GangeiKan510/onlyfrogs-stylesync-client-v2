@@ -193,9 +193,7 @@ const Page = () => {
 
       handleCloseLinkModal();
     } else {
-      alert(
-        "Please enter a valid image URL with .jpg, .jpeg, or .png"
-      );
+      alert("Please enter a valid image URL with .jpg, .jpeg, or .png");
     }
   };
 
@@ -206,7 +204,7 @@ const Page = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="mx-5">
+      <View className="mx-5 flex-1">
         <View>
           <Header />
         </View>
@@ -240,7 +238,8 @@ const Page = () => {
               />
             )}
             numColumns={3}
-            className="mb-48"
+            contentContainerStyle={{ paddingBottom: 16 }}
+            className="flex-grow"
           />
         )}
       </View>

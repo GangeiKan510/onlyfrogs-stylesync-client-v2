@@ -8,8 +8,8 @@ import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
-import TokensIcon from "../../assets/icons/token-icon.svg";
 import EmailVerifiedIcon from "../../assets/icons/top-greeting/email-verified-icon.svg";
+import VerifyEmailIcon from "../../assets/icons/verify-email.svg";
 
 const TopGreeting = () => {
   const { user } = useUser();
@@ -34,11 +34,9 @@ const TopGreeting = () => {
     }
   };
 
-  console.log(user);
-
   return (
     <View className="flex-row justify-between items-center mt-5">
-      <View className="flex-row items-center">
+      <View className="flex-1 flex-row items-center">
         <Avatar
           url={
             "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
@@ -48,7 +46,7 @@ const TopGreeting = () => {
         <View className="ml-3">
           <View className="flex-row items-center gap-1">
             <Text className="font-bold text-base">
-              Welcome Back,{" "}
+              Greetings,{" "}
               {user?.first_name
                 ? user.first_name
                     .split(" ")[0]
@@ -59,30 +57,39 @@ const TopGreeting = () => {
                 : "Guest"}
               !
             </Text>
-            {isEmailVerified ? <EmailVerifiedIcon /> : null}
           </View>
 
-          <Pressable onPress={() => setModalVisible(true)}>
-            <Text className="text-base text-text-tertiary underline">
-              Log out
-            </Text>
-          </Pressable>
+          {isEmailVerified ? (
+            <View className="flex-row items-center">
+              <Text className="text-[14px] text-text-tertiary">
+                Email Verified{" "}
+              </Text>
+              <EmailVerifiedIcon />
+            </View>
+          ) : (
+            <Pressable
+              className="flex-row items-center"
+              onPress={() =>
+                router.push(routes.profileSettings as Href<string>)
+              }
+            >
+              <Text className="text-[14px] text-text-tertiary">
+                Verify Email{" "}
+              </Text>
+              <VerifyEmailIcon />
+            </Pressable>
+          )}
         </View>
       </View>
 
+      {/* Tokens section aligned to the right */}
       <View className="flex items-end">
-        <View className="flex-row items-center">
+        <View className="flex-row items-center mt-2">
           <MoreInfoIcon width={20} height={20} />
-          <Text className="text-base ml-1">Tokens</Text>
+          <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
         </View>
         <View className="flex-row items-center mt-1">
-          <TokensIcon width={20} height={20} />
-          <Text className="text-base ml-1">{user?.tokens}</Text>
-          <Pressable
-            onPress={() => router.push(routes.survey as Href<string | object>)}
-          >
-            <Text>To Survey</Text>
-          </Pressable>
+          <Text className="text-base ml-1"></Text>
         </View>
       </View>
 

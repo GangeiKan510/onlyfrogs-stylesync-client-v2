@@ -47,7 +47,7 @@ const ProfilePage = () => {
             <View className="absolute z-10 bottom-32 rounded-full items-center justify-center overflow-hidden border-2 border-white">
               <NoProfileImg width={100} height={100} />
             </View>
-            <View className="mt-16 items-center">
+            <View className="mt-12 items-center">
               <View className="flex-row gap-1 items-center">
                 <Text className="text-black font-bold text-[16px]">
                   {user?.first_name && user?.last_name
@@ -89,9 +89,9 @@ const ProfilePage = () => {
             </View>
           </View>
 
-          <View className="w-full h-[4px] bg-[#F2F2F2] my-4" />
+          <View className="w-full h-[2px] bg-[#F2F2F2] my-4" />
 
-          <View className="px-6 mt-2">
+          <View className="px-6 mt-1">
             <Text className="text-[#B7B7B7] text-[16px] ml-2">
               Account Settings
             </Text>

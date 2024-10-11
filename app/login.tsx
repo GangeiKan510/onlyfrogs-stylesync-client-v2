@@ -108,9 +108,9 @@ export default function Login() {
           <View className="items-end mt-1 mb-8">
             <Link
               href={routes.forgotPassword as Href<string | object>}
-              className="text-[#0d0e0e] text-[16px] underline mt-1"
+              className="text-[14px] text-tertiary mt-1"
             >
-              <Text>Forgot your password?</Text>
+              <Text>Forgot password?</Text>
             </Link>
           </View>
           <View>
@@ -122,7 +122,7 @@ export default function Login() {
             />
             <Link
               href={routes.register as Href<string | object>}
-              className="text-[#0d0e0e] text-[16px] underline text-center mt-3"
+              className="text-tertiary text-[14px] text-center mt-3"
             >
               <Text>I don&apos;t have an account</Text>
             </Link>

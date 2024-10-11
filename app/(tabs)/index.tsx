@@ -116,7 +116,7 @@ export default function HomeScreen() {
       keyboardVerticalOffset={0}
     >
       <View className="flex-1 bg-white">
-        <View className="flex-row justify-between items-center px-4 py-2">
+        <View className="flex-row justify-between items-center px-4">
           <View className="absolute right-[30px] bottom-[25px] z-30">
             <Pressable onPress={() => setDropdownVisible(!dropdownVisible)}>
               <ChatSettingsIcon />

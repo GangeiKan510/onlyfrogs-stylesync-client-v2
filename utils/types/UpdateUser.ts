@@ -55,3 +55,11 @@ export interface UpdateUserName {
   first_name: string;
   last_name: string;
 }
+
+export interface UpdatePersonalInformationData {
+  id: string;
+  birth_date: string;
+  gender: string;
+  height: number;
+  weight: number;
+}

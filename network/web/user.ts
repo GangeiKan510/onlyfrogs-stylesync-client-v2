@@ -1,5 +1,9 @@
 import { CreateUserData } from "@/utils/types/CreateUser";
-import { UpdateUserData, UpdateUserName } from "@/utils/types/UpdateUser";
+import {
+  UpdatePersonalInformationData,
+  UpdateUserData,
+  UpdateUserName,
+} from "@/utils/types/UpdateUser";
 import {
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,
@@ -94,6 +98,29 @@ export const updateUserName = async (userData: UpdateUserName) => {
     return updatedUser;
   } catch (error) {
     console.error("Failed to update user name", error);
+    throw error;
+  }
+};
+
+export const updatePersonalInformation = async (
+  userData: UpdatePersonalInformationData
+) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-personal-information",
+      userData
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error updating personal information: ${response.statusText}`
+      );
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to update personal information", error);
     throw error;
   }
 };

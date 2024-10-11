@@ -37,7 +37,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress }) => {
           )}
         </ImageBackground>
         <TouchableOpacity>
-          <View className="flex-row space-x-1 items-center absolute bg-tertiary rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 left-[51px]">
+          <View className="flex-row space-x-1 items-center absolute bg-tertiary rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 left-[37%]">
             <DesignIcon width={12} color="white" />
             <Text className="text-white">worn</Text>
           </View>

@@ -79,8 +79,8 @@ const FloatingActionMenu: React.FC<FloatingActionMenuProps> = ({
               animatedStyles,
               {
                 position: "absolute",
-                bottom: 55,
-                right: 10,
+                bottom: 50,
+                right: 40,
               },
             ]}
             disabled={loading}
@@ -126,7 +126,7 @@ const FloatingActionMenu: React.FC<FloatingActionMenuProps> = ({
           zIndex: 20,
           position: "absolute",
           bottom: 50,
-          right: 10,
+          right: 40,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.3,

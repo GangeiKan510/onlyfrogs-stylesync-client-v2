@@ -14,6 +14,8 @@ import LeanColumn from "../../../assets/images/bodyTypes/leanColumn.svg";
 import Apple from "../../../assets/images/bodyTypes/apple.svg";
 import InvertedTriangle from "../../../assets/images/bodyTypes/invertedTriangle.svg";
 import Back from "../../../assets/icons/back-icon.svg";
+import { Href, useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
 
 const bodyTypes = [
   { name: "Neat Hourglass", image: NeatHourGlass, type: "NeatHourGlass" },
@@ -34,6 +36,7 @@ interface BodyTypeProps {
 
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user } = useUser();
+  const router = useRouter();
   const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
@@ -74,22 +77,18 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
     }
   };
 
-  const handleCancel = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "profile" }],
-      })
-    );
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30">
-        <TouchableOpacity onPress={handleCancel} className="absolute left-6 z-40">
+        <TouchableOpacity
+          onPress={() => router.push(routes.profile as Href<string | object>)}
+          className="absolute left-6 z-40"
+        >
           <Back width={20} height={20} />
         </TouchableOpacity>
-        <Text className="flex-1 text-center text-[20px] font-bold">Body Type</Text>
+        <Text className="flex-1 text-center text-[20px] font-bold">
+          Preferences and Budget
+        </Text>
       </View>
       <View className="flex-1 justify-center items-center">
         <ScrollView

@@ -10,22 +10,22 @@ const App = () => {
   const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
 
   return (
-    <GestureHandlerRootView className="mt-1 ">
+    <GestureHandlerRootView className="mt-1">
       <View className="justify-center items-center">
         <View className="z-10">
           <View className="flex-row justify-between mx-2 ">
             <View className="mb-5">
-              <Text className="text-black text-sm">Min Price</Text>
-              <Text className="text-black text-base">₱{minValue}</Text>
+              <Text className="text-black text-[14px]">Min Price</Text>
+              <Text className="text-black font-bold text-[14px]">₱{minValue}</Text>
             </View>
             <View>
-              <Text className="text-black text-sm">Max Price</Text>
-              <Text className="text-black text-base justify-end items-end">₱{maxValue}</Text>
+              <Text className="text-black text-[14px]">Max Price</Text>
+              <Text className="text-black font-bold text-[14px]">₱{maxValue}</Text>
             </View>
           </View>
-          <View className="px-4 py-2 mb-4  flex justify-center items-center">
+          <View className="px-2 py-2  mb-4 flex justify-center items-center">
             <RangeSlider
-              sliderWidth={330}
+              sliderWidth={332}
               min={MIN_DEFAULT}
               max={MAX_DEFAULT}
               step={10}

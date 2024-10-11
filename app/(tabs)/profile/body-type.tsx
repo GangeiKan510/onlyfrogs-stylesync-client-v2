@@ -37,6 +37,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     if (setBodyType) {
@@ -84,36 +85,34 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="absolute left-10 top-16 z-10">
-        <TouchableOpacity onPress={handleCancel}>
+      <View className="w-full flex-row items-center top-2 px-6 z-30">
+        <TouchableOpacity onPress={handleCancel} className="absolute left-6 z-40">
           <Back width={20} height={20} />
         </TouchableOpacity>
+        <Text className="flex-1 text-center text-[20px] font-bold">Body Type</Text>
       </View>
-      <View className="flex justify-center items-center mt-8">
-        <Text className="text-center text-[20px] font-bold">Body Type</Text>
-      </View>
-      <View className=" flex-1 justify-center items-center">
+      <View className="flex-1 justify-center items-center">
         <ScrollView
           horizontal
-          showsHorizontalScrollIndicator={false}
-          className="h-[75vh]"
+          showsHorizontalScrollIndicator={true}
+          // className="h-[60vh]"
         >
           {bodyTypes.map((bodyType) => (
             <TouchableOpacity
               key={bodyType.type}
               onPress={() => setSelectedBodyType(bodyType.type)}
-              className={`border-[2px] rounded-[12px] mx-2 my-32 mt-12 ${
+              className={`border-[2px] rounded-[12px] mx-2 my-12 ${
                 selectedBodyType === bodyType.type
                   ? "border-tertiary"
                   : "border-transparent"
               }`}
             >
-              <View className="py-8 px-3">
+              <View className="justify-center items-center mt-4 px-1.5">
                 <Text className="text-[20px] text-center text-tertiary">
                   {bodyType.name}
                 </Text>
                 <bodyType.image />
-                <View className="flex items-center justify-center mt-4">
+                <View className="flex items-center justify-center top-4">
                   <TouchableOpacity
                     className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
                     onPress={() => setSelectedBodyType(bodyType.type)}
@@ -131,25 +130,17 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-4">
+        <View className="mt-auto py-2 w-full px-6">
           <TouchableOpacity
-            onPress={handleCancel}
-            className="flex mx-2 rounded-[10px] border border-solid border-[#7AB2B2] w-[160px] h-[42px] justify-center"
-          >
-            <Text className="text-center text-[#7AB2B2]">Cancel</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
+            className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
             onPress={handleSave}
-            className="bg-[#7AB2B2] items-center justify-center rounded-[10px] w-[160px] h-[42px]"
+            disabled={loading}
           >
-            <View>
-              {isSaving ? (
-                <Spinner type={"primary"} />
-              ) : (
-                <Text className="text-[16px] text-white">Save</Text>
-              )}
-            </View>
+            {loading ? (
+              <Spinner type="primary" />
+            ) : (
+              <Text className="text-white">Save</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

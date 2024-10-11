@@ -25,6 +25,7 @@ function PersonalInformation() {
     "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null
   >(user?.gender || null);
   const [loading, setLoading] = useState(false); // Add loading state
+  const [isBirthDateEdited, setIsBirthDateEdited] = useState(false);
 
   const genderOptions = ["Male", "Female", "Non-Binary", "Rather Not Say"];
 
@@ -56,6 +57,7 @@ function PersonalInformation() {
   const handleBirthDateChange = (value: string) => {
     const formattedDate = formatDateInput(value);
     setBirthDate(formattedDate);
+    setIsBirthDateEdited(true);
     validateBirthDate(formattedDate);
   };
 
@@ -72,7 +74,7 @@ function PersonalInformation() {
   };
 
   const handleSave = async () => {
-    if (!birthDateError && validateBirthDate(birthDate)) {
+    if (!birthDateError && (!isBirthDateEdited || validateBirthDate(birthDate))) {
       setLoading(true);
       try {
         const [month, day, year] = birthDate.split("/");

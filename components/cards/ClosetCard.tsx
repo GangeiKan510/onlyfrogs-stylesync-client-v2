@@ -5,7 +5,6 @@ import {
   Text,
   ImageBackground,
   TouchableOpacity,
-  Pressable,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Href, useRouter } from "expo-router";
@@ -24,12 +23,12 @@ const ClosetCard: React.FC<CardProps> = ({ name, onPress, uri, id }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{ width: "30%", minWidth: 100, aspectRatio: 1 }}
+      style={{ width: "30%", minWidth: 80, aspectRatio: 1 }}
       className="m-1"
     >
       <View className="w-full h-full rounded-[10px] overflow-hidden">
         {true ? (
-          <Pressable
+          <TouchableOpacity
             onPress={() =>
               router.push(
                 `${routes.expandedCloset as Href<string>} ${id}` as Href<string>
@@ -50,7 +49,7 @@ const ClosetCard: React.FC<CardProps> = ({ name, onPress, uri, id }) => {
                 <Text className="text-base text-white text-center">{name}</Text>
               </View>
             </ImageBackground>
-          </Pressable>
+          </TouchableOpacity>
         ) : (
           <View
             style={{ backgroundColor: "#d9d9d9" }}

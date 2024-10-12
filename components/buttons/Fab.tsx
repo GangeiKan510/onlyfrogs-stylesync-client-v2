@@ -73,9 +73,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
           shadowOpacity: 0.3,
           shadowRadius: 3,
           elevation: 5,
-          transform: [
-            { translateY: -2 },
-          ],
+          transform: [{ translateY: -2 }],
         }}
       >
         <AntDesignIcons
@@ -110,24 +108,21 @@ const Fab: React.FC<{
     };
   });
 
-
   return (
-<View>
+    <View>
       <AnimatedPressable
         onPress={handlePress}
         disabled={loading}
         className={`${
           isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"
-        }  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20`}
+        }  h-[50px] w-[50px] rounded-full flex justify-center items-center z-50`}
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.3,
           shadowRadius: 3,
           elevation: 5,
-          transform: [
-            { translateY: -2 },
-          ],
+          transform: [{ translateY: -2 }],
         }}
       >
         {loading ? (

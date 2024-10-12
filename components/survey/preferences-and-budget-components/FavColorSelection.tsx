@@ -22,7 +22,7 @@ const FavColorSelection = () => {
         {visibleColors.map((color, index) => (
           <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
-              className={`m-1 px-4 py-1.5 border-[1px] rounded-full flex-row items-center ${
+              className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
                 selectedColors.includes(color.name)
                   ? "bg-[#7AB2B2] border-[#7AB2B2]"
                   : "bg-white border-[#7AB2B2]"

@@ -7,7 +7,13 @@ import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
 import AliActiveIcon from "../../assets/icons/tabs/ali-active.svg";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Keyboard,
+  Animated,
+} from "react-native";
 import { Href, useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
@@ -17,6 +23,8 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 export default function TabLayout() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const tabBarOffset = new Animated.Value(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,6 +38,43 @@ export default function TabLayout() {
     return () => unsubscribe();
   }, [router]);
 
+  // useEffect(() => {
+  //   const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+  //     setKeyboardVisible(true);
+  //   });
+
+  //   const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+  //     setKeyboardVisible(false);
+  //   });
+
+  //   return () => {
+  //     showSubscription.remove();
+  //     hideSubscription.remove();
+  //   };
+  // }, []);
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      Animated.timing(tabBarOffset, {
+        toValue: 60, 
+        duration: 50,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      Animated.timing(tabBarOffset, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   if (loading) {
     return <LoadingScreen message={"Preparing the app."} />;
   }
@@ -42,9 +87,12 @@ export default function TabLayout() {
           tabBarActiveTintColor: "#7ab2b2",
           headerShown: false,
           tabBarStyle: {
-            height: 70,
-            backgroundColor: "#F3F3F3",
+            height: 60,
+            bottom: 0,
+            backgroundColor: "#f3f3f3",
             paddingVertical: 20,
+            // display: keyboardVisible ? "none" : "flex",
+            transform: [{ translateY: tabBarOffset }],
           },
           tabBarLabelStyle: {
             fontSize: 14,

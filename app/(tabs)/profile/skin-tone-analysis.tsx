@@ -140,7 +140,7 @@ const SkinToneAnalysis = () => {
       {isLoading ? (
         <LoadingScreen message={"Analyzing your skin tone..."} />
       ) : analysisResult ? (
-        <View className="mt-auto flex-1">
+        <View className="mt-auto flex-1 bg-white">
           <Result
             subSeason={analysisResult.sub_season}
             complements={analysisResult.complements}

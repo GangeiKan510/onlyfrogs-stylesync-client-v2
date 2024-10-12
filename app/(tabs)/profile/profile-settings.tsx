@@ -11,6 +11,8 @@ import {
   Modal,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
@@ -304,96 +306,107 @@ const ProfileSettings = () => {
         </Text>
       </View>
 
-      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <View className="flex-1 px-6">
-          <View className="items-center my-16">
-            <TouchableOpacity
-              onPress={uploadProfileImage}
-              className="absolute z-10"
-            >
-              <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
-                {profileImage ? (
-                  <Image
-                    source={{ uri: profileImage }}
-                    className="h-full w-full rounded-full"
-                    style={{ resizeMode: "cover" }}
-                  />
-                ) : (
-                  <NoProfileImg width={130} height={130} />
-                )}
-                <View className="absolute right-1 bottom-2">
-                  <CameraIcon width={30} height={30} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios'? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+          <View className="flex-1 px-6">
+            <View className="items-center my-16">
+              <TouchableOpacity
+                onPress={uploadProfileImage}
+                className="absolute z-10"
+              >
+                <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
+                  {profileImage ? (
+                    <Image
+                      source={{ uri: profileImage }}
+                      className="h-full w-full rounded-full"
+                      style={{ resizeMode: "cover" }}
+                    />
+                  ) : (
+                    <NoProfileImg width={130} height={130} />
+                  )}
+                  <View className="absolute right-1 bottom-2">
+                    <CameraIcon width={30} height={30} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View className="mt-28">
+              <View className="mb-3">
+                <Text className="mb-1">
+                  First Name<Text className="text-[#EE4E4E]"> *</Text>
+                </Text>
+                <TextInput
+                  className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
+                  value={firstName}
+                  onChangeText={handleFirstNameChange}
+                  maxLength={40}
+                  autoCapitalize="words"
+                />
+                {firstNameError ? (
+                  <Text className="text-[#EE4E4E] italic">
+                    {firstNameError}
+                  </Text>
+                ) : null}
+              </View>
+
+              <View className="mb-3">
+                <Text className="mb-1">
+                  Last Name<Text className="text-[#EE4E4E]"> *</Text>
+                </Text>
+                <TextInput
+                  className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
+                  value={lastName}
+                  onChangeText={handleLastNameChange}
+                  maxLength={40}
+                  autoCapitalize="words"
+                />
+                {lastNameError ? (
+                  <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
+                ) : null}
+              </View>
+              <View className="mb-3">
+                <View className="flex-row gap-1">
+                  <Text className="mb-1">Email</Text>
+                </View>
+                <View className="flex-row items-center justify-between bg-[#edf9f9] h-[42px] rounded-[10px] pl-4 pr-2">
+                  <Text className="text-tertiary flex-shrink">
+                    {user?.email}
+                  </Text>
+                  {auth.currentUser?.emailVerified ? (
+                    <View className="flex-row bg-[#7AB2B2] items-center rounded-[8px] px-2 py-1">
+                      <Text className="text-white mr-1">Email Verified</Text>
+                      <EmailVerified width={16} height={16} />
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={sendVerificationEmail}
+                      className={`${
+                        verificationSent ? "opacity-50" : "opacity-100"
+                      } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
+                      disabled={verificationSent || isSendingVerification}
+                    >
+                      {isSendingVerification ? (
+                        <Spinner type="primary" />
+                      ) : (
+                        <Text className="text-white">
+                          {verificationSent
+                            ? "Email Sent!"
+                            : "Send Verification"}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
-            </TouchableOpacity>
-          </View>
-          <View className="mt-28">
-            <View className="mb-3">
-              <Text className="mb-1">
-                First Name<Text className="text-[#EE4E4E]"> *</Text>
-              </Text>
-              <TextInput
-                className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
-                value={firstName}
-                onChangeText={handleFirstNameChange}
-                maxLength={40}
-                autoCapitalize="words"
-              />
-              {firstNameError ? (
-                <Text className="text-[#EE4E4E] italic">{firstNameError}</Text>
-              ) : null}
-            </View>
-
-            <View className="mb-3">
-              <Text className="mb-1">
-                Last Name<Text className="text-[#EE4E4E]"> *</Text>
-              </Text>
-              <TextInput
-                className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
-                value={lastName}
-                onChangeText={handleLastNameChange}
-                maxLength={40}
-                autoCapitalize="words"
-              />
-              {lastNameError ? (
-                <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
-              ) : null}
-            </View>
-            <View className="mb-3">
-              <View className="flex-row gap-1">
-                <Text className="mb-1">Email</Text>
-              </View>
-              <View className="flex-row items-center justify-between bg-[#edf9f9] h-[42px] rounded-[10px] pl-4 pr-2">
-                <Text className="text-tertiary flex-shrink">{user?.email}</Text>
-                {auth.currentUser?.emailVerified ? (
-                  <View className="flex-row bg-[#7AB2B2] items-center rounded-[8px] px-2 py-1">
-                    <Text className="text-white mr-1">Email Verified</Text>
-                    <EmailVerified width={16} height={16} />
-                  </View>
-                ) : (
-                  <TouchableOpacity
-                    onPress={sendVerificationEmail}
-                    className={`${
-                      verificationSent ? "opacity-50" : "opacity-100"
-                    } bg-[#7AB2B2] items-center justify-center rounded-[8px] px-2 py-1`}
-                    disabled={verificationSent || isSendingVerification}
-                  >
-                    {isSendingVerification ? (
-                      <Spinner type="primary" />
-                    ) : (
-                      <Text className="text-white">
-                        {verificationSent ? "Email Sent!" : "Send Verification"}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                )}
-              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-      <View className="absolute bottom-0 w-full flex-row justify-between px-6 pb-2">
+      <View className="absolute bottom-0 w-full px-6 pb-2">
         <TouchableOpacity
           onPress={handleSave}
           disabled={isSaveDisabled()}
@@ -421,7 +434,7 @@ const ProfileSettings = () => {
             <Text className="mt-2 text-center">
               You have unsaved changes. Do you want to discard them?
             </Text>
-            <View className="flex-row justify-between items-center mt-4">
+            <View className="flex-row justify-between w-full">
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
                 className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"

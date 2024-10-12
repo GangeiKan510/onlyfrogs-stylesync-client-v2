@@ -169,24 +169,24 @@ const ProfilePage = () => {
                 </View>
                 <ArrowRightIcon width={15} height={15} color="black" />
               </TouchableOpacity>
+              
+              <TouchableOpacity
+                className="flex-row my-2 h-[32px] w-full justify-between items-center"
+                onPress={() => setModalVisible(true)}
+              >
+                <View className="flex-row items-center">
+                  <LogOutIcon width={24} height={24} color='red' />
+                  <Text className="font-medium text-[16px] ml-2 text-red">
+                    Log Out
+                  </Text>
+                </View>
+                <ArrowRightIcon width={15} height={15} color="red" />
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
 
         {/* Log Out Button */}
-        <View className="px-8 mb-4">
-          <TouchableOpacity
-            className="flex-row h-[32px] w-full justify-between items-center"
-            onPress={() => setModalVisible(true)}
-          >
-            <View className="flex-row items-center">
-              <LogOutIcon width={24} height={24} color="#FE3B3B" />
-              <Text className="font-medium text-[16px] text-red ml-2">
-                Log Out
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
 
         <ConfirmationModal
           visible={modalVisible}

@@ -122,7 +122,7 @@ const RangeSlider = ({ sliderWidth, min, max, step, onValueChange }) => {
 
   return (
     <View style={[{ width: sliderWidth, justifyContent: 'center', alignSelf: 'center' }]}>
-      <View style={[{ width: sliderWidth, height: 14, backgroundColor: '#AEDEDE', borderRadius: 20 }]} />
+      <View style={[{ width: sliderWidth, height: 14, backgroundColor: '#c5eded', borderRadius: 20 }]} />
       <Animated.View style={[sliderStyle, { height: 14, backgroundColor: '#92CCCC', borderRadius: 20, position: 'absolute' }]} />
       <GestureDetector gesture={pan}>
         <Animated.View style={[animatedStyle, { left: -10, width: 30, height: 30, backgroundColor: 'white', borderColor: '#92CCCC', borderWidth: 5, borderRadius: 30, position: 'absolute' }]}>

@@ -160,7 +160,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={season}
                     onPress={() => toggleFilter(season)}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
                       selectedFilters.includes(season)
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
@@ -183,7 +183,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={occasion}
                     onPress={() => toggleFilter(occasion)}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
                       selectedFilters.includes(occasion)
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
@@ -210,7 +210,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={category}
                     onPress={() => toggleFilter(category)}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] rounded-[10px] ${
                       selectedFilters.includes(category)
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
@@ -233,7 +233,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
@@ -264,7 +264,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
@@ -298,7 +298,7 @@ const PiecesTab = () => {
                   <Pressable
                     key={name}
                     onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-4 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
+                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                       selectedFilters.includes(name.toLowerCase())
                         ? "bg-[#7AB2B2]"
                         : "bg-white"

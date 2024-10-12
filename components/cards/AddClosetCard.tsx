@@ -10,7 +10,7 @@ const AddClosetCard: React.FC<AddCardProps> = ({ onPress }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{ width: "30%", minWidth: 100, aspectRatio: 1 }}
+      style={{ width: "30%", minWidth: 80, aspectRatio: 1 }}
       className="m-1"
     >
       <View

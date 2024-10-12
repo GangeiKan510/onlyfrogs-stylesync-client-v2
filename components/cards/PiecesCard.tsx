@@ -11,7 +11,7 @@ const PiecesCard: React.FC<CardProps> = ({ uri, name }) => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <View className="m-1 w-[30%] min-w-[100px] aspect-square rounded-[10px] bg-[#F3F3F3]">
+    <View className="m-1 w-[30%] min-w-[95px] aspect-square rounded-[10px] bg-[#F3F3F3]">
       <View className="w-full h-full rounded-[10px] overflow-hidden">
         <ImageBackground
           source={{ uri }}

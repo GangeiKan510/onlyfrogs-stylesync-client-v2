@@ -33,13 +33,13 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
   return (
     <Modal
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-black opacity-80">
+      <View className="flex-1 justify-center items-center " style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
         <View className="w-4/5 bg-white rounded-lg p-5 items-center">
-          <Text className="text-lg font-bold mb-5">Upload Image Link</Text>
+          <Text className="text-[18px] mb-5 font-bold">Upload Image Link</Text>
           <TextInput
             className="w-full border border-[#7AB2B2] rounded-[10px] p-2 mb-5"
             placeholder="Paste your image link here"
@@ -48,13 +48,13 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
           />
           <View className="flex-row justify-between w-full">
             <Pressable
-              className="border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
+              className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               onPress={handleCancel}
             >
               <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
             </Pressable>
             <Pressable
-              className="bg-[#7AB2B2] border border-solid border-[#7AB2B2] rounded-[10px] px-12 py-2.5"
+              className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               onPress={handleUpload}
             >
               <Text className="text-white text-[16px]">Upload</Text>

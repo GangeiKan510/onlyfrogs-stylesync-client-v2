@@ -111,7 +111,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
                   {bodyType.name}
                 </Text>
                 <bodyType.image />
-                <View className="flex items-center justify-center top-4">
+                <View className="flex items-center justify-center top-[-16]">
                   <TouchableOpacity
                     className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
                     onPress={() => setSelectedBodyType(bodyType.type)}

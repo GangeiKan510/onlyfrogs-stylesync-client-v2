@@ -27,7 +27,7 @@ const MaterialAccordion: React.FC<MaterialAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 15;
+    const itemHeight = 17;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? MATERIAL_LIST.length * itemHeight + 40 : 0,
       duration: 300,

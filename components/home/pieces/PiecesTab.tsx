@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
-import PiecesCard from "@/components/cards/PiecesCard";
+import ClothingCard from "@/components/cards/ClothingCard";
 import { useUser } from "@/components/config/user-context";
 import { categoryTypes } from "@/components/constants/clothing-details/categories";
 import { occasion } from "@/components/constants/clothing-details/occasion";
@@ -19,12 +19,30 @@ import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
 import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
 import { PATTERN_LIST } from "@/components/constants/clothing-details/pattern";
 import { seasons } from "@/components/constants/clothing-details/seasons";
+import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 
 const PiecesTab = () => {
   const { user } = useUser();
   const [search, setSearch] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedClothingImage, setSelectedClothingImage] = useState<
+    string | null
+  >(null);
+  const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
+    null
+  );
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleItemPress = (id: string, imageUrl: string) => {
+    setSelectedClothingImage(imageUrl);
+    setSelectedClothingId(id);
+    setIsModalVisible(true);
+  };
 
   const toggleDropdownVisibility = () => {
     setDropdownVisible(!dropdownVisible);
@@ -327,6 +345,7 @@ const PiecesTab = () => {
           </ScrollView>
         </Modal>
       </View>
+
       <View className="h-[80%]">
         <FlatList
           className="mt-5 z-20 flex-grow"
@@ -334,12 +353,11 @@ const PiecesTab = () => {
           data={filteredClothes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <PiecesCard
-              uri={
-                item.image_url ||
-                "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-              }
-              name={""}
+            <ClothingCard
+              uri={item.image_url ||
+              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+            }
+              onPress={() => handleItemPress(item.id, item.image_url)}
             />
           )}
           numColumns={3}
@@ -347,12 +365,19 @@ const PiecesTab = () => {
             paddingBottom: 52,
           }}
           showsVerticalScrollIndicator={false}
-      />
+        />
       </View>
 
       {filteredClothes.length === 0 && (
         <Text className="text-center mt-5">No items found.</Text>
       )}
+
+      <ClothingDetailsModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        clothingImage={selectedClothingImage}
+        clothingId={selectedClothingId}
+      />
     </SafeAreaView>
   );
 };

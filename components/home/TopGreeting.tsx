@@ -45,7 +45,7 @@ const TopGreeting = () => {
         />
         <View className="ml-3">
           <View className="flex-row items-center gap-1">
-            <Text className="font-bold text-base">
+            <Text className="font-bold text-[14px]">
               Greetings,{" "}
               {user?.first_name
                 ? user.first_name
@@ -64,7 +64,7 @@ const TopGreeting = () => {
               <Text className="text-[14px] text-text-tertiary">
                 Email Verified{" "}
               </Text>
-              <EmailVerifiedIcon />
+              <EmailVerifiedIcon width={15} height={15} />
             </View>
           ) : (
             <Pressable
@@ -82,7 +82,6 @@ const TopGreeting = () => {
         </View>
       </View>
 
-      {/* Tokens section aligned to the right */}
       <View className="flex items-end">
         <View className="flex-row items-center mt-2">
           <MoreInfoIcon width={20} height={20} />

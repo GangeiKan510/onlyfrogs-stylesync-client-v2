@@ -23,7 +23,7 @@ const HomeTabs = () => {
             <Text
               className={`${
                 activeTab === "Closet" ? "font-bold" : ""
-              } text-base text-left`}
+              } text-[14px] text-left`}
             >
               Closet ({closets.length})
             </Text>
@@ -43,7 +43,7 @@ const HomeTabs = () => {
             <Text
               className={`${
                 activeTab === "Pieces" ? "font-bold" : ""
-              } text-center text-base`}
+              } text-center text-[14px]`}
             >
               Pieces ({clothes.length})
             </Text>
@@ -63,7 +63,7 @@ const HomeTabs = () => {
             <Text
               className={`${
                 activeTab === "Fits" ? "font-bold" : ""
-              } text-right text-base`}
+              } text-right text-[14px]`}
             >
               Fits (2)
             </Text>

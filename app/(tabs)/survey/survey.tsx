@@ -9,7 +9,6 @@ import SkinToneAnalysis from "@/components/survey/skin-tone-analysis";
 import Welcome from "@/components/survey/welcome";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
-import BackIcon from "../../../assets/icons/back-icon.svg";
 import { updateUser } from "@/network/web/user";
 import { useUser } from "@/components/config/user-context";
 import {
@@ -33,7 +32,7 @@ const Survey = () => {
 
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<SkinToneAnalysisResult | null>(null);
-  const [bodyType, setBodyType] = useState("TypeA");
+  const [bodyType, setBodyType] = useState<string | null>(null); // Now set to null initially
   const [preferences, setPreferences] = useState<Preferences>({
     preferred_style: [],
     favourite_colors: [],
@@ -64,7 +63,7 @@ const Survey = () => {
       setIsAnalyzing={setIsAnalyzing}
       setSkinToneAnalysisResult={setSkinToneAnalysisResult}
     />,
-    <BodyType setBodyType={setBodyType} />,
+    <BodyType setBodyType={setBodyType} />, // Pass setBodyType to BodyType
     <PreferencesAndBudget setPreferences={setPreferences} />,
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
@@ -129,14 +128,6 @@ const Survey = () => {
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
       <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
-        {/* Conditionally render the Back Button */}
-        {/* {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
-          <TouchableOpacity onPress={handleBack} className="p-2">
-            <BackIcon />
-          </TouchableOpacity>
-        )} */}
-
-        {/* Conditionally render the Skip Button */}
         {currentIndex === 1 && !isAnalyzing && !analysisComplete && (
           <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
             <Text className="text-bg-tertiary underline">Skip</Text>
@@ -152,8 +143,16 @@ const Survey = () => {
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}
-            disabled={(currentIndex === 1 && !analysisComplete) || loading}
-            className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
+            disabled={
+              (currentIndex === 1 && !analysisComplete) ||
+              (currentIndex === 2 && !bodyType) || // Disable if no bodyType is selected
+              loading
+            }
+            className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
+              (currentIndex === 2 && !bodyType) || loading
+                ? "bg-gray-300"
+                : "bg-bg-tertiary"
+            }`}
           >
             {loading ? (
               <Spinner type={"primary"} />

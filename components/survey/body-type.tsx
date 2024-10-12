@@ -26,10 +26,10 @@ interface BodyTypeProps {
 }
 
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
-  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
+  const [selectedBodyType, setSelectedBodyType] = useState<string | null>(null); // Initially null
 
   useEffect(() => {
-    if (setBodyType) {
+    if (setBodyType && selectedBodyType) {
       setBodyType(selectedBodyType);
     }
   }, [selectedBodyType, setBodyType]);
@@ -39,6 +39,9 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
       <View className="flex justify-center items-center mt-10">
         <Text className="text-center text-[20px] font-bold">
           What is your body type?
+        </Text>
+        <Text className="text-center text-[14px] text-gray">
+          (Swipe to choose)
         </Text>
       </View>
       <View className=" flex-1 justify-center items-center">
@@ -62,17 +65,18 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
                   {bodyType.name}
                 </Text>
                 <bodyType.image />
-                <View className="flex items-center justify-center mt-4">
+                <View className="flex items-center justify-center mt-6">
                   <TouchableOpacity
                     className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
                     onPress={() => setSelectedBodyType(bodyType.type)}
                   >
                     <View
-                      className={`h-3 w-3 rounded-full items-center justify-center ${
+                      className={`h-3 w-3 rounded-full ${
                         selectedBodyType === bodyType.type
                           ? "bg-tertiary"
                           : "bg-white"
                       }`}
+                      style={{ alignSelf: "center", justifyContent: "center" }} // Ensures the inner circle is centered
                     />
                   </TouchableOpacity>
                 </View>

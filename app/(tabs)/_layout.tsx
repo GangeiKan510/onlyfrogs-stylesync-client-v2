@@ -62,7 +62,6 @@ export default function TabLayout() {
     });
 
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardVisible(false);
       Animated.timing(tabBarOffset, {
         toValue: 0,
         duration: 100,
@@ -92,6 +91,7 @@ export default function TabLayout() {
             bottom: 0,
             backgroundColor: "#f3f3f3",
             paddingVertical: 20,
+            // display: keyboardVisible ? "none" : "flex",
             transform: [{ translateY: tabBarOffset }],
           },
           tabBarLabelStyle: {

@@ -24,6 +24,26 @@ export const uploadClothing = async (formData: FormData) => {
   }
 };
 
+export const uploadWithImageLink = async (formData: FormData) => {
+  try {
+    const response = await uploadWithFirebaseJwt(
+      "/web/images/upload-image-url",
+      formData
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error uploading clothing: ${errorText}`);
+    }
+
+    const newClothing = await response.json();
+    return newClothing;
+  } catch (error) {
+    console.error("Failed to upload clothing", error);
+    throw error;
+  }
+};
+
 export const updateClothing = async (clothingData: UpdateClothingData) => {
   try {
     const response = await postWithFirebaseJwt(

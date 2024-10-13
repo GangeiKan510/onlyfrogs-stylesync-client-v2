@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable } from "react-native";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import { uploadWithImageLink } from "@/network/web/clothes";
+import Spinner from "../common/Spinner";
 
 type LinkUploadModalProps = {
   isVisible: boolean;
@@ -35,12 +36,12 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
       try {
         setIsUploading(true);
         setValidationMessage("");
-        const formData = new FormData();
-        formData.append("image_url", link);
-        formData.append("user_id", userId);
-        formData.append("closet_id", closetId);
 
-        await uploadWithImageLink(formData);
+        await uploadWithImageLink({
+          image_url: link,
+          user_id: userId,
+          closet_id: closetId,
+        });
 
         setLink("");
         onUpload(link);
@@ -70,7 +71,7 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
       onRequestClose={onClose}
     >
       <View
-        className="flex-1 justify-center items-center "
+        className="flex-1 justify-center items-center"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       >
         <View className="w-4/5 bg-white rounded-lg p-5 items-center">

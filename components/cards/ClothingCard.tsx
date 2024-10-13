@@ -20,7 +20,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress }) => {
     <>
       <TouchableOpacity
         onPress={onPress}
-        className="w-[31%] min-w-[100px] aspect-square m-1 rounded-[10px]  bg-[#F3F3F3]"
+        className="w-[31%] min-w-[100px] aspect-square m-1 rounded-[10px] bg-[#F3F3F3]"
       >
         <ImageBackground
           source={{ uri: uri }}
@@ -36,8 +36,10 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress }) => {
             />
           )}
         </ImageBackground>
+
+        {/* "Worn" button anchored to the bottom-right of the card */}
         <TouchableOpacity>
-          <View className="flex-row space-x-1 items-center absolute bg-tertiary rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 left-[37%]">
+          <View className="flex-row space-x-1 items-center absolute bg-tertiary rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 right-0">
             <DesignIcon width={12} color="white" />
             <Text className="text-white">worn</Text>
           </View>

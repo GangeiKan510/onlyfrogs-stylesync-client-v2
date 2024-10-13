@@ -43,11 +43,9 @@ const Page = () => {
   }, []);
 
   const handleCloseModal = () => {
+    setSelectedClothingImage(null);
+    setSelectedClothingId(null);
     setIsModalVisible(false);
-  };
-
-  const handleCloseLinkModal = () => {
-    setIsLinkModalVisible(false);
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
@@ -230,7 +228,7 @@ const Page = () => {
       <LinkUploadModal
         closetId={closetId}
         isVisible={isLinkModalVisible}
-        onClose={handleCloseLinkModal}
+        onClose={() => setIsLinkModalVisible(false)}
         onUpload={() => refetchMe()}
         userId={user?.id}
         setLoading={setLoading} // Pass setLoading to LinkUploadModal

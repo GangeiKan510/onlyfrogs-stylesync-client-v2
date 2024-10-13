@@ -18,11 +18,10 @@ import ColorAccordion from "../accordions/Color";
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../accordions/Material";
 import PatternAccordion from "../accordions/Pattern";
-import { updateClothing } from "@/network/web/clothes";
+import { updateClothing, deleteItem } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
-import { deleteItem } from "@/network/web/clothes";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -60,7 +59,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       );
 
       if (matchingClothing) {
-        console.log("Matching Clothing Item:", matchingClothing);
         setItemName(matchingClothing.name || "");
         setBrandName(matchingClothing.brand || "");
         setSelectedSeasons(matchingClothing.season || []);

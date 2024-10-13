@@ -71,7 +71,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true);
+          setLoading(true); // Disable the floating action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -105,7 +105,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Re-enable the floating action menu
         }
 
         handleCloseModal();
@@ -129,7 +129,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true);
+          setLoading(true); // Disable the floating action menu
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -148,7 +148,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false);
+          setLoading(false); // Re-enable the floating action menu
         }
 
         handleCloseModal();
@@ -233,6 +233,7 @@ const Page = () => {
         onClose={handleCloseLinkModal}
         onUpload={() => refetchMe()}
         userId={user?.id}
+        setLoading={setLoading} // Pass setLoading to LinkUploadModal
       />
     </SafeAreaView>
   );

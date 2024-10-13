@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable } from "react-native";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import { uploadWithImageLink } from "@/network/web/clothes";
-import Spinner from "../common/Spinner"; 
+import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 
 type LinkUploadModalProps = {
@@ -11,6 +11,7 @@ type LinkUploadModalProps = {
   onUpload: (link: string) => void;
   closetId: string | null;
   userId: string | undefined;
+  setLoading: (isLoading: boolean) => void; // New prop to control loading state
 };
 
 const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
@@ -19,6 +20,7 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
   onUpload,
   closetId,
   userId,
+  setLoading, // Use the setLoading function passed from the parent
 }) => {
   const [link, setLink] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
@@ -36,6 +38,7 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
     if (isValidUrl && isValidImageLink) {
       try {
         setIsUploading(true);
+        setLoading(true); // Disable the floating action menu during upload
         setValidationMessage("");
 
         await uploadWithImageLink({
@@ -47,6 +50,12 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
         setLink("");
         onUpload(link);
         onClose();
+        Toast.show({
+          type: "success",
+          text1: "Clothing image successfully uploaded!",
+          position: "top",
+          swipeable: true,
+        });
       } catch (error) {
         setValidationMessage("Failed to upload image. Please try again.");
         console.log(error);
@@ -58,6 +67,7 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
         });
       } finally {
         setIsUploading(false);
+        setLoading(false); // Re-enable the floating action menu
         onClose();
       }
     } else {

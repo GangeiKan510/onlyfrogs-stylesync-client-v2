@@ -179,7 +179,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
               />
-              <View className="mt-4 w-full mb-4">
+              <View className="mt-4 w-full">
                 <OccasionSelection
                   selectedOccasions={selectedOccasions}
                   setSelectedOccasions={setSelectedOccasions}
@@ -187,7 +187,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               </View>
             </View>
 
-            <View className="mt-4 w-full px-4">
+            <View className="mt-5 w-full px-4">
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 What kind of item is this?
               </Text>
@@ -213,7 +213,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   setSelectedPattern={setSelectedPattern}
                 />
               </View>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md">
                 <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
                 <TextInput
                   placeholder="Enter brand name"
@@ -230,7 +230,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <Text className="text-lg text-[#484848] font-bold mt-5">
                 Additional information
               </Text>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
                   placeholder="Give it a name (optional)"
@@ -244,7 +244,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
                 <Text className="text-[16px] text-[#484848] mb-2">
                   Number of wears
                 </Text>
@@ -254,7 +254,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           </View>
 
           {/* Floating Save Button */}
-          <View className="flex-row justify-center items-center px-4 mb-4 absolute bottom-2 self-center space-x-7">
+          <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2 ">
             <TouchableOpacity
               onPress={() => {
                 console.log("Delete button pressed");
@@ -265,7 +265,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
-              className="w-80 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
+              className="w-72 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
             >
               <Text className="text-center text-white">
                 {isSaving ? <Spinner type={"primary"} /> : "Save"}

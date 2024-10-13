@@ -222,7 +222,7 @@ const Page = () => {
           <Header />
         </View>
         {includeBack.includes(routeName) && (
-          <View className="relative z-0 mt-[-13%] ml-4 mb-7">
+          <View className="relative z-0 bottom-14">
             <BackButton />
           </View>
         )}

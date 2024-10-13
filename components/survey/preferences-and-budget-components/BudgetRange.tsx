@@ -25,7 +25,7 @@ const App = () => {
           </View>
           <View className="px-2 py-2  mb-4 flex justify-center items-center">
             <RangeSlider
-              sliderWidth={332}
+              sliderWidth={330}
               min={MIN_DEFAULT}
               max={MAX_DEFAULT}
               step={10}

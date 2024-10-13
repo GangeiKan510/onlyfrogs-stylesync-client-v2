@@ -23,8 +23,23 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const router = useRouter();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateEmail = (value: string) => {
+    if (!emailRegex.test(value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const handleEmailChange = (value: string) => {
+    validateEmail(value);
+    setEmail(value);
+  };
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -83,8 +98,12 @@ export default function Login() {
             <TextInput
               className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
               value={email}
-              onChangeText={(input) => setEmail(input)}
+              onChangeText={handleEmailChange}
+              keyboardType="email-address"
             />
+            {emailError ? (
+              <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+            ) : null}
           </View>
           <Text className="text-[16px] mb-1">Password</Text>
           <View className="relative">

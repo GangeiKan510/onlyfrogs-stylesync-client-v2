@@ -118,16 +118,15 @@ const Survey = () => {
       budget_max: preferences.budget_range?.max,
     };
 
-    Toast.show({
-      type: "success",
-      text1: "Successfully finished survey!",
-      position: "top",
-      swipeable: true,
-    });
-
     try {
       setLoading(true);
       await updateUser(surveyData);
+      Toast.show({
+        type: "success",
+        text1: "Successfully finished survey!",
+        position: "top",
+        swipeable: true,
+      });
       refetchMe();
       router.push(routes.tabs as Href<string | object>);
     } catch (error) {

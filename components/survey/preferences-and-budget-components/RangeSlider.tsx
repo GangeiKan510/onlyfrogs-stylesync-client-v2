@@ -125,7 +125,7 @@ const RangeSlider = ({ sliderWidth, min, max, step, onValueChange }) => {
       <View style={[{ width: sliderWidth, height: 14, backgroundColor: '#c5eded', borderRadius: 20 }]} />
       <Animated.View style={[sliderStyle, { height: 14, backgroundColor: '#92CCCC', borderRadius: 20, position: 'absolute' }]} />
       <GestureDetector gesture={pan}>
-        <Animated.View style={[animatedStyle, { left: -10, width: 30, height: 30, backgroundColor: 'white', borderColor: '#92CCCC', borderWidth: 5, borderRadius: 30, position: 'absolute' }]}>
+        <Animated.View style={[animatedStyle, { left: -8, width: 30, height: 30, backgroundColor: 'white', borderColor: '#92CCCC', borderWidth: 5, borderRadius: 30, position: 'absolute' }]}>
           <Animated.View style={[opacityStyle, { position: 'absolute', top: -40, bottom: 20, backgroundColor: 'black', borderRadius: 5, alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }]}>
             <AnimatedTextInput
               style={{ color: 'white', padding: 5, fontWeight: 'bold', fontSize: 16, width: '100%' }}
@@ -140,7 +140,7 @@ const RangeSlider = ({ sliderWidth, min, max, step, onValueChange }) => {
         </Animated.View>
       </GestureDetector>
       <GestureDetector gesture={pan2}>
-        <Animated.View style={[animatedStyle2, { left: -10, width: 30, height: 30, backgroundColor: 'white', borderColor: '#92CCCC', borderWidth: 5, borderRadius: 30, position: 'absolute' }]}>
+        <Animated.View style={[animatedStyle2, { left: -22, width: 30, height: 30, backgroundColor: 'white', borderColor: '#92CCCC', borderWidth: 5, borderRadius: 30, position: 'absolute' }]}>
           <Animated.View style={[opacityStyle2, { position: 'absolute', top: -40, bottom: 20, backgroundColor: 'black', borderRadius: 5, alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }]}>
             <AnimatedTextInput
               style={{ color: 'white', padding: 5, fontWeight: 'bold', fontSize: 16, width: '100%' }}

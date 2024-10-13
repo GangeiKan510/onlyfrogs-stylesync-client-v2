@@ -26,7 +26,7 @@ interface BodyTypeProps {
 }
 
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
-  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
+  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourGlass");
 
   useEffect(() => {
     if (setBodyType) {

@@ -29,9 +29,9 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
   };
 
   useEffect(() => {
-    const itemHeight = 12;
+    const itemHeight = 14;
     const categoriesHeight = selectedCategory?.name
-      ? categoryTypes[selectedCategory.name]?.length * itemHeight + 40
+      ? categoryTypes[selectedCategory.name]?.length * itemHeight + 60
       : 0;
     const totalHeight = isOpen
       ? selectedCategory?.name
@@ -47,7 +47,7 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
   }, [isOpen, selectedCategory]);
 
   return (
-    <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
+    <View className="bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"

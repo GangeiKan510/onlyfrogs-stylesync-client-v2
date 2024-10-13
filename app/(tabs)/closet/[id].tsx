@@ -25,7 +25,6 @@ const Page = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLinkModalVisible, setIsLinkModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedClothingImage, setSelectedClothingImage] = useState<
     string | null
   >(null);
@@ -33,6 +32,7 @@ const Page = () => {
     null
   );
   const [loading, setLoading] = useState(false); // This controls the spinner and menu
+
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
@@ -71,7 +71,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true); // Show loading spinner and disable action menu
+          setLoading(true);
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -94,7 +94,7 @@ const Page = () => {
             return;
           }
 
-          const imageUploaded = await uploadClothing(formData);
+          await uploadClothing(formData);
           Toast.show({
             type: "success",
             text1: "Clothing successfully uploaded!",
@@ -105,7 +105,7 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false); // Hide loading spinner and re-enable action menu
+          setLoading(false);
         }
 
         handleCloseModal();
@@ -129,7 +129,7 @@ const Page = () => {
         const formData = new FormData();
 
         try {
-          setLoading(true); // Show loading spinner and disable action menu
+          setLoading(true);
           formData.append("file", {
             uri: uri,
             name: fileName,
@@ -148,46 +148,11 @@ const Page = () => {
         } catch (error) {
           console.error("Error while uploading clothing:", error);
         } finally {
-          setLoading(false); // Hide loading spinner and re-enable action menu
+          setLoading(false);
         }
 
         handleCloseModal();
       }
-    }
-  };
-
-  const handleLinkUpload = async (link: string) => {
-    const isValidImageLink = /\.(jpg|jpeg|png)(?=\?|$)/i.test(link);
-
-    if (isValidImageLink) {
-      const formData = new FormData();
-      formData.append("file", {
-        uri: link,
-        name: link.split("/").pop(),
-        type: "image/jpeg",
-      } as any);
-      formData.append("user_id", user?.id || "");
-      formData.append("closet_id", closetId || "");
-
-      try {
-        setLoading(true); // Show loading spinner and disable action menu
-        await uploadClothing(formData);
-        Toast.show({
-          type: "success",
-          text1: "Link successfully uploaded!",
-          position: "top",
-          swipeable: true,
-        });
-        refetchMe();
-      } catch (error) {
-        console.error("Error while uploading clothing from link:", error);
-      } finally {
-        setLoading(false); // Hide loading spinner and re-enable action menu
-      }
-
-      handleCloseLinkModal();
-    } else {
-      alert("Please enter a valid image URL with .jpg, .jpeg, or .png");
     }
   };
 
@@ -256,7 +221,6 @@ const Page = () => {
         )}
       </View>
       <FloatingActionMenu actions={actions as any} loading={loading} />
-      {/* Use loading state */}
       <ClothingDetailsModal
         isVisible={isModalVisible}
         onClose={handleCloseModal}
@@ -267,7 +231,7 @@ const Page = () => {
         closetId={closetId}
         isVisible={isLinkModalVisible}
         onClose={handleCloseLinkModal}
-        onUpload={handleLinkUpload}
+        onUpload={() => refetchMe()}
         userId={user?.id}
       />
     </SafeAreaView>

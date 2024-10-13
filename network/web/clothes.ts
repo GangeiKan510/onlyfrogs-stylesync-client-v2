@@ -3,6 +3,7 @@ import {
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,
 } from "../firebase/requests-with-firebase";
+import { UploadClothingWithImageLink } from "@/utils/types/ClothingType";
 
 export const uploadClothing = async (formData: FormData) => {
   try {
@@ -24,20 +25,21 @@ export const uploadClothing = async (formData: FormData) => {
   }
 };
 
-export const uploadWithImageLink = async (formData: FormData) => {
+export const uploadWithImageLink = async (
+  imageDetails: UploadClothingWithImageLink
+) => {
   try {
-    const response = await uploadWithFirebaseJwt(
+    const response = await postWithFirebaseJwt(
       "/web/images/upload-image-url",
-      formData
+      imageDetails
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error uploading clothing: ${errorText}`);
+      throw new Error(`Error uploading clothing: ${response.statusText}`);
     }
 
-    const newClothing = await response.json();
-    return newClothing;
+    const uploadedClothing = await response.json();
+    return uploadedClothing;
   } catch (error) {
     console.error("Failed to upload clothing", error);
     throw error;

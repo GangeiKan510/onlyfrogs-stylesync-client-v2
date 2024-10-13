@@ -65,7 +65,7 @@ const HomeTabs = () => {
                 activeTab === "Fits" ? "font-bold" : ""
               } text-right text-[14px]`}
             >
-              Fits (2)
+              Fits (0)
             </Text>
             {activeTab === "Fits" && (
               <View

@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable } from "react-native";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
+import { uploadWithImageLink } from "@/network/web/clothes";
 
 type LinkUploadModalProps = {
   isVisible: boolean;
   onClose: () => void;
   onUpload: (link: string) => void;
+  closetId: string | null;
+  userId: string | undefined;
 };
 
 const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
   isVisible,
   onClose,
   onUpload,
+  closetId,
+  userId,
 }) => {
   const [link, setLink] = useState("");
   const [validationMessage, setValidationMessage] = useState("");

@@ -33,7 +33,6 @@ const Page = () => {
     null
   );
   const [loading, setLoading] = useState(false); // This controls the spinner and menu
-
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
@@ -265,9 +264,11 @@ const Page = () => {
         clothingId={selectedClothingId}
       />
       <LinkUploadModal
+        closetId={closetId}
         isVisible={isLinkModalVisible}
         onClose={handleCloseLinkModal}
         onUpload={handleLinkUpload}
+        userId={user?.id}
       />
     </SafeAreaView>
   );

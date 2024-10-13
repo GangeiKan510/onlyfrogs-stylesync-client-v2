@@ -22,12 +22,12 @@ function PersonalInformation() {
   );
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [selectedGender, setSelectedGender] = useState<
-    "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null
+    "Female" | "Male" | "Non-Binary" | "Rather Not Say" | null
   >(user?.gender || null);
   const [loading, setLoading] = useState(false); // Add loading state
   const [isBirthDateEdited, setIsBirthDateEdited] = useState(false);
 
-  const genderOptions = ["Male", "Female", "Non-Binary", "Rather Not Say"];
+  const genderOptions = ["Female", "Male", "Non-Binary", "Rather Not Say"];
 
   const validateBirthDate = (dateString: string) => {
     const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;

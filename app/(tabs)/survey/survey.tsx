@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-key */
-import React, { useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+  BackHandler,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
@@ -32,7 +38,7 @@ const Survey = () => {
 
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<SkinToneAnalysisResult | null>(null);
-  const [bodyType, setBodyType] = useState<string | null>(null); // Now set to null initially
+  const [bodyType, setBodyType] = useState("NeatHourGlass");
   const [preferences, setPreferences] = useState<Preferences>({
     preferred_style: [],
     favourite_colors: [],
@@ -115,25 +121,27 @@ const Survey = () => {
     }
   };
 
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+  const isBodyTypeSelected = bodyType !== "NeatHourglass";
+  const isPersonalInfoComplete =
+    personalInfo.gender &&
+    personalInfo.birthday &&
+    personalInfo.height_cm > 0 &&
+    personalInfo.weight_kg > 0;
 
-  const handleSkip = () => {
-    router.push(routes.tabs as Href<string | object>);
-  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
-      <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
-        {currentIndex === 1 && !isAnalyzing && !analysisComplete && (
-          <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
-            <Text className="text-bg-tertiary underline">Skip</Text>
-          </TouchableOpacity>
-        )}
-      </View>
 
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
@@ -144,13 +152,15 @@ const Survey = () => {
           <TouchableOpacity
             onPress={handleNext}
             disabled={
-              (currentIndex === 1 && !analysisComplete) ||
-              (currentIndex === 2 && !bodyType) || // Disable if no bodyType is selected
+              (currentIndex === 2 && !isBodyTypeSelected) ||
+              (currentIndex === 4 && !isPersonalInfoComplete) ||
               loading
             }
             className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
-              (currentIndex === 2 && !bodyType) || loading
-                ? "bg-gray-300"
+              (currentIndex === 2 && !isBodyTypeSelected) ||
+              (currentIndex === 4 && !isPersonalInfoComplete) || 
+              loading
+                ? "bg-[#9fcccc]"
                 : "bg-bg-tertiary"
             }`}
           >
@@ -158,9 +168,7 @@ const Survey = () => {
               <Spinner type={"primary"} />
             ) : (
               <Text className="text-white text-center">
-                {currentIndex === contentArray.length - 1
-                  ? "Finish"
-                  : "Continue"}
+                {currentIndex === contentArray.length - 1 ? "Finish" : "Next"}
               </Text>
             )}
           </TouchableOpacity>

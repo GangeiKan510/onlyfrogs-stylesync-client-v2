@@ -21,8 +21,8 @@ import PatternAccordion from "../accordions/Pattern";
 import { updateClothing } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
-import { useRouter } from "expo-router";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
+import { deleteItem } from "@/network/web/clothes";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -37,8 +37,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   clothingImage,
   clothingId,
 }) => {
-  const { user } = useUser();
-  const router = useRouter();
+  const { user, refetchMe } = useUser();
   const [isSaving, setIsSaving] = useState(false);
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState<string | string[]>("");
@@ -119,14 +118,25 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   const handleDelete = async () => {
     if (clothingId) {
-      Toast.show({
-        type: "success",
-        text1: "Clothing deleted successfully!",
-        position: "top",
-        swipeable: true,
-      });
-      console.log("Deleted.");
-      // onClose();
+      try {
+        await deleteItem(clothingId);
+        Toast.show({
+          type: "success",
+          text1: "Clothing deleted successfully!",
+          position: "top",
+          swipeable: true,
+        });
+        onClose();
+        refetchMe();
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Failed to delete clothing!",
+          position: "top",
+          swipeable: true,
+        });
+        console.error("Failed to delete clothing:", error);
+      }
     } else {
       Toast.show({
         type: "error",
@@ -282,20 +292,20 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
               <Text className="text-[18px] mb-1 font-bold">Confirm Delete</Text>
               <Text className="mt-2 text-center">
-                Are you sure you want to delete this item?
+                Are you sure you want to delete this?
               </Text>
               <View className="flex-row justify-between items-center mt-4 space-x-4">
                 <TouchableOpacity
-                  onPress={handleDelete}
+                  onPress={() => setShowModal(false)}
                   className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                 >
-                  <Text className="text-[#7AB2B2] text-[16px]">Delete</Text>
+                  <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => setShowModal(false)}
-                  className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  onPress={handleDelete}
+                  className="h-[42px] flex-1 border border-red bg-red rounded-lg mx-2 justify-center items-center"
                 >
-                  <Text className="text-white text-[16px]">Keep</Text>
+                  <Text className="text-white text-[16px]">Delete</Text>
                 </TouchableOpacity>
               </View>
             </View>

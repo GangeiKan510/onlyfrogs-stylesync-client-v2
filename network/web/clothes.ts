@@ -69,18 +69,16 @@ export const updateClothing = async (clothingData: UpdateClothingData) => {
 export const deleteItem = async (id: string) => {
   try {
     const response = await deleteWithFirebaseJwt(
-      "/web/chat/delete-chat-session-messages",
-      {
-        id: id,
-      }
+      "/web/clothes/delete-clothing",
+      { id }
     );
 
     if (!response.ok) {
       throw new Error(`Error deleting item: ${response.statusText}`);
     }
 
-    const messageSent = await response.json();
-    return messageSent;
+    const deletedItem = await response.json();
+    return deletedItem;
   } catch (error) {
     console.error("Failed to delete item", error);
     throw error;

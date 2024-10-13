@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable } from "react-native";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
-import Toast from "react-native-toast-message";
 
 type LinkUploadModalProps = {
   isVisible: boolean;
@@ -15,25 +14,24 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
   onUpload,
 }) => {
   const [link, setLink] = useState("");
+  const [validationMessage, setValidationMessage] = useState("");
 
   const handleUpload = () => {
     const isValidUrl = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i.test(link);
-
     const isValidImageLink = /\.(jpg|jpeg|png)(?=\?|$)/i.test(link);
 
     if (isValidUrl && isValidImageLink) {
       onUpload(link);
       setLink("");
+      setValidationMessage("");
     } else {
-      alert(
-        "Please enter a valid image URL that ends with .jpg, .jpeg, or .png"
-      );
-      setLink("");
+      setValidationMessage("The image link you enetered is invalid.");
     }
   };
 
   const handleCancel = () => {
     setLink("");
+    setValidationMessage("");
     onClose();
   };
 
@@ -57,6 +55,9 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
             value={link}
             onChangeText={setLink}
           />
+          {validationMessage ? (
+            <Text className="text-red mt-2 italic">*{validationMessage}</Text>
+          ) : null}
           <View className="my-3">
             <View className="flex-row gap-1 items-center justify-center px-4">
               <MoreInfoIcon />

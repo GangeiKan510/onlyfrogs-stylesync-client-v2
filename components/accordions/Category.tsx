@@ -30,21 +30,27 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
 
   useEffect(() => {
     const itemHeight = 12;
-    const categoriesHeight = selectedCategory?.name
-      ? categoryTypes[selectedCategory.name]?.length * itemHeight + 40
+    
+    const categoriesHeight = selectedCategory?.name && categoryTypes[selectedCategory.name]
+      ? categoryTypes[selectedCategory.name].length * itemHeight + 40
       : 0;
+    
     const totalHeight = isOpen
       ? selectedCategory?.name
         ? categoriesHeight
         : Object.keys(categoryTypes).length * itemHeight + 40
       : 0;
-
+  
+    const safeTotalHeight = isNaN(totalHeight) ? 0 : totalHeight;
+  
     Animated.timing(animatedHeight, {
-      toValue: totalHeight,
+      toValue: safeTotalHeight,
       duration: 300,
       useNativeDriver: false,
     }).start();
   }, [isOpen, selectedCategory]);
+  
+  
 
   return (
     <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
@@ -93,8 +99,8 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
       <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
         {isOpen && (
           <View className="flex-wrap flex-row mt-1 pb-4">
-            {selectedCategory?.name
-              ? categoryTypes[selectedCategory?.name].map((type, index) => (
+            {selectedCategory?.name && categoryTypes[selectedCategory.name]
+              ? categoryTypes[selectedCategory.name].map((type, index) => (
                   <TouchableOpacity
                     key={index}
                     className={`m-1 px-4 py-1.5 border-[1px] rounded-full ${

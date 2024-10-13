@@ -87,7 +87,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
           <Back width={20} height={20} />
         </TouchableOpacity>
         <Text className="flex-1 text-center text-[20px] font-bold">
-          Preferences and Budget
+          Body Type
         </Text>
       </View>
       <View className="flex-1 justify-center items-center">

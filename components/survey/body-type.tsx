@@ -44,25 +44,25 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
       <View className=" flex-1 justify-center items-center">
         <ScrollView
           horizontal
-          showsHorizontalScrollIndicator={false}
-          className="h-[75vh]"
+          showsHorizontalScrollIndicator={true}
+          // className="h-[75vh]"
         >
           {bodyTypes.map((bodyType) => (
             <TouchableOpacity
               key={bodyType.type}
               onPress={() => setSelectedBodyType(bodyType.type)}
-              className={`border-[2px] rounded-[12px] mx-2 my-10 mt-12 ${
+              className={`border-[2px] rounded-[12px] mx-2 mt-8 ${
                 selectedBodyType === bodyType.type
                   ? "border-tertiary"
                   : "border-transparent"
               }`}
             >
-              <View className="py-8 px-3">
+              <View className="justify-center items-center mt-4 px-1.5">
                 <Text className="text-[20px] text-center text-tertiary">
                   {bodyType.name}
                 </Text>
                 <bodyType.image />
-                <View className="flex items-center justify-center mt-4">
+                <View className="flex items-center justify-center top-[-16]">
                   <TouchableOpacity
                     className="h-5 w-5 rounded-full flex items-center justify-center border-[2px] border-tertiary"
                     onPress={() => setSelectedBodyType(bodyType.type)}

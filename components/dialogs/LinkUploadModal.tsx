@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable } from "react-native";
 import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import { uploadWithImageLink } from "@/network/web/clothes";
-import Spinner from "../common/Spinner";
+import Spinner from "../common/Spinner"; 
+import Toast from "react-native-toast-message";
 
 type LinkUploadModalProps = {
   isVisible: boolean;
@@ -49,8 +50,15 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
       } catch (error) {
         setValidationMessage("Failed to upload image. Please try again.");
         console.log(error);
+        Toast.show({
+          type: "error",
+          text1: "Failed to process image URL.",
+          position: "top",
+          swipeable: true,
+        });
       } finally {
         setIsUploading(false);
+        onClose();
       }
     } else {
       setValidationMessage("Image URL is invalid.");
@@ -58,9 +66,11 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
   };
 
   const handleCancel = () => {
-    setLink("");
-    setValidationMessage("");
-    onClose();
+    if (!isUploading) {
+      setLink("");
+      setValidationMessage("");
+      onClose();
+    }
   };
 
   return (
@@ -106,14 +116,16 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
             </Pressable>
             <Pressable
               className={`h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center ${
-                isUploading ? "bg-gray-300" : "bg-[#7ab3b3]"
+                isUploading ? "bg-tertiary" : "bg-[#7ab3b3]"
               }`}
               onPress={handleUpload}
               disabled={isUploading}
             >
-              <Text className="text-white text-[16px]">
-                {isUploading ? "Uploading..." : "Upload"}
-              </Text>
+              {isUploading ? (
+                <Spinner type="primary" />
+              ) : (
+                <Text className="text-white text-[16px]">Upload</Text>
+              )}
             </Pressable>
           </View>
         </View>

@@ -20,17 +20,39 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
 }) => {
   const [link, setLink] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     const isValidUrl = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i.test(link);
     const isValidImageLink = /\.(jpg|jpeg|png)(?=\?|$)/i.test(link);
 
+    if (!closetId || !userId) {
+      setValidationMessage("Closet ID and User ID are required.");
+      return;
+    }
+
     if (isValidUrl && isValidImageLink) {
-      onUpload(link);
-      setLink("");
-      setValidationMessage("");
+      try {
+        setIsUploading(true);
+        setValidationMessage("");
+        const formData = new FormData();
+        formData.append("image_url", link);
+        formData.append("user_id", userId);
+        formData.append("closet_id", closetId);
+
+        await uploadWithImageLink(formData);
+
+        setLink("");
+        onUpload(link);
+        onClose();
+      } catch (error) {
+        setValidationMessage("Failed to upload image. Please try again.");
+        console.log(error);
+      } finally {
+        setIsUploading(false);
+      }
     } else {
-      setValidationMessage("The image link you enetered is invalid.");
+      setValidationMessage("Image URL is invalid.");
     }
   };
 
@@ -59,6 +81,7 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
             placeholderTextColor={"#bbbbbb"}
             value={link}
             onChangeText={setLink}
+            editable={!isUploading}
           />
           {validationMessage ? (
             <Text className="text-red mt-2 italic">*{validationMessage}</Text>
@@ -76,14 +99,20 @@ const LinkUploadModal: React.FC<LinkUploadModalProps> = ({
             <Pressable
               className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               onPress={handleCancel}
+              disabled={isUploading}
             >
               <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
             </Pressable>
             <Pressable
-              className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              className={`h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center ${
+                isUploading ? "bg-gray-300" : "bg-[#7ab3b3]"
+              }`}
               onPress={handleUpload}
+              disabled={isUploading}
             >
-              <Text className="text-white text-[16px]">Upload</Text>
+              <Text className="text-white text-[16px]">
+                {isUploading ? "Uploading..." : "Upload"}
+              </Text>
             </Pressable>
           </View>
         </View>

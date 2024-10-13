@@ -90,6 +90,11 @@ const TopGreeting = () => {
         <View className="flex-row items-center mt-1">
           <Text className="text-base ml-1"></Text>
         </View>
+        <Pressable
+          onPress={() => router.push(routes.survey as Href<string>)}
+        >
+          <Text>To survey</Text>
+        </Pressable>
       </View>
 
       <ConfirmationModal

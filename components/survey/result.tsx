@@ -17,6 +17,10 @@ const Result: React.FC<ResultProps> = ({ subSeason, complements }) => {
 
   const capitalizedSubSeason = capitalizeWords(subSeason);
 
+  // Split the capitalized subSeason into two parts
+  const [firstWord, ...restWords] = capitalizedSubSeason.split(" ");
+  const secondLine = restWords.join(" ");
+
   // Function to chunk the colors array into rows of 7 elements each
   const chunkArray = (array: any[], chunkSize: number) => {
     const results = [];
@@ -34,9 +38,13 @@ const Result: React.FC<ResultProps> = ({ subSeason, complements }) => {
       <View className="mb-14">
         <Text className="text-[16px] text-center mb-3">Your season is</Text>
         <View className="text-center mb-5 mx-10">
-          <Text className="text-[96px] font-logo text-tertiary leading-[85px] text-center">
-            {capitalizedSubSeason}
+          <Text className="text-[80px] font-logo text-tertiary leading-[85px] text-center mb-[-15]">
+            {firstWord}
           </Text>
+          <Text className="text-[80px] font-logo text-tertiary leading-[85px] text-center">
+            {secondLine}
+          </Text>
+
           <Text className="text-[16px] text-center">
             You complement with these colors
           </Text>

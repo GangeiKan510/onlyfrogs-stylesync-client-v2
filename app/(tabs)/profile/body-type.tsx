@@ -152,3 +152,4 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
 };
 
 export default BodyType;
+

@@ -8,6 +8,7 @@ import LoadingScreen from "../common/LoadingScreen";
 import Result from "./result";
 import { analyzeUserSkinTone } from "@/network/web/user";
 import FloatingActionMenu from "../buttons/FloatingActionMenu";
+import Toast from "react-native-toast-message";
 
 const SkinToneAnalysis = ({
   onAnalyzeComplete,
@@ -60,6 +61,20 @@ const SkinToneAnalysis = ({
           console.log("Sending image for analysis:", formData);
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
+
+          if (result.error && result.error.includes("no face detected")) {
+            Toast.show({
+              type: "error",
+              text1: "No face detected",
+              text2: "Please retake the photo and ensure your face is visible.",
+              position: "top",
+              swipeable: true,
+            });
+            setIsLoading(false);
+            setIsAnalyzing(false);
+            return;
+          }
+
           setAnalysisResult(result.skinToneAnalysis);
           setSkinToneAnalysisResult(result.skinToneAnalysis);
           onAnalyzeComplete();
@@ -99,8 +114,22 @@ const SkinToneAnalysis = ({
           console.log("Sending image for analysis:", formData);
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
+
+          if (result.error && result.error.includes("no face detected")) {
+            Toast.show({
+              type: "error",
+              text1: "No face detected",
+              text2: "Please select another photo where your face is visible.",
+              position: "top",
+              swipeable: true,
+            });
+            setIsLoading(false);
+            setIsAnalyzing(false);
+            return;
+          }
+
           setAnalysisResult(result.skinToneAnalysis);
-          setSkinToneAnalysisResult(JSON.stringify(result.skinToneAnalysis));
+          setSkinToneAnalysisResult(result.skinToneAnalysis);
           onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);

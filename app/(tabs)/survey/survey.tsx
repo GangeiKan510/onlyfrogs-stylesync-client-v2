@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
 import {
@@ -142,7 +143,6 @@ const Survey = () => {
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
-
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
@@ -158,7 +158,7 @@ const Survey = () => {
             }
             className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
               (currentIndex === 2 && !isBodyTypeSelected) ||
-              (currentIndex === 4 && !isPersonalInfoComplete) || 
+              (currentIndex === 4 && !isPersonalInfoComplete) ||
               loading
                 ? "bg-[#9fcccc]"
                 : "bg-bg-tertiary"

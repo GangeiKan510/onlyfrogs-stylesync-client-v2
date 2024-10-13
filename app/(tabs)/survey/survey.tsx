@@ -75,6 +75,29 @@ const Survey = () => {
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
 
+  const resetSurveyData = () => {
+    setSkinToneAnalysisResult(null);
+    setBodyType("NeatHourGlass");
+    setPreferences({
+      preferred_style: [],
+      favourite_colors: [],
+      preferred_brands: [],
+      budget_range: { min: 0, max: 0 },
+    });
+    setPersonalInfo({
+      gender: "",
+      birthday: "",
+      height_cm: 0,
+      weight_kg: 0,
+      location: {
+        name: "",
+        lat: "",
+        lon: "",
+      },
+    });
+    setCurrentIndex(0);
+  };
+
   const handleFinish = async () => {
     const surveyData: UpdateUserData = {
       id: user?.id as string,
@@ -111,6 +134,7 @@ const Survey = () => {
       console.error("Error updating user:", error);
     } finally {
       setLoading(false);
+      resetSurveyData();
     }
   };
 
@@ -147,7 +171,7 @@ const Survey = () => {
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
       {/* Conditionally render the Continue or Finish Button */}
-      {(currentIndex !== 1 || analysisComplete) && (
+      {(currentIndex !== 1 || analysisComplete) && !isAnalyzing && (
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}

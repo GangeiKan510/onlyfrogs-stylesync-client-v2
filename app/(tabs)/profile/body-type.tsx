@@ -62,6 +62,8 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         text2: "Your body type has been saved successfully.",
       });
 
+      console.log(selectedBodyType)
+
       navigation.dispatch(
         CommonActions.reset({
           index: 0,

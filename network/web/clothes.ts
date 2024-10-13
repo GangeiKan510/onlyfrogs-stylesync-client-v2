@@ -1,5 +1,6 @@
 import { UpdateClothingData } from "@/utils/types/UpdateClothingType";
 import {
+  deleteWithFirebaseJwt,
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,
 } from "../firebase/requests-with-firebase";
@@ -61,6 +62,27 @@ export const updateClothing = async (clothingData: UpdateClothingData) => {
     return updatedClothing;
   } catch (error) {
     console.error("Failed to update clothing", error);
+    throw error;
+  }
+};
+
+export const deleteItem = async (id: string) => {
+  try {
+    const response = await deleteWithFirebaseJwt(
+      "/web/chat/delete-chat-session-messages",
+      {
+        id: id,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error deleting item: ${response.statusText}`);
+    }
+
+    const messageSent = await response.json();
+    return messageSent;
+  } catch (error) {
+    console.error("Failed to delete item", error);
     throw error;
   }
 };

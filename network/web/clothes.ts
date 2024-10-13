@@ -1,8 +1,10 @@
 import { UpdateClothingData } from "@/utils/types/UpdateClothingType";
 import {
+  deleteWithFirebaseJwt,
   postWithFirebaseJwt,
   uploadWithFirebaseJwt,
 } from "../firebase/requests-with-firebase";
+import { UploadClothingWithImageLink } from "@/utils/types/ClothingType";
 
 export const uploadClothing = async (formData: FormData) => {
   try {
@@ -24,6 +26,27 @@ export const uploadClothing = async (formData: FormData) => {
   }
 };
 
+export const uploadWithImageLink = async (
+  imageDetails: UploadClothingWithImageLink
+) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/images/upload-image-url",
+      imageDetails
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error uploading clothing: ${response.statusText}`);
+    }
+
+    const uploadedClothing = await response.json();
+    return uploadedClothing;
+  } catch (error) {
+    console.error("Failed to upload clothing", error);
+    throw error;
+  }
+};
+
 export const updateClothing = async (clothingData: UpdateClothingData) => {
   try {
     const response = await postWithFirebaseJwt(
@@ -39,6 +62,25 @@ export const updateClothing = async (clothingData: UpdateClothingData) => {
     return updatedClothing;
   } catch (error) {
     console.error("Failed to update clothing", error);
+    throw error;
+  }
+};
+
+export const deleteItem = async (id: string) => {
+  try {
+    const response = await deleteWithFirebaseJwt(
+      "/web/clothes/delete-clothing",
+      { id }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error deleting item: ${response.statusText}`);
+    }
+
+    const deletedItem = await response.json();
+    return deletedItem;
+  } catch (error) {
+    console.error("Failed to delete item", error);
     throw error;
   }
 };

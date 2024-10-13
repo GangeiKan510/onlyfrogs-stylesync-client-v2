@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View, BackHandler } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+  BackHandler,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
@@ -63,7 +69,7 @@ const Survey = () => {
       setIsAnalyzing={setIsAnalyzing}
       setSkinToneAnalysisResult={setSkinToneAnalysisResult}
     />,
-    <BodyType setBodyType={setBodyType} />,
+    <BodyType setBodyType={setBodyType} />, // Pass setBodyType to BodyType
     <PreferencesAndBudget setPreferences={setPreferences} />,
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
@@ -115,22 +121,24 @@ const Survey = () => {
     }
   };
 
-
   const isBodyTypeSelected = bodyType !== "NeatHourglass";
   const isPersonalInfoComplete =
-  personalInfo.gender &&
-  personalInfo.birthday &&
-  personalInfo.height_cm > 0 &&
-  personalInfo.weight_kg > 0;
+    personalInfo.gender &&
+    personalInfo.birthday &&
+    personalInfo.height_cm > 0 &&
+    personalInfo.weight_kg > 0;
 
-    useEffect(() => {
-      const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
         return true;
-      });
-      return () => {
-        backHandler.remove();
-      };
-    }, []);
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
@@ -160,9 +168,7 @@ const Survey = () => {
               <Spinner type={"primary"} />
             ) : (
               <Text className="text-white text-center">
-                {currentIndex === contentArray.length - 1
-                  ? "Finish"
-                  : "Next"}
+                {currentIndex === contentArray.length - 1 ? "Finish" : "Next"}
               </Text>
             )}
           </TouchableOpacity>

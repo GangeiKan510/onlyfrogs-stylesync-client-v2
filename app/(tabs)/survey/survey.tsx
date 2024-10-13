@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
-import React, { useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, Text, TouchableOpacity, View, BackHandler } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
@@ -123,6 +123,15 @@ const Survey = () => {
   personalInfo.birthday &&
   personalInfo.height_cm > 0 &&
   personalInfo.weight_kg > 0;
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+        return true;
+      });
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>

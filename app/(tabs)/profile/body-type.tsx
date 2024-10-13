@@ -37,10 +37,12 @@ interface BodyTypeProps {
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
+  const [selectedBodyType, setSelectedBodyType] = useState<string>(
+    user?.body_type || ""
+  );
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (setBodyType) {

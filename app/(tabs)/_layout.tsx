@@ -7,13 +7,7 @@ import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
 import AliActiveIcon from "../../assets/icons/tabs/ali-active.svg";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Keyboard,
-  Animated,
-} from "react-native";
+import { View, Text, StyleSheet, Keyboard, Animated } from "react-native";
 import { Href, useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
@@ -23,7 +17,6 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 export default function TabLayout() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const tabBarOffset = new Animated.Value(0);
 
   useEffect(() => {
@@ -55,7 +48,7 @@ export default function TabLayout() {
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       Animated.timing(tabBarOffset, {
-        toValue: 60, 
+        toValue: 60,
         duration: 50,
         useNativeDriver: true,
       }).start();

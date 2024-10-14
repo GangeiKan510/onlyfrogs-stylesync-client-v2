@@ -25,7 +25,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 20;
+    const itemHeight = 23.5;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? PATTERN_LIST.length * itemHeight + 50 : 0,
       duration: 300,
@@ -81,7 +81,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
                     className={`text-base ${
                       selectedPattern === pattern.name
                         ? "text-white"
-                        : "text-black"
+                        : "text-tertiary"
                     }`}
                   >
                     {pattern.name}

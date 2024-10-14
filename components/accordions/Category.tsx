@@ -29,28 +29,27 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
   };
 
   useEffect(() => {
-    const itemHeight = 12;
-    
-    const categoriesHeight = selectedCategory?.name && categoryTypes[selectedCategory.name]
-      ? categoryTypes[selectedCategory.name].length * itemHeight + 40
-      : 0;
-    
+    const itemHeight = 15;
+
+    const categoriesHeight =
+      selectedCategory?.name && categoryTypes[selectedCategory.name]
+        ? categoryTypes[selectedCategory.name].length * itemHeight + 100
+        : 0;
+
     const totalHeight = isOpen
       ? selectedCategory?.name
         ? categoriesHeight
         : Object.keys(categoryTypes).length * itemHeight + 40
       : 0;
-  
+
     const safeTotalHeight = isNaN(totalHeight) ? 0 : totalHeight;
-  
+
     Animated.timing(animatedHeight, {
       toValue: safeTotalHeight,
       duration: 300,
       useNativeDriver: false,
     }).start();
   }, [isOpen, selectedCategory]);
-  
-  
 
   return (
     <View className="bg-[#F3F3F3] px-4 rounded-md">

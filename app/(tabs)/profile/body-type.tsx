@@ -38,12 +38,17 @@ interface BodyTypeProps {
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user, refetchMe } = useUser();
   const router = useRouter();
-  const [selectedBodyType, setSelectedBodyType] = useState<string>(
-    user?.body_type || ""
-  );
+  const [selectedBodyType, setSelectedBodyType] = useState<string>("");
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.body_type) {
+      setSelectedBodyType(user.body_type);
+      setLoading(false);
+    }
+  }, [user?.body_type]);
 
   useEffect(() => {
     if (setBodyType) {
@@ -84,6 +89,14 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
       setIsSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center">
+        <Spinner type="primary" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">

@@ -43,6 +43,8 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  console.log(user);
+
   useEffect(() => {
     if (user?.body_type) {
       setSelectedBodyType(user.body_type);

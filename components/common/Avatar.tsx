@@ -11,7 +11,7 @@ const Avatar = ({ url, alt }: AvatarProps) => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <View className="w-[54px] h-[54px] rounded-full overflow-hidden border-2 border-tertiary">
+    <View className="w-[54px] h-[54px] flex items-center justify-center rounded-full overflow-hidden border-2 border-tertiary">
       {loading && (
         <View className="absolute inset-0 flex items-center justify-center">
           <Spinner type="secondary" />

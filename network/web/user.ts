@@ -146,3 +146,23 @@ export const updateBodyType = async (userData: UpdateUserBodyType) => {
     throw error;
   }
 };
+
+export const uploadUserProfileImage = async (formData: FormData) => {
+  try {
+    const response = await uploadWithFirebaseJwt(
+      "/web/images/upload-profile-picture",
+      formData
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error uploading profile image: ${errorText}`);
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to upload profile image", error);
+    throw error;
+  }
+};

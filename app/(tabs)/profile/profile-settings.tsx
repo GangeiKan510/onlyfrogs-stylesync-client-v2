@@ -28,6 +28,7 @@ import { auth } from "@/firebaseConfig";
 import { sendEmailVerification } from "firebase/auth";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
+import { uploadUserProfileImage } from "@/network/web/user";
 
 const ProfileSettings = () => {
   const { user, refetchMe } = useUser();
@@ -233,17 +234,41 @@ const ProfileSettings = () => {
     if (validateInputs()) {
       setIsSaving(true);
 
-      const userData: UpdateUserName = {
-        id: user?.id || "",
-        first_name: firstName,
-        last_name: lastName,
-      };
-
       try {
+        if (profileImage !== initialProfileImage.current && profileImage) {
+          const formData = new FormData();
+
+          const imageResponse = await fetch(profileImage);
+          const imageBlob = await imageResponse.blob();
+
+          formData.append("user_id", user?.id || "");
+          formData.append("file", {
+            uri: profileImage,
+            type: imageBlob.type || "image/jpeg",
+            name: `profile_${user?.id}.jpg`,
+          });
+
+          const updatedUserWithImage = await uploadUserProfileImage(formData);
+          setProfileImage(updatedUserWithImage.profileUrl);
+
+          Toast.show({
+            type: "success",
+            text1: "Profile Image Uploaded",
+            text2: "Your profile picture was successfully updated.",
+          });
+
+          refetchMe();
+        }
+
+        const userData: UpdateUserName = {
+          id: user?.id || "",
+          first_name: firstName,
+          last_name: lastName,
+        };
+
         const updatedUser = await updateUserName(userData);
         setFirstName(updatedUser.first_name);
         setLastName(updatedUser.last_name);
-        setProfileImage(profileImage);
 
         Toast.show({
           type: "success",
@@ -265,6 +290,7 @@ const ProfileSettings = () => {
           text1: "Save Failed",
           text2: "Failed to save your profile. Please try again.",
         });
+        console.error("Error saving profile:", error);
       } finally {
         setIsSaving(false);
       }

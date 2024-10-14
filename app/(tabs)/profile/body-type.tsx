@@ -16,6 +16,7 @@ import InvertedTriangle from "../../../assets/images/bodyTypes/invertedTriangle.
 import Back from "../../../assets/icons/back-icon.svg";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
+import { updateBodyType } from "@/network/web/user";
 
 const bodyTypes = [
   { name: "Neat Hourglass", image: NeatHourGlass, type: "NeatHourGlass" },
@@ -35,7 +36,7 @@ interface BodyTypeProps {
 }
 
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const router = useRouter();
   const [selectedBodyType, setSelectedBodyType] = useState<string>(
     user?.body_type || ""
@@ -53,16 +54,18 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      if (setBodyType) {
-        setBodyType(selectedBodyType);
-      }
+      const updatedUser = await updateBodyType({
+        id: user?.id || "",
+        body_type: selectedBodyType,
+      });
+
+      refetchMe();
+
       Toast.show({
         type: "success",
         text1: "Body Type Saved",
         text2: "Your body type has been saved successfully.",
       });
-
-      console.log(selectedBodyType)
 
       navigation.dispatch(
         CommonActions.reset({
@@ -71,10 +74,11 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         })
       );
     } catch (error) {
-      console.error("Error saving profile:", error);
+      console.error("Error saving body type:", error);
       Toast.show({
         type: "error",
         text1: "Error saving body type",
+        text2: "Failed to save your body type. Please try again.",
       });
     } finally {
       setIsSaving(false);
@@ -95,11 +99,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         </Text>
       </View>
       <View className="flex-1 justify-center items-center">
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={true}
-          // className="h-[60vh]"
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={true}>
           {bodyTypes.map((bodyType) => (
             <TouchableOpacity
               key={bodyType.type}
@@ -137,9 +137,9 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
           <TouchableOpacity
             className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
             onPress={handleSave}
-            disabled={loading}
+            disabled={isSaving}
           >
-            {loading ? (
+            {isSaving ? (
               <Spinner type="primary" />
             ) : (
               <Text className="text-white">Save</Text>
@@ -152,4 +152,3 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
 };
 
 export default BodyType;
-

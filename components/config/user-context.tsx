@@ -55,6 +55,7 @@ type UserDetails = {
   closets: Closet[];
   clothes: Clothes[];
   weight: string;
+  body_type: string;
 };
 
 interface UserContextProps {

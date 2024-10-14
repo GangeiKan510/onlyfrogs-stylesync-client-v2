@@ -25,7 +25,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 16;
+    const itemHeight = 20;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? PATTERN_LIST.length * itemHeight + 50 : 0,
       duration: 300,
@@ -34,7 +34,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
   }, [isOpen]);
 
   return (
-    <View className="w-96 bg-[#F3F3F3] px-4 rounded-md">
+    <View className=" bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center rounded-[10px]"

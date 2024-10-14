@@ -1,6 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
-import React, { useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+  BackHandler,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BodyType from "@/components/survey/body-type";
 import PersonalInformation from "@/components/survey/personal-information";
@@ -9,7 +16,6 @@ import SkinToneAnalysis from "@/components/survey/skin-tone-analysis";
 import Welcome from "@/components/survey/welcome";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
-import BackIcon from "../../../assets/icons/back-icon.svg";
 import { updateUser } from "@/network/web/user";
 import { useUser } from "@/components/config/user-context";
 import {
@@ -33,7 +39,7 @@ const Survey = () => {
 
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<SkinToneAnalysisResult | null>(null);
-  const [bodyType, setBodyType] = useState("TypeA");
+  const [bodyType, setBodyType] = useState("NeatHourGlass");
   const [preferences, setPreferences] = useState<Preferences>({
     preferred_style: [],
     favourite_colors: [],
@@ -64,10 +70,33 @@ const Survey = () => {
       setIsAnalyzing={setIsAnalyzing}
       setSkinToneAnalysisResult={setSkinToneAnalysisResult}
     />,
-    <BodyType setBodyType={setBodyType} />,
+    <BodyType setBodyType={setBodyType} />, // Pass setBodyType to BodyType
     <PreferencesAndBudget setPreferences={setPreferences} />,
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
+
+  const resetSurveyData = () => {
+    setSkinToneAnalysisResult(null);
+    setBodyType("NeatHourGlass");
+    setPreferences({
+      preferred_style: [],
+      favourite_colors: [],
+      preferred_brands: [],
+      budget_range: { min: 0, max: 0 },
+    });
+    setPersonalInfo({
+      gender: "",
+      birthday: "",
+      height_cm: 0,
+      weight_kg: 0,
+      location: {
+        name: "",
+        lat: "",
+        lon: "",
+      },
+    });
+    setCurrentIndex(0);
+  };
 
   const handleFinish = async () => {
     const surveyData: UpdateUserData = {
@@ -89,22 +118,22 @@ const Survey = () => {
       budget_max: preferences.budget_range?.max,
     };
 
-    Toast.show({
-      type: "success",
-      text1: "Successfully finished survey!",
-      position: "top",
-      swipeable: true,
-    });
-
     try {
       setLoading(true);
       await updateUser(surveyData);
+      Toast.show({
+        type: "success",
+        text1: "Successfully finished survey!",
+        position: "top",
+        swipeable: true,
+      });
       refetchMe();
       router.push(routes.tabs as Href<string | object>);
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
       setLoading(false);
+      resetSurveyData();
     }
   };
 
@@ -116,52 +145,53 @@ const Survey = () => {
     }
   };
 
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+  const isBodyTypeSelected = bodyType !== "NeatHourglass";
+  const isPersonalInfoComplete =
+    personalInfo.gender &&
+    personalInfo.birthday &&
+    personalInfo.height_cm > 0 &&
+    personalInfo.weight_kg > 0;
 
-  const handleSkip = () => {
-    router.push(routes.tabs as Href<string | object>);
-  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
-      <View className="flex-row justify-between items-center absolute top-12 w-full p-5 z-10">
-        {/* Conditionally render the Back Button */}
-        {/* {currentIndex > 1 && currentIndex !== 2 && currentIndex !== 3 && (
-          <TouchableOpacity onPress={handleBack} className="p-2">
-            <BackIcon />
-          </TouchableOpacity>
-        )} */}
-
-        {/* Conditionally render the Skip Button */}
-        {currentIndex === 1 && !isAnalyzing && !analysisComplete && (
-          <TouchableOpacity onPress={handleSkip} className="p-2 ml-auto">
-            <Text className="text-bg-tertiary underline">Skip</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
       {/* Conditionally render the Continue or Finish Button */}
-      {(currentIndex !== 1 || analysisComplete) && (
+      {(currentIndex !== 1 || analysisComplete) && !isAnalyzing && (
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}
-            disabled={(currentIndex === 1 && !analysisComplete) || loading}
-            className="flex items-center justify-center bg-bg-tertiary h-[42px] rounded-[10px] w-[346px]"
+            disabled={
+              (currentIndex === 2 && !isBodyTypeSelected) ||
+              (currentIndex === 4 && !isPersonalInfoComplete) ||
+              loading
+            }
+            className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
+              (currentIndex === 2 && !isBodyTypeSelected) ||
+              (currentIndex === 4 && !isPersonalInfoComplete) ||
+              loading
+                ? "bg-[#9fcccc]"
+                : "bg-bg-tertiary"
+            }`}
           >
             {loading ? (
               <Spinner type={"primary"} />
             ) : (
               <Text className="text-white text-center">
-                {currentIndex === contentArray.length - 1
-                  ? "Finish"
-                  : "Continue"}
+                {currentIndex === contentArray.length - 1 ? "Finish" : "Next"}
               </Text>
             )}
           </TouchableOpacity>

@@ -64,14 +64,19 @@ export default function Register() {
     setLastName(value);
   };
 
-  const handleEmailChange = (value: string) => {
+  const validateEmail = (value: string) => {
     if (!emailRegex.test(value)) {
       setEmailError("Please enter a valid email address.");
     } else {
       setEmailError("");
     }
+  };
+  
+  const handleEmailChange = (value: string) => {
+    validateEmail(value);
     setEmail(value);
   };
+  
 
   const validatePassword = (value: string) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
@@ -216,6 +221,7 @@ export default function Register() {
                   value={lastName}
                   onChangeText={handleLastNameChange}
                   maxLength={40}
+                  autoCapitalize="words"
                 />
                 {lastNameError ? (
                   <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>

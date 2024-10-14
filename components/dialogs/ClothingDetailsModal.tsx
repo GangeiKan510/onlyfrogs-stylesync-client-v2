@@ -18,10 +18,9 @@ import ColorAccordion from "../accordions/Color";
 import Spinner from "../common/Spinner";
 import MaterialAccordion from "../accordions/Material";
 import PatternAccordion from "../accordions/Pattern";
-import { updateClothing } from "@/network/web/clothes";
+import { updateClothing, deleteItem } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
-import { useRouter } from "expo-router";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
 
 interface ClothingDetailsModalProps {
@@ -37,9 +36,9 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   clothingImage,
   clothingId,
 }) => {
-  const { user } = useUser();
-  const router = useRouter();
+  const { user, refetchMe } = useUser();
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false); // Track delete progress
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState<string | string[]>("");
   const [isTyping, setIsTyping] = useState(false);
@@ -61,7 +60,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       );
 
       if (matchingClothing) {
-        console.log("Matching Clothing Item:", matchingClothing);
         setItemName(matchingClothing.name || "");
         setBrandName(matchingClothing.brand || "");
         setSelectedSeasons(matchingClothing.season || []);
@@ -119,21 +117,30 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   const handleDelete = async () => {
     if (clothingId) {
-      Toast.show({
-        type: "success",
-        text1: "Clothing deleted successfully!",
-        position: "top",
-        swipeable: true,
-      });
-      console.log("Deleted.");
-      // onClose();
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Failed to delete clothing!",
-        position: "top",
-        swipeable: true,
-      });
+      setIsDeleting(true);
+      try {
+        await deleteItem(clothingId);
+        Toast.show({
+          type: "success",
+          text1: "Clothing deleted successfully!",
+          position: "top",
+          swipeable: true,
+        });
+        onClose();
+        setShowModal(false);
+        refetchMe();
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Failed to delete clothing!",
+          position: "top",
+          swipeable: true,
+        });
+        console.error("Failed to delete clothing:", error);
+      } finally {
+        setIsDeleting(false);
+        setShowModal(false);
+      }
     }
   };
 
@@ -179,7 +186,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 selectedSeasons={selectedSeasons}
                 setSelectedSeasons={setSelectedSeasons}
               />
-              <View className="mt-4 w-full mb-4">
+              <View className="mt-4 w-full">
                 <OccasionSelection
                   selectedOccasions={selectedOccasions}
                   setSelectedOccasions={setSelectedOccasions}
@@ -187,7 +194,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               </View>
             </View>
 
-            <View className="mt-4 w-full px-4">
+            <View className="mt-5 w-full px-4">
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 What kind of item is this?
               </Text>
@@ -213,7 +220,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   setSelectedPattern={setSelectedPattern}
                 />
               </View>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md">
                 <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
                 <TextInput
                   placeholder="Enter brand name"
@@ -230,7 +237,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <Text className="text-lg text-[#484848] font-bold mt-5">
                 Additional information
               </Text>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
                 <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                 <TextInput
                   placeholder="Give it a name (optional)"
@@ -244,7 +251,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   }}
                 />
               </View>
-              <View className="w-96 bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
+              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
                 <Text className="text-[16px] text-[#484848] mb-2">
                   Number of wears
                 </Text>
@@ -254,18 +261,13 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           </View>
 
           {/* Floating Save Button */}
-          <View className="flex-row justify-center items-center px-4 mb-4 absolute bottom-2 self-center space-x-7">
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Delete button pressed");
-                setShowModal(true);
-              }}
-            >
+          <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2">
+            <TouchableOpacity onPress={() => setShowModal(true)}>
               <DeleteIcon width={32} height={32} color={"red"} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
-              className="w-80 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
+              className="w-72 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
             >
               <Text className="text-center text-white">
                 {isSaving ? <Spinner type={"primary"} /> : "Save"}
@@ -282,20 +284,26 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
               <Text className="text-[18px] mb-1 font-bold">Confirm Delete</Text>
               <Text className="mt-2 text-center">
-                Are you sure you want to delete this item?
+                Are you sure you want to delete this?
               </Text>
               <View className="flex-row justify-between items-center mt-4 space-x-4">
                 <TouchableOpacity
-                  onPress={handleDelete}
+                  onPress={() => setShowModal(false)}
                   className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  disabled={isDeleting}
                 >
-                  <Text className="text-[#7AB2B2] text-[16px]">Delete</Text>
+                  <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => setShowModal(false)}
-                  className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  onPress={handleDelete}
+                  className="h-[42px] flex-1 border border-red bg-red rounded-lg mx-2 justify-center items-center"
+                  disabled={isDeleting}
                 >
-                  <Text className="text-white text-[16px]">Keep</Text>
+                  {isDeleting ? (
+                    <Spinner type="primary" />
+                  ) : (
+                    <Text className="text-white text-[16px]">Delete</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

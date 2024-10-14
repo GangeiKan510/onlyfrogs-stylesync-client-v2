@@ -37,10 +37,12 @@ interface BodyTypeProps {
 const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const [selectedBodyType, setSelectedBodyType] = useState("NeatHourglass");
+  const [selectedBodyType, setSelectedBodyType] = useState<string>(
+    user?.body_type || ""
+  );
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (setBodyType) {
@@ -59,6 +61,8 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         text1: "Body Type Saved",
         text2: "Your body type has been saved successfully.",
       });
+
+      console.log(selectedBodyType)
 
       navigation.dispatch(
         CommonActions.reset({
@@ -87,7 +91,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
           <Back width={20} height={20} />
         </TouchableOpacity>
         <Text className="flex-1 text-center text-[20px] font-bold">
-          Preferences and Budget
+          Body Type
         </Text>
       </View>
       <View className="flex-1 justify-center items-center">
@@ -148,3 +152,4 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
 };
 
 export default BodyType;
+

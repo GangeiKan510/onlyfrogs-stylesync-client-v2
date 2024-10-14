@@ -37,12 +37,7 @@ const TopGreeting = () => {
   return (
     <View className="flex-row justify-between items-center mt-5">
       <View className="flex-1 flex-row items-center">
-        <Avatar
-          url={
-            "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
-          }
-          alt={"profile-alt"}
-        />
+        <Avatar url={user?.profile_url as string} alt={"profile-alt"} />
         <View className="ml-3">
           <View className="flex-row items-center gap-1">
             <Text className="font-bold text-[14px]">

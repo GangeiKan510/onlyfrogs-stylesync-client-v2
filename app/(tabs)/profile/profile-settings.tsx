@@ -32,12 +32,14 @@ import { routes } from "@/utils/routes";
 const ProfileSettings = () => {
   const { user, refetchMe } = useUser();
   const router = useRouter();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user?.profile_url || null
+  );
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
   const initialFirstName = useRef(user?.first_name || "");
   const initialLastName = useRef(user?.last_name || "");
-  const initialProfileImage = useRef<string | null>(null);
+  const initialProfileImage = useRef<string | null>(user?.profile_url || null);
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -53,10 +55,10 @@ const ProfileSettings = () => {
   const resetToInitialState = () => {
     setFirstName(user?.first_name || "");
     setLastName(user?.last_name || "");
-    setProfileImage(null);
+    setProfileImage(user?.profile_url || null);
     initialFirstName.current = user?.first_name || "";
     initialLastName.current = user?.last_name || "";
-    initialProfileImage.current = null;
+    initialProfileImage.current = user?.profile_url || null;
   };
 
   const sendVerificationEmail = async () => {
@@ -307,7 +309,7 @@ const ProfileSettings = () => {
       </View>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios'? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
@@ -317,7 +319,7 @@ const ProfileSettings = () => {
                 onPress={uploadProfileImage}
                 className="absolute z-10"
               >
-                <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
+                <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center border-2 border-tertiary">
                   {profileImage ? (
                     <Image
                       source={{ uri: profileImage }}

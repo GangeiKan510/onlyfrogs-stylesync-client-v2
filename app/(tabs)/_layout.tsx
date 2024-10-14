@@ -238,10 +238,7 @@ export default function TabLayout() {
         />
         <Tabs.Screen
           name="profile/preferences-and-budget"
-          options={{
-            href: null,
-            tabBarStyle: { display: "none" },
-          }}
+          options={{ href: null, tabBarStyle: { display: "none" } }}
         />
         <Tabs.Screen
           name="profile/reset-password"

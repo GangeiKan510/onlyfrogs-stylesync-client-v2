@@ -28,7 +28,6 @@ export default function RootLayout() {
     if (!state.isConnected) {
       router.push(routes.noConnection as Href<string>);
     }
-    console.log("Is connected?", state.isConnected);
   });
 
   unsubscribe();

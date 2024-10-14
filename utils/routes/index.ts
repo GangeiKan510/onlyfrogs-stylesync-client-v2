@@ -16,7 +16,7 @@ export const routes = {
   preferencesAndBudget: "profile/preferences-and-budget",
   skinToneAnalysis: "profile/skin-tone-analysis",
   bodyType: "profile/body-type",
-  subscription: "/subscription",
+  subscription: "profile/subscription",
 
   expandedCloset: "(tabs)/closet/",
 };

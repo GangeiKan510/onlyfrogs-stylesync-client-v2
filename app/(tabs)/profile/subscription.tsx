@@ -6,10 +6,10 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import WelcomeHero from "../assets/images/svg/welcome-hero.svg";
+import WelcomeHero from "../../../assets/images/svg/welcome-hero.svg";
 import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
-import Back from "../assets/icons/back-icon.svg";
+import Back from "../../../assets/icons/back-icon.svg";
 
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
 import {
@@ -74,6 +75,29 @@ const Survey = () => {
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
 
+  const resetSurveyData = () => {
+    setSkinToneAnalysisResult(null);
+    setBodyType("NeatHourGlass");
+    setPreferences({
+      preferred_style: [],
+      favourite_colors: [],
+      preferred_brands: [],
+      budget_range: { min: 0, max: 0 },
+    });
+    setPersonalInfo({
+      gender: "",
+      birthday: "",
+      height_cm: 0,
+      weight_kg: 0,
+      location: {
+        name: "",
+        lat: "",
+        lon: "",
+      },
+    });
+    setCurrentIndex(0);
+  };
+
   const handleFinish = async () => {
     const surveyData: UpdateUserData = {
       id: user?.id as string,
@@ -94,22 +118,22 @@ const Survey = () => {
       budget_max: preferences.budget_range?.max,
     };
 
-    Toast.show({
-      type: "success",
-      text1: "Successfully finished survey!",
-      position: "top",
-      swipeable: true,
-    });
-
     try {
       setLoading(true);
       await updateUser(surveyData);
+      Toast.show({
+        type: "success",
+        text1: "Successfully finished survey!",
+        position: "top",
+        swipeable: true,
+      });
       refetchMe();
       router.push(routes.tabs as Href<string | object>);
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
       setLoading(false);
+      resetSurveyData();
     }
   };
 
@@ -142,12 +166,11 @@ const Survey = () => {
 
   return (
     <SafeAreaView className={`flex-1 pt-${insets.top} bg-white`}>
-
       {/* Main Content */}
       <View className="flex-1">{contentArray[currentIndex]}</View>
 
       {/* Conditionally render the Continue or Finish Button */}
-      {(currentIndex !== 1 || analysisComplete) && (
+      {(currentIndex !== 1 || analysisComplete) && !isAnalyzing && (
         <View className="flex justify-center items-center p-5">
           <TouchableOpacity
             onPress={handleNext}
@@ -158,7 +181,7 @@ const Survey = () => {
             }
             className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
               (currentIndex === 2 && !isBodyTypeSelected) ||
-              (currentIndex === 4 && !isPersonalInfoComplete) || 
+              (currentIndex === 4 && !isPersonalInfoComplete) ||
               loading
                 ? "bg-[#9fcccc]"
                 : "bg-bg-tertiary"

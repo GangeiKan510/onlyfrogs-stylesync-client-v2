@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneAnalysisImage from "../../assets/images/svg/skin-tone-analysis-hero.svg";
@@ -8,6 +8,7 @@ import LoadingScreen from "../common/LoadingScreen";
 import Result from "./result";
 import { analyzeUserSkinTone } from "@/network/web/user";
 import FloatingActionMenu from "../buttons/FloatingActionMenu";
+import Toast from "react-native-toast-message";
 
 const SkinToneAnalysis = ({
   onAnalyzeComplete,
@@ -46,29 +47,7 @@ const SkinToneAnalysis = ({
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-
-        const formData = new FormData();
-        formData.append("file", {
-          uri: uri,
-          name: uri.split("/").pop(),
-          type: "image/jpeg",
-        } as any);
-
-        setIsLoading(true);
-        setIsAnalyzing(true);
-        try {
-          console.log("Sending image for analysis:", formData);
-          const result = await analyzeUserSkinTone(formData);
-          console.log("Analysis result:", result);
-          setAnalysisResult(result.skinToneAnalysis);
-          setSkinToneAnalysisResult(result.skinToneAnalysis);
-          onAnalyzeComplete();
-        } catch (error) {
-          console.error("Failed to analyze skin tone:", error);
-          Alert.alert("Error", "Failed to analyze skin tone.");
-        } finally {
-          setIsLoading(false);
-        }
+        await analyzeSkinToneImage(uri);
       }
     }
   };
@@ -85,31 +64,61 @@ const SkinToneAnalysis = ({
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-
-        const formData = new FormData();
-        formData.append("file", {
-          uri: uri,
-          name: uri.split("/").pop(),
-          type: "image/jpeg",
-        } as any);
-
-        setIsLoading(true);
-        setIsAnalyzing(true);
-        try {
-          console.log("Sending image for analysis:", formData);
-          const result = await analyzeUserSkinTone(formData);
-          console.log("Analysis result:", result);
-          setAnalysisResult(result.skinToneAnalysis);
-          setSkinToneAnalysisResult(JSON.stringify(result.skinToneAnalysis));
-          onAnalyzeComplete();
-        } catch (error) {
-          console.error("Failed to analyze skin tone:", error);
-          Alert.alert("Error", "Failed to analyze skin tone.");
-        } finally {
-          setIsLoading(false);
-        }
+        await analyzeSkinToneImage(uri);
       }
     }
+  };
+
+  const analyzeSkinToneImage = async (imageUri: string) => {
+    const formData = new FormData();
+    formData.append("file", {
+      uri: imageUri,
+      name: imageUri.split("/").pop(),
+      type: "image/jpeg",
+    } as any);
+
+    setIsLoading(true);
+    setIsAnalyzing(true);
+
+    try {
+      const result = await analyzeUserSkinTone(formData);
+      console.log("Analysis result:", result);
+
+      if (result.error && result.error.includes("no face detected")) {
+        Toast.show({
+          type: "error",
+          text1: "No face detected",
+          text2: "Please retake the photo and ensure your face is visible.",
+          position: "top",
+          swipeable: true,
+        });
+
+        resetAnalysis();
+        return;
+      }
+
+      setAnalysisResult(result.skinToneAnalysis);
+      setSkinToneAnalysisResult(result.skinToneAnalysis);
+      onAnalyzeComplete();
+    } catch (error) {
+      console.error("Failed to analyze skin tone:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "No face detected. Please try again.",
+        position: "top",
+        swipeable: true,
+      });
+      resetAnalysis();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetAnalysis = () => {
+    setSelectedImage(null);
+    setIsAnalyzing(false);
+    setIsLoading(false);
   };
 
   const actions = [

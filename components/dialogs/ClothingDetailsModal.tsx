@@ -38,6 +38,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 }) => {
   const { user, refetchMe } = useUser();
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false); // Track delete progress
   const [itemName, setItemName] = useState("");
   const [brandName, setBrandName] = useState<string | string[]>("");
   const [isTyping, setIsTyping] = useState(false);
@@ -116,6 +117,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   const handleDelete = async () => {
     if (clothingId) {
+      setIsDeleting(true);
       try {
         await deleteItem(clothingId);
         Toast.show({
@@ -125,6 +127,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           swipeable: true,
         });
         onClose();
+        setShowModal(false);
         refetchMe();
       } catch (error) {
         Toast.show({
@@ -134,14 +137,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           swipeable: true,
         });
         console.error("Failed to delete clothing:", error);
+      } finally {
+        setIsDeleting(false);
+        setShowModal(false);
       }
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Failed to delete clothing!",
-        position: "top",
-        swipeable: true,
-      });
     }
   };
 
@@ -262,13 +261,8 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           </View>
 
           {/* Floating Save Button */}
-          <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2 ">
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Delete button pressed");
-                setShowModal(true);
-              }}
-            >
+          <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2">
+            <TouchableOpacity onPress={() => setShowModal(true)}>
               <DeleteIcon width={32} height={32} color={"red"} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -296,14 +290,20 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 <TouchableOpacity
                   onPress={() => setShowModal(false)}
                   className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  disabled={isDeleting}
                 >
                   <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleDelete}
                   className="h-[42px] flex-1 border border-red bg-red rounded-lg mx-2 justify-center items-center"
+                  disabled={isDeleting}
                 >
-                  <Text className="text-white text-[16px]">Delete</Text>
+                  {isDeleting ? (
+                    <Spinner type="primary" />
+                  ) : (
+                    <Text className="text-white text-[16px]">Delete</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { View, Text, Alert, Pressable } from "react-native";
+import { View, Text, Alert, Pressable, BackHandler } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
@@ -28,6 +28,18 @@ const SkinToneAnalysis = () => {
 
   useEffect(() => {
     requestCameraPermissions();
+  }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   useEffect(() => {

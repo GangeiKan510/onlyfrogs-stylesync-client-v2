@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import StyleSelection from "@/components/survey/preferences-and-budget-components/StyleSelection";
 import FavColorSelection from "@/components/survey/preferences-and-budget-components/FavColorSelection";
@@ -18,6 +19,18 @@ import { routes } from "@/utils/routes";
 const PreferencesAndBudget = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-white">

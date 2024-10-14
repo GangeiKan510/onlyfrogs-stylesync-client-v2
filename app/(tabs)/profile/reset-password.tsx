@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, BackHandler } from "react-native";
 import { auth } from "@/firebaseConfig";
 import { updatePassword } from "firebase/auth";
 import Toast from "react-native-toast-message";
@@ -23,6 +23,18 @@ const ResetPassword = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   // Updated validatePassword function
   const validatePassword = (value: string) => {

@@ -13,7 +13,7 @@ const EmptyChat = () => {
       </Text>
       <BotIcon width={110} height={110} />
       <View className={`rounded-[10px] p-3 max-w-[80%] bg-light-gray`}>
-        <Text className={`text-center text-base`}>
+        <Text className={`text-center text-[14px]`}>
           Hi, I am Ali! Your personal virtual closet companion! How can I help
           you today?
         </Text>

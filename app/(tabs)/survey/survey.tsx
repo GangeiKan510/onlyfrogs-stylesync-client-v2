@@ -145,13 +145,15 @@ const Survey = () => {
     }
   };
 
-  const isBodyTypeSelected = bodyType !== "NeatHourglass";
+  const isLocationValid = personalInfo.location && personalInfo.location.lat && personalInfo.location.lon;
+
   const isPersonalInfoComplete =
     personalInfo.gender &&
     personalInfo.birthday &&
     personalInfo.height_cm > 0 &&
-    personalInfo.weight_kg > 0;
-
+    personalInfo.weight_kg > 0 &&
+    isLocationValid; // Add this check for location validity
+  
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -175,12 +177,10 @@ const Survey = () => {
           <TouchableOpacity
             onPress={handleNext}
             disabled={
-              (currentIndex === 2 && !isBodyTypeSelected) ||
               (currentIndex === 4 && !isPersonalInfoComplete) ||
               loading
             }
             className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
-              (currentIndex === 2 && !isBodyTypeSelected) ||
               (currentIndex === 4 && !isPersonalInfoComplete) ||
               loading
                 ? "bg-[#9fcccc]"

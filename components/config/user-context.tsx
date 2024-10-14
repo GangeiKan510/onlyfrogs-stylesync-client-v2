@@ -56,6 +56,7 @@ type UserDetails = {
   clothes: Clothes[];
   weight: string;
   body_type: string;
+  profile_url: string;
 };
 
 interface UserContextProps {

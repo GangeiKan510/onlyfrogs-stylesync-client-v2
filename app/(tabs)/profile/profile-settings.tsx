@@ -29,16 +29,19 @@ import { auth } from "@/firebaseConfig";
 import { sendEmailVerification } from "firebase/auth";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
+import { uploadUserProfileImage } from "@/network/web/user";
 
 const ProfileSettings = () => {
   const { user, refetchMe } = useUser();
   const router = useRouter();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user?.profile_url || null
+  );
   const [firstName, setFirstName] = useState(user?.first_name || "");
   const [lastName, setLastName] = useState(user?.last_name || "");
   const initialFirstName = useRef(user?.first_name || "");
   const initialLastName = useRef(user?.last_name || "");
-  const initialProfileImage = useRef<string | null>(null);
+  const initialProfileImage = useRef<string | null>(user?.profile_url || null);
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -67,10 +70,10 @@ const ProfileSettings = () => {
   const resetToInitialState = () => {
     setFirstName(user?.first_name || "");
     setLastName(user?.last_name || "");
-    setProfileImage(null);
+    setProfileImage(user?.profile_url || null);
     initialFirstName.current = user?.first_name || "";
     initialLastName.current = user?.last_name || "";
-    initialProfileImage.current = null;
+    initialProfileImage.current = user?.profile_url || null;
   };
 
   const sendVerificationEmail = async () => {
@@ -245,17 +248,41 @@ const ProfileSettings = () => {
     if (validateInputs()) {
       setIsSaving(true);
 
-      const userData: UpdateUserName = {
-        id: user?.id || "",
-        first_name: firstName,
-        last_name: lastName,
-      };
-
       try {
+        if (profileImage !== initialProfileImage.current && profileImage) {
+          const formData = new FormData();
+
+          const imageResponse = await fetch(profileImage);
+          const imageBlob = await imageResponse.blob();
+
+          formData.append("user_id", user?.id || "");
+          formData.append("file", {
+            uri: profileImage,
+            type: imageBlob.type || "image/jpeg",
+            name: `profile_${user?.id}.jpg`,
+          });
+
+          const updatedUserWithImage = await uploadUserProfileImage(formData);
+          setProfileImage(updatedUserWithImage.profileUrl);
+
+          Toast.show({
+            type: "success",
+            text1: "Profile Image Uploaded",
+            text2: "Your profile picture was successfully updated.",
+          });
+
+          refetchMe();
+        }
+
+        const userData: UpdateUserName = {
+          id: user?.id || "",
+          first_name: firstName,
+          last_name: lastName,
+        };
+
         const updatedUser = await updateUserName(userData);
         setFirstName(updatedUser.first_name);
         setLastName(updatedUser.last_name);
-        setProfileImage(profileImage);
 
         Toast.show({
           type: "success",
@@ -277,6 +304,7 @@ const ProfileSettings = () => {
           text1: "Save Failed",
           text2: "Failed to save your profile. Please try again.",
         });
+        console.error("Error saving profile:", error);
       } finally {
         setIsSaving(false);
       }
@@ -321,7 +349,7 @@ const ProfileSettings = () => {
       </View>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios'? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
         <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
@@ -331,7 +359,7 @@ const ProfileSettings = () => {
                 onPress={uploadProfileImage}
                 className="absolute z-10"
               >
-                <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center">
+                <View className="h-[130px] w-[130px] rounded-full bg-[#F2F2F2] items-center justify-center border-2 border-tertiary">
                   {profileImage ? (
                     <Image
                       source={{ uri: profileImage }}

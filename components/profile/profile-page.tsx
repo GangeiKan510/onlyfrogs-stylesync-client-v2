@@ -1,5 +1,12 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import useSignOut from "@/network/firebase/sign-out";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "../config/user-context";
@@ -25,6 +32,7 @@ const ProfilePage = () => {
   const { user } = useUser();
   const [signOut, loading] = useSignOut(auth);
   const [modalVisible, setModalVisible] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -44,9 +52,26 @@ const ProfilePage = () => {
             <CoverImg />
           </View>
           <View className="items-center">
-            <View className="absolute z-10 bottom-32 rounded-full items-center justify-center overflow-hidden border-2 border-white">
-              <NoProfileImg width={100} height={100} />
+            <View className="absolute z-10 bottom-32 rounded-full items-center justify-center overflow-hidden border-2 border-tertiary">
+              {user?.profile_url ? (
+                <View>
+                  {imageLoading && (
+                    <View className="absolute inset-0 items-center justify-center">
+                      <ActivityIndicator size="small" color="#000" />
+                    </View>
+                  )}
+                  <Image
+                    source={{ uri: user.profile_url }}
+                    style={{ width: 100, height: 100, borderRadius: 50 }}
+                    onLoad={() => setImageLoading(false)}
+                    onError={() => setImageLoading(false)}
+                  />
+                </View>
+              ) : (
+                <NoProfileImg width={100} height={100} />
+              )}
             </View>
+
             <View className="mt-12 items-center">
               <View className="flex-row gap-1 items-center">
                 <Text className="text-black font-bold text-[16px]">
@@ -169,13 +194,12 @@ const ProfilePage = () => {
                 </View>
                 <ArrowRightIcon width={15} height={15} color="black" />
               </TouchableOpacity>
-              
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() => setModalVisible(true)}
               >
                 <View className="flex-row items-center">
-                  <LogOutIcon width={24} height={24} color='red' />
+                  <LogOutIcon width={24} height={24} color="red" />
                   <Text className="font-medium text-[16px] ml-2 text-red">
                     Log Out
                   </Text>
@@ -185,8 +209,6 @@ const ProfilePage = () => {
             </View>
           </View>
         </ScrollView>
-
-        {/* Log Out Button */}
 
         <ConfirmationModal
           visible={modalVisible}

@@ -63,3 +63,8 @@ export interface UpdatePersonalInformationData {
   height: number;
   weight: number;
 }
+
+export interface UpdateUserBodyType {
+  id: string;
+  body_type: string;
+}

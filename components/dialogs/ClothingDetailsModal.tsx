@@ -75,6 +75,19 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     }
   }, [clothingId, user?.clothes]);
 
+  // Helper function to check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      selectedSeasons.length > 0 &&
+      selectedOccasions.length > 0 &&
+      selectedCategory.name !== null &&
+      selectedCategory.type !== null &&
+      selectedColor !== null &&
+      selectedMaterial !== null &&
+      selectedPattern !== null
+    );
+  };
+
   const handleSave = async () => {
     const clothingDetails = {
       id: clothingId,
@@ -112,6 +125,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     } finally {
       setIsSaving(false);
       onClose();
+      refetchMe();
     }
   };
 
@@ -260,18 +274,22 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             </View>
           </View>
 
-          {/* Floating Save Button */}
           <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2">
             <TouchableOpacity onPress={() => setShowModal(true)}>
               <DeleteIcon width={32} height={32} color={"red"} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
-              className="w-72 h-[42px] flex items-center justify-center bg-[#7ab3b3] rounded-[10px]"
+              className={`w-72 h-[42px] flex items-center justify-center rounded-[10px] ${
+                !isFormValid() ? "bg-[#9fcccc]" : "bg-bg-tertiary" // Disable button if form is invalid
+              }`}
+              disabled={!isFormValid() || isSaving}
             >
-              <Text className="text-center text-white">
-                {isSaving ? <Spinner type={"primary"} /> : "Save"}
-              </Text>
+              {isSaving ? (
+                <Spinner type={"primary"} />
+              ) : (
+                <Text className="text-white font-bold">Save</Text>
+              )}
             </TouchableOpacity>
           </View>
         </ScrollView>

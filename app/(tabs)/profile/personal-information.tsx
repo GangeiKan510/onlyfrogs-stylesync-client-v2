@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Href, useRouter } from "expo-router";
 import { useUser } from "@/components/config/user-context";
@@ -53,6 +53,18 @@ function PersonalInformation() {
     setBirthDateError(null);
     return true;
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
 
   const handleBirthDateChange = (value: string) => {
     const formattedDate = formatDateInput(value);

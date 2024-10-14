@@ -13,6 +13,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  BackHandler
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
@@ -49,6 +50,19 @@ const ProfileSettings = () => {
   useEffect(() => {
     resetToInitialState();
   }, [user]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        return true;
+      }
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
 
   const resetToInitialState = () => {
     setFirstName(user?.first_name || "");

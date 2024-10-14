@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, Pressable } from "react-native";
-import WelcomeHero from "../assets/images/svg/welcome-hero.svg";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import WelcomeHero from "../../../assets/images/svg/welcome-hero.svg";
+import { routes } from "@/utils/routes";
+import { Href, useRouter } from "expo-router";
+import Back from "../../../assets/icons/back-icon.svg";
 
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSelect = (plan: string) => {
     setSelectedPlan(plan);
@@ -16,9 +26,17 @@ const Subscription = () => {
       </View>
 
       <View className="absolute top-10 left-0 right-0 flex items-center justify-center z-10">
-        <Text className="text-center text-[16px]">
-          Payment and Subscription
-        </Text>
+        <View className="w-full flex-row items-center top-2 px-6 z-30 mb-4">
+          <TouchableOpacity
+            onPress={() => router.push(routes.profile as Href<string | object>)}
+            className="absolute left-6 z-40"
+          >
+            <Back width={20} height={20} />
+          </TouchableOpacity>
+          <Text className="flex-1 text-center text-[20px] font-bold">
+            Preferences and Budget
+          </Text>
+        </View>
         <Text className="text-center font-semibold text-[24px] mt-20">
           Choose Your Plan
         </Text>

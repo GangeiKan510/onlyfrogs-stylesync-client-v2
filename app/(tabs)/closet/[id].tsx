@@ -32,6 +32,7 @@ const Page = () => {
     null
   );
   const [loading, setLoading] = useState(false); // This controls the spinner and menu
+  const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -49,8 +50,13 @@ const Page = () => {
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
+    const selectedClothing = filteredClothes.find((item) => item.id === id);
+
+    const wornCount = selectedClothing?.worn?.[0]?.count ?? 0;
+
     setSelectedClothingImage(imageUrl);
     setSelectedClothingId(id);
+    setSelectedClothingCount(wornCount);
     setIsModalVisible(true);
   };
 
@@ -177,6 +183,8 @@ const Page = () => {
     },
   ];
 
+  console.log("FILTERED CLOTHES", filteredClothes);
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5 flex-1">
@@ -208,6 +216,7 @@ const Page = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <ClothingCard
+                clothingId={item.id}
                 uri={item.image_url}
                 onPress={() => handleClothingClick(item.id, item.image_url)}
               />
@@ -224,6 +233,7 @@ const Page = () => {
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
+        wornCount={selectedClothingCount}
       />
       <LinkUploadModal
         closetId={closetId}

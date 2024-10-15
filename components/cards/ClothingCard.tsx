@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImageBackground, TouchableOpacity, View, Text } from "react-native";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import { updateWornDate } from "@/network/web/clothes";
@@ -13,9 +13,32 @@ interface CardProps {
 }
 
 const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
-  const { refetchMe } = useUser();
+  const { user, refetchMe } = useUser();
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const isDateToday = (date: Date | string) => {
+    const today = new Date();
+    const wornDate = new Date(date);
+
+    return (
+      wornDate.getDate() === today.getDate() &&
+      wornDate.getMonth() === today.getMonth() &&
+      wornDate.getFullYear() === today.getFullYear()
+    );
+  };
+
+  useEffect(() => {
+    const clothingItem = user?.clothes.find((item) => item.id === clothingId);
+    const lastWorn = clothingItem?.worn?.[0]?.last_worn;
+
+    if (lastWorn && isDateToday(lastWorn)) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  }, [user, clothingId]);
 
   const handleWornClick = async () => {
     try {
@@ -54,9 +77,16 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
           {loading && <Spinner type="primary" />}
         </ImageBackground>
 
-        {/* "Worn" button anchored to the bottom-right of the card */}
-        <TouchableOpacity onPress={handleWornClick} disabled={isUpdating}>
-          <View className="flex-row space-x-1 items-center absolute bg-tertiary rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 right-0">
+        <TouchableOpacity
+          onPress={handleWornClick}
+          disabled={isUpdating || isDisabled}
+        >
+          <View
+            className="flex-row space-x-1 items-center absolute rounded-br-[10px] rounded-tl-[10px] px-3 py-0.8 bottom-0 right-0"
+            style={{
+              backgroundColor: isDisabled ? "#c0c9c9" : "#7ab2b2",
+            }}
+          >
             {isUpdating ? (
               <Spinner type="primary" />
             ) : (

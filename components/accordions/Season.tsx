@@ -35,7 +35,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
     <View className="bg-[#F3F3F3] px-4 rounded-md">
       <TouchableOpacity
         onPress={toggleAccordion}
-        className="h-[42px] flex-row justify-between items-center rounded-[10px]"
+        className="h-[42px] flex-row justify-between items-center rounded-[10px] "
       >
         <Text className="text-[16px] text-[#484848]">Season</Text>
         {isOpen ? (

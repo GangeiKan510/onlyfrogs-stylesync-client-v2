@@ -3,7 +3,8 @@ import { ImageBackground, TouchableOpacity, View, Text } from "react-native";
 import DesignIcon from "../../assets/icons/tabs/design.svg";
 import { updateWornDate } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
-import Spinner from "../common/Spinner"; // Importing the Spinner component
+import Spinner from "../common/Spinner";
+import { useUser } from "../config/user-context";
 
 interface CardProps {
   uri: string;
@@ -12,6 +13,7 @@ interface CardProps {
 }
 
 const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
+  const { refetchMe } = useUser();
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -24,6 +26,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
         text1: "Worn date updated",
         text2: "The worn date has been updated successfully.",
       });
+      refetchMe();
     } catch (error) {
       Toast.show({
         type: "error",

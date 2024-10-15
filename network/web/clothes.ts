@@ -89,7 +89,7 @@ export const updateWornDate = async (clothingId: string) => {
   try {
     const response = await postWithFirebaseJwt(
       "/web/clothes/update-worn-date",
-      { clothingId }
+      { clothing_id: clothingId }
     );
 
     if (!response.ok) {

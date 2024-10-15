@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { View, Text, Alert, Pressable, BackHandler } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  Pressable,
+  BackHandler,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
@@ -9,8 +16,12 @@ import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptio
 import LoadingScreen from "../../../components/common/LoadingScreen";
 import { analyzeUserSkinTone } from "@/network/web/user";
 import Result from "../../../components/survey/result";
+import Back from "../../../assets/icons/back-icon.svg";
+import { Href, useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
 
 const SkinToneAnalysis = () => {
+  const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -179,6 +190,12 @@ const SkinToneAnalysis = () => {
         </View>
       ) : (
         <View>
+          <TouchableOpacity
+            onPress={() => router.push(routes.profile as Href<string | object>)}
+            className="absolute left-8 z-40 top-16"
+          >
+            <Back width={20} height={20} />
+          </TouchableOpacity>
           <View className="h-[85vh] flex justify-center items-center mt-10">
             <View className="mb-14">
               <Text className="text-[20px] font-bold text-center">

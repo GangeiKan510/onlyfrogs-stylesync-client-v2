@@ -82,9 +82,9 @@ const TopGreeting = () => {
           <MoreInfoIcon width={20} height={20} />
           <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
         </View>
-        <Pressable onPress={() => router.push(routes.survey as Href<string>)}>
+        {/* <Pressable onPress={() => router.push(routes.survey as Href<string>)}>
           <Text className="text-[8px]">to survey</Text>
-        </Pressable>
+        </Pressable> */}
         <View className="flex-row items-center mt-1">
           <Text className="text-base ml-1"></Text>
         </View>

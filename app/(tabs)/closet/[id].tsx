@@ -208,6 +208,7 @@ const Page = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <ClothingCard
+                clothingId={item.id}
                 uri={item.image_url}
                 onPress={() => handleClothingClick(item.id, item.image_url)}
               />

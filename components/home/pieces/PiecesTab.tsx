@@ -354,9 +354,11 @@ const PiecesTab = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <ClothingCard
-              uri={item.image_url ||
-              "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-            }
+              clothingId={item.id}
+              uri={
+                item.image_url ||
+                "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+              }
               onPress={() => handleItemPress(item.id, item.image_url)}
             />
           )}

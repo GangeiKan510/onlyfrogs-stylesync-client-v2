@@ -27,7 +27,7 @@ const MaterialAccordion: React.FC<MaterialAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 17;
+    const itemHeight = 22;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? MATERIAL_LIST.length * itemHeight + 40 : 0,
       duration: 300,
@@ -91,7 +91,7 @@ const MaterialAccordion: React.FC<MaterialAccordionProps> = ({
                     className={`text-base ${
                       selectedMaterial === material.name
                         ? "text-white"
-                        : "text-black"
+                        : "text-tertiary"
                     }`}
                   >
                     {material.name}

@@ -25,7 +25,7 @@ const ColorAccordion: React.FC<ColorAccordionProps> = ({
   };
 
   useEffect(() => {
-    const itemHeight = 15;
+    const itemHeight = 18;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? COLOR_LIST.length * itemHeight + 40 : 0,
       duration: 300,
@@ -76,7 +76,9 @@ const ColorAccordion: React.FC<ColorAccordionProps> = ({
                 />
                 <Text
                   className={`text-base ${
-                    selectedColor === color.name ? "text-white" : "text-black"
+                    selectedColor === color.name
+                      ? "text-white"
+                      : "text-tertiary"
                   }`}
                 >
                   {color.name}

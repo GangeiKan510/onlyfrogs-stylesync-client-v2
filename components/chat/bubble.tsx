@@ -4,6 +4,7 @@ import React from "react";
 import BotIcon from "../../assets/icons/chat/bot-icon.svg";
 import ChatAvatar from "../common/ChatAvatar";
 import Markdown from "react-native-markdown-display";
+import { useUser } from "../config/user-context";
 
 interface BubbleProps {
   type: string;
@@ -37,6 +38,7 @@ const renderImages = (message: string) => {
 };
 
 const Bubble = ({ type, message }: BubbleProps) => {
+  const { user } = useUser();
   return (
     <View
       className={`flex-row ${type === "user" ? "justify-end" : "justify-start"} mb-4`}
@@ -71,12 +73,7 @@ const Bubble = ({ type, message }: BubbleProps) => {
         {renderImages(message)}
       </View>
       {type === "user" && (
-        <ChatAvatar
-          url={
-            "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
-          }
-          alt={"profile-alt"}
-        />
+        <ChatAvatar url={user?.profile_url as string} alt={"profile-alt"} />
       )}
     </View>
   );

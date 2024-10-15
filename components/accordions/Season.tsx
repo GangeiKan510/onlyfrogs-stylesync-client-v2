@@ -23,7 +23,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
   };
 
   useEffect(() => {
-    const itemHeight = 12;
+    const itemHeight = 25;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? seasons.length * itemHeight : 0,
       duration: 300,
@@ -45,7 +45,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
         )}
       </TouchableOpacity>
 
-      {selectedSeasons.length > 0 ?  (
+      {selectedSeasons.length > 0 ? (
         <View className="mb-4">
           <Text className="text-[#7AB2B2]">{selectedSeasons.join(", ")}</Text>
         </View>
@@ -72,7 +72,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
                   className={`text-center ${
                     selectedSeasons.includes(season)
                       ? "text-white"
-                      : "text-black"
+                      : "text-tertiary"
                   }`}
                 >
                   {season}

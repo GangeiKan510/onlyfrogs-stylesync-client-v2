@@ -25,7 +25,7 @@ const OccasionSelection = ({
   };
 
   useEffect(() => {
-    const itemHeight = 7;
+    const itemHeight = 12;
     Animated.timing(animatedHeight, {
       toValue: isOpen ? occasion.length * itemHeight + 50 : 0,
       duration: 300,
@@ -74,7 +74,7 @@ const OccasionSelection = ({
                   className={`text-center ${
                     selectedOccasions.includes(occ)
                       ? "text-white"
-                      : "text-black"
+                      : "text-tertiary"
                   }`}
                 >
                   {occ}

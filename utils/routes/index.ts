@@ -8,6 +8,7 @@ export const routes = {
   tabs: "(tabs)",
   welcome: "/welcome",
   profile: "/profile",
+  noConnection: "/no-connection",
   closet: "closet",
 
   profileSettings: "profile/profile-settings",

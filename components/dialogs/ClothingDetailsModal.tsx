@@ -28,6 +28,7 @@ interface ClothingDetailsModalProps {
   onClose: () => void;
   clothingImage: string | null;
   clothingId: string | null;
+  wornCount: number;
 }
 
 const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
@@ -35,6 +36,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   onClose,
   clothingImage,
   clothingId,
+  wornCount,
 }) => {
   const { user, refetchMe } = useUser();
   const [isSaving, setIsSaving] = useState(false);
@@ -269,7 +271,9 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                 <Text className="text-[16px] text-[#484848] mb-2">
                   Number of wears
                 </Text>
-                <Text className="text-[16px] text-[#B7B7B7]">0</Text>
+                <Text className="text-[16px] text-[#B7B7B7]">
+                  {wornCount ? wornCount : 0}
+                </Text>
               </View>
             </View>
           </View>

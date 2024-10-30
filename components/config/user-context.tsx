@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, {
   createContext,
@@ -36,6 +37,7 @@ type Clothes = {
     type: string | null;
   };
   tags: string[];
+  worn: any;
 };
 
 type UserDetails = {

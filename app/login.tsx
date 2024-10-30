@@ -145,7 +145,7 @@ export default function Login() {
             >
               <Text>I don&apos;t have an account</Text>
             </Link>
-            <View className="my-4">
+            {/* <View className="my-4">
               <Text className="text-center text-[16px]">or</Text>
             </View>
             <Pressable className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4">
@@ -157,7 +157,7 @@ export default function Login() {
                   <Text>Sign Up with Google</Text>
                 </Link>
               </View>
-            </Pressable>
+            </Pressable> */}
           </View>
         </View>
       </View>

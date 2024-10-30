@@ -84,3 +84,22 @@ export const deleteItem = async (id: string) => {
     throw error;
   }
 };
+
+export const updateWornDate = async (clothingId: string) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/clothes/update-worn-date",
+      { clothing_id: clothingId }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error updating worn date: ${response.statusText}`);
+    }
+
+    const updatedWorn = await response.json();
+    return updatedWorn;
+  } catch (error) {
+    console.error("Failed to update worn date", error);
+    throw error;
+  }
+};

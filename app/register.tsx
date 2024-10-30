@@ -71,12 +71,11 @@ export default function Register() {
       setEmailError("");
     }
   };
-  
+
   const handleEmailChange = (value: string) => {
     validateEmail(value);
     setEmail(value);
   };
-  
 
   const validatePassword = (value: string) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
@@ -319,7 +318,7 @@ export default function Register() {
                 >
                   I already have an account
                 </Link>
-                <View className="flex-row items-center my-4">
+                {/* <View className="flex-row items-center my-4">
                   <View className="flex-1 h-px bg-gray-400"></View>
                   <Text className="text-center mx-4">or</Text>
                   <View className="flex-1 h-px bg-gray-400"></View>
@@ -328,7 +327,7 @@ export default function Register() {
                   <View className="flex-1 justify-center items-center">
                     <Text>Sign Up with Google</Text>
                   </View>
-                </Pressable>
+                </Pressable> */}
               </View>
             </View>
           </View>

@@ -18,6 +18,7 @@ export const routes = {
   skinToneAnalysis: "profile/skin-tone-analysis",
   bodyType: "profile/body-type",
   subscription: "profile/subscription",
+  success: "profile/success",
 
   expandedCloset: "(tabs)/closet/",
 };

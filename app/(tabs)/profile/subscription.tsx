@@ -12,7 +12,7 @@ import { Href, useRouter } from "expo-router";
 import Back from "../../../assets/icons/back-icon.svg";
 
 const Subscription = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string>("12 Months");
   const router = useRouter();
 
   const handleSelect = (plan: string) => {
@@ -46,7 +46,7 @@ const Subscription = () => {
 
         <View className="items-center mt-32">
           <Pressable
-            className={`h-[84px] w-[85%] flex-row border border-[2px] rounded-[20px] justify-between flex-row p-6 ${
+            className={`h-[84px] w-[85%] flex-row items-center text-center border-[2px] rounded-[20px] justify-between p-6 ${
               selectedPlan === "12 Months"
                 ? "border-[#7AB2B2]"
                 : "border-[#B7B7B7]"
@@ -73,7 +73,7 @@ const Subscription = () => {
             </Text>
           </Pressable>
           <Pressable
-            className={`h-[84px] w-[85%] mt-5 flex-row border border-[2px] rounded-[20px] justify-between flex-row p-6 ${
+            className={`h-[84px] w-[85%] mt-5 flex-row items-center text-center border-[2px] rounded-[20px] justify-between p-6 ${
               selectedPlan === "3 Months"
                 ? "border-[#7AB2B2]"
                 : "border-[#B7B7B7]"
@@ -100,7 +100,7 @@ const Subscription = () => {
             </Text>
           </Pressable>
           <Pressable
-            className={`h-[84px] w-[85%] mt-5 flex-row border border-[2px] rounded-[20px] justify-between flex-row p-6 ${
+            className={`h-[84px] w-[85%] mt-5 flex-row items-center text-center border-[2px] rounded-[20px] justify-between p-6 ${
               selectedPlan === "1 Month"
                 ? "border-[#7AB2B2]"
                 : "border-[#B7B7B7]"
@@ -123,9 +123,13 @@ const Subscription = () => {
             </Text>
           </Pressable>
         </View>
-        <Pressable className=" h-[42px] w-[85%] mt-10 bg-[#7AB2B2] rounded-[10px] items-center p-2 ">
+      </View>
+      <View className="flex-1 justify-center items-center px-8">
+        <TouchableOpacity className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
+          onPress={() => router.push(routes.success as Href<string>)}
+          >
           <Text className="text-[16px] text-white">Continue to Purchase</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

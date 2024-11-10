@@ -23,6 +23,7 @@ import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
+import { getSuggesteddPrompt } from "@/network/web/chat";
 
 interface MessageProps {
   id: string;
@@ -78,6 +79,10 @@ export default function HomeScreen() {
       setIsSending(true);
 
       try {
+        const suggestedPrompts = await getSuggesteddPrompt(message);
+
+        console.log("Suggested Prompts:", suggestedPrompts);
+
         const response = await sendMessage(user.id, message);
 
         const assistantMessage = {
@@ -88,7 +93,10 @@ export default function HomeScreen() {
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
       } catch (error) {
-        console.error("Failed to send message:", error);
+        console.error(
+          "Failed to send message or fetch suggested prompts:",
+          error
+        );
       } finally {
         setIsSending(false);
         setIsReplying(false);

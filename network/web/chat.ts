@@ -66,7 +66,7 @@ export const clearConversationMessages = async (userId: string) => {
 
 export const getSuggesteddPrompt = async (userMessage: string) => {
   try {
-    const response = await deleteWithFirebaseJwt(
+    const response = await postWithFirebaseJwt(
       "/web/chat/generate-prompt-suggestions",
       {
         userMessage: userMessage,

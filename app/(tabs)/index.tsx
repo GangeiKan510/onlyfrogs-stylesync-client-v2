@@ -65,6 +65,15 @@ export default function HomeScreen() {
     fetchChatSession();
   }, [user]);
 
+  const resetChatState = () => {
+    setMessages([]);
+    setSuggestedPrompts([]);
+    setMessage("");
+    setIsSending(false);
+    setIsReplying(false);
+    setShowScrollDown(false);
+  };
+
   const handleSendMessage = async () => {
     if (user?.id && message.trim()) {
       const newMessage = {
@@ -140,10 +149,11 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Settings Dropdown*/}
+        {/* Settings Dropdown */}
         <SettingsDropdown
           visible={dropdownVisible}
           onClose={() => setDropdownVisible(false)}
+          resetChatState={resetChatState} // Pass resetChatState
         />
 
         <View className="flex-1">
@@ -232,3 +242,4 @@ export default function HomeScreen() {
     </KeyboardAvoidingView>
   );
 }
+

@@ -7,8 +7,8 @@ import { useUser } from "../config/user-context";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 
-const SettingsDropdown = ({ visible, onClose }: any) => {
-  const { user, refetchMe } = useUser();
+const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
 
   const handleClearConversation = async () => {
@@ -18,13 +18,14 @@ const SettingsDropdown = ({ visible, onClose }: any) => {
 
     try {
       await clearConversationMessages(user.id);
-      await refetchMe();
 
       Toast.show({
         type: "success",
         text1: "Conversation cleared!",
         text2: "All messages have been removed successfully.",
       });
+
+      resetChatState();
     } catch (error) {
       console.error("Error clearing conversation:", error);
 

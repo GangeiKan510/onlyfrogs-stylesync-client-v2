@@ -7,6 +7,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  Text,
 } from "react-native";
 import Header from "@/components/common/Header";
 import Bubble from "@/components/chat/bubble";
@@ -21,6 +22,7 @@ import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
 import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
+import SparkleIcon from "../../assets/icons/sparkle.svg";
 
 interface MessageProps {
   id: string;
@@ -164,6 +166,32 @@ export default function HomeScreen() {
                   <ReplyLoading />
                 </View>
               )}
+              <View>
+                <View className="flex-row gap-1 mb-2">
+                  <SparkleIcon width={22} height={22} />
+                  <Text className="text-tertiary">Suggested</Text>
+                </View>
+                <View className="flex flex-col gap-2 mb-4">
+                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
+                    <Text>
+                      This is real, this is me. I&apos;m exactly where I&apos;m
+                      supposed to be now
+                    </Text>
+                  </View>
+                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
+                    <Text>
+                      This is real, this is me. I&apos;m exactly where I&apos;m
+                      supposed to be now
+                    </Text>
+                  </View>
+                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
+                    <Text>
+                      This is real, this is me. I&apos;m exactly where I&apos;m
+                      supposed to be now
+                    </Text>
+                  </View>
+                </View>
+              </View>
             </ScrollView>
           )}
 

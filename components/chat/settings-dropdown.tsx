@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
-import ClearConversationIcon from "../../assets/icons/chat/clear-conversation-icon.svg";
 import { clearConversationMessages } from "@/network/web/chat";
 import { useUser } from "../config/user-context";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
+import CloseModal from "../../assets/icons/modal/close.svg";
 
 const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
   const { user } = useUser();
@@ -51,29 +52,41 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
 
       {/* Centered dialog */}
       <View style={styles.centeredContainer}>
-        <View className="w-[300px] h-[200px] bg-white rounded-lg shadow-lg p-6">
-          {loading ? (
-            <View className="flex justify-center items-center">
-              <Spinner type="secondary" />
+        <View className="w-[300px] pb-4 bg-white rounded-lg shadow-lg">
+          <View className="flex-row justify-between items-center mb-2 border-b border-[#E8E8E8] py-2 px-4">
+            <Text className="text-base font-bold">Controls & Settings</Text>
+
+            <Pressable className="p-2 bg-gray-100 rounded-lg" onPress={onClose}>
+              <CloseModal width={22} height={22} color={"#000"} />
+            </Pressable>
+          </View>
+
+          <View>
+            <Text className="mb-1 mx-4 font-semibold">Preferences</Text>
+            <View className="py-1 mx-4">
+              <Text className="mb-1">Prioritize Preferences</Text>
             </View>
-          ) : (
-            <>
-              <Text className="text-lg font-bold mb-4">Chat Settings</Text>
+            <View className="border-b border-[#E8E8E8] py-2 mx-4">
+              <Text className="mb-2">Consider Skin Tone</Text>
+            </View>
+          </View>
+
+          <View>
+            <Text className="mb-1 mx-4 font-semibold mt-2">Chat</Text>
+            <View className="flex-row items-center justify-between pt-2 mx-4">
+              <Text className="mb-4">Delete all messages</Text>
               <Pressable
-                className="flex-row items-center p-3 bg-red-100 rounded-lg mb-4"
+                className="flex-row items-center p-2 bg-red bg-opacity-25 rounded-lg"
                 onPress={handleClearConversation}
               >
-                <ClearConversationIcon />
-                <Text className="text-red-500 ml-2">Clear conversation</Text>
+                {loading ? (
+                  <Spinner type="primary" />
+                ) : (
+                  <Text className="text-white font-semibold">Delete all</Text>
+                )}
               </Pressable>
-              <Pressable
-                className="p-3 bg-gray-100 rounded-lg"
-                onPress={onClose}
-              >
-                <Text className="text-center text-gray-700">Cancel</Text>
-              </Pressable>
-            </>
-          )}
+            </View>
+          </View>
         </View>
       </View>
     </Modal>

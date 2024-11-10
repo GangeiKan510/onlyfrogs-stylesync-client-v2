@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
 import ClearConversationIcon from "../../assets/icons/chat/clear-conversation-icon.svg";
 import { clearConversationMessages } from "@/network/web/chat";
 import { useUser } from "../config/user-context";
@@ -40,33 +39,61 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
     }
   };
 
-  if (!visible) return null;
-
   return (
-    <>
-      <Pressable
-        className="absolute inset-0 z-40"
-        onPress={onClose}
-        style={{ backgroundColor: "transparent" }}
-      />
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      {/* Dimmed backdrop */}
+      <Pressable style={styles.backdrop} onPress={onClose} />
 
-      <View className="absolute right-12 top-24 z-50 bg-white p-4 rounded-lg shadow">
-        {loading ? (
-          <View className="flex items-center">
-            <Spinner type="secondary" />
-          </View>
-        ) : (
-          <Pressable
-            className="flex-row items-center"
-            onPress={handleClearConversation}
-          >
-            <ClearConversationIcon />
-            <Text className="text-[#FE3B3B] ml-1">Clear conversation</Text>
-          </Pressable>
-        )}
+      {/* Centered dialog */}
+      <View style={styles.centeredContainer}>
+        <View className="w-[300px] h-[200px] bg-white rounded-lg shadow-lg p-6">
+          {loading ? (
+            <View className="flex justify-center items-center">
+              <Spinner type="secondary" />
+            </View>
+          ) : (
+            <>
+              <Text className="text-lg font-bold mb-4">Chat Settings</Text>
+              <Pressable
+                className="flex-row items-center p-3 bg-red-100 rounded-lg mb-4"
+                onPress={handleClearConversation}
+              >
+                <ClearConversationIcon />
+                <Text className="text-red-500 ml-2">Clear conversation</Text>
+              </Pressable>
+              <Pressable
+                className="p-3 bg-gray-100 rounded-lg"
+                onPress={onClose}
+              >
+                <Text className="text-center text-gray-700">Cancel</Text>
+              </Pressable>
+            </>
+          )}
+        </View>
       </View>
-    </>
+    </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  centeredContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -0.5 * 300 }, { translateY: -0.5 * 200 }],
+    zIndex: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default SettingsDropdown;

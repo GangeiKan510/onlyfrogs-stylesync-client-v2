@@ -74,12 +74,12 @@ export default function HomeScreen() {
     setShowScrollDown(false);
   };
 
-  const handleSendMessage = async () => {
-    if (user?.id && message.trim()) {
+  const handleSendMessage = async (content: string) => {
+    if (user?.id && content.trim()) {
       const newMessage = {
         id: new Date().toISOString(),
         role: "user",
-        content: message,
+        content,
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
@@ -89,7 +89,7 @@ export default function HomeScreen() {
       setIsSending(true);
 
       try {
-        const assistantResponse = await sendMessage(user.id, message);
+        const assistantResponse = await sendMessage(user.id, content);
 
         const assistantMessage = {
           id: assistantResponse.id,
@@ -99,7 +99,7 @@ export default function HomeScreen() {
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
 
-        const response = await getSuggesteddPrompt(message);
+        const response = await getSuggesteddPrompt(content);
         if (response.suggestions) {
           setSuggestedPrompts(response.suggestions);
         }
@@ -113,6 +113,12 @@ export default function HomeScreen() {
         setIsReplying(false);
       }
     }
+  };
+
+  const handleSuggestionClick = (prompt: string) => {
+    const sanitizedPrompt = prompt.replace(/^"|"$/g, "").trim();
+    setSuggestedPrompts([]);
+    handleSendMessage(sanitizedPrompt);
   };
 
   const handleScroll = (event: any) => {
@@ -195,12 +201,13 @@ export default function HomeScreen() {
                   </View>
                   <View className="flex flex-col gap-2 mb-4">
                     {suggestedPrompts.map((prompt, index) => (
-                      <View
+                      <Pressable
                         key={`suggestion-${index}`}
+                        onPress={() => handleSuggestionClick(prompt)}
                         className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3"
                       >
                         <Text>{prompt}</Text>
-                      </View>
+                      </Pressable>
                     ))}
                   </View>
                 </View>
@@ -233,7 +240,7 @@ export default function HomeScreen() {
               isSendButtonDisabled ? "opacity-25" : "opacity-100"
             }`}
             disabled={isSendButtonDisabled}
-            onPress={handleSendMessage}
+            onPress={() => handleSendMessage(message)}
           >
             <SendMessageIcon width={14} height={14} />
           </Pressable>
@@ -242,4 +249,3 @@ export default function HomeScreen() {
     </KeyboardAvoidingView>
   );
 }
-

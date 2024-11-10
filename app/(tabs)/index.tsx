@@ -40,6 +40,7 @@ export default function HomeScreen() {
   const [isReplying, setIsReplying] = useState(false);
   const [showScrollDown, setShowScrollDown] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -79,19 +80,20 @@ export default function HomeScreen() {
       setIsSending(true);
 
       try {
-        const suggestedPrompts = await getSuggesteddPrompt(message);
-
-        console.log("Suggested Prompts:", suggestedPrompts);
-
-        const response = await sendMessage(user.id, message);
+        const assistantResponse = await sendMessage(user.id, message);
 
         const assistantMessage = {
-          id: response.id,
+          id: assistantResponse.id,
           role: "assistant",
-          content: response.message,
+          content: assistantResponse.message,
         };
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+
+        const response = await getSuggesteddPrompt(message);
+        if (response.suggestions) {
+          setSuggestedPrompts(response.suggestions);
+        }
       } catch (error) {
         console.error(
           "Failed to send message or fetch suggested prompts:",
@@ -103,6 +105,7 @@ export default function HomeScreen() {
       }
     }
   };
+
   const handleScroll = (event: any) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
@@ -174,32 +177,24 @@ export default function HomeScreen() {
                   <ReplyLoading />
                 </View>
               )}
-              <View>
-                <View className="flex-row gap-1 mb-2">
-                  <SparkleIcon width={22} height={22} />
-                  <Text className="text-tertiary">Suggested</Text>
-                </View>
-                <View className="flex flex-col gap-2 mb-4">
-                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
-                    <Text>
-                      This is real, this is me. I&apos;m exactly where I&apos;m
-                      supposed to be now
-                    </Text>
+              {suggestedPrompts.length > 0 && (
+                <View>
+                  <View className="flex-row gap-1 mb-2">
+                    <SparkleIcon width={22} height={22} />
+                    <Text className="text-tertiary">Suggested</Text>
                   </View>
-                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
-                    <Text>
-                      This is real, this is me. I&apos;m exactly where I&apos;m
-                      supposed to be now
-                    </Text>
-                  </View>
-                  <View className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3">
-                    <Text>
-                      This is real, this is me. I&apos;m exactly where I&apos;m
-                      supposed to be now
-                    </Text>
+                  <View className="flex flex-col gap-2 mb-4">
+                    {suggestedPrompts.map((prompt, index) => (
+                      <View
+                        key={`suggestion-${index}`}
+                        className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3"
+                      >
+                        <Text>{prompt}</Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
-              </View>
+              )}
             </ScrollView>
           )}
 

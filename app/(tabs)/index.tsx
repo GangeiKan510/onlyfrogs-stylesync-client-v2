@@ -197,7 +197,7 @@ export default function HomeScreen() {
                 <View>
                   <View className="flex-row gap-1 mb-2">
                     <SparkleIcon width={22} height={22} />
-                    <Text className="text-tertiary">Suggested</Text>
+                    <Text className="text-tertiary">Suggested prompts...</Text>
                   </View>
                   <View className="flex flex-col gap-2 mb-4">
                     {suggestedPrompts.map((prompt, index) => (

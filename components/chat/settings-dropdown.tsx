@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
 import { clearConversationMessages } from "@/network/web/chat";
 import { useUser } from "../config/user-context";
@@ -11,8 +11,16 @@ import ToggleButton from "../buttons/ToggleButton";
 const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
+
   const [prioritizePreferences, setPrioritizePreferences] = useState(false);
   const [considerSkinTone, setConsiderSkinTone] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setPrioritizePreferences(user.prioritize_preferences || false);
+      setConsiderSkinTone(user.consider_skin_tone || false);
+    }
+  }, [user, visible]);
 
   const handleClearConversation = async () => {
     if (!user) return;

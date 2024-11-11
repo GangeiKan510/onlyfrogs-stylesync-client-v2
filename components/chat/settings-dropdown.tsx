@@ -6,10 +6,13 @@ import { useUser } from "../config/user-context";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 import CloseModal from "../../assets/icons/modal/close.svg";
+import ToggleButton from "../buttons/ToggleButton";
 
 const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
+  const [prioritizePreferences, setPrioritizePreferences] = useState(false);
+  const [considerSkinTone, setConsiderSkinTone] = useState(false);
 
   const handleClearConversation = async () => {
     if (!user) return;
@@ -53,7 +56,8 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
       {/* Centered dialog */}
       <View style={styles.centeredContainer}>
         <View className="w-[300px] pb-4 bg-white rounded-lg shadow-lg">
-          <View className="flex-row justify-between items-center mb-2 border-b border-[#E8E8E8] py-2 px-4">
+          {/* Header */}
+          <View className="flex-row justify-between items-center mb-2 border-b border-[#E8E8E8] py-2 pl-4 pr-1">
             <Text className="text-base font-bold">Controls & Settings</Text>
 
             <Pressable className="p-2 bg-gray-100 rounded-lg" onPress={onClose}>
@@ -61,16 +65,28 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
             </Pressable>
           </View>
 
+          {/* Preferences Section */}
           <View>
             <Text className="mb-1 mx-4 font-semibold">Preferences</Text>
-            <View className="py-1 mx-4">
-              <Text className="mb-1">Prioritize Preferences</Text>
+            <View className="flex-row items-center justify-between py-1 mx-4">
+              <Text className="text-gray-700">Prioritize Preferences</Text>
+              <ToggleButton
+                initialState={prioritizePreferences}
+                onToggle={(state) => setPrioritizePreferences(state)}
+                showLabel={false}
+              />
             </View>
-            <View className="border-b border-[#E8E8E8] py-2 mx-4">
-              <Text className="mb-2">Consider Skin Tone</Text>
+            <View className="flex-row items-center justify-between border-b border-[#E8E8E8] py-2 mx-4">
+              <Text className="text-gray-700">Consider Skin Tone</Text>
+              <ToggleButton
+                initialState={considerSkinTone}
+                onToggle={(state) => setConsiderSkinTone(state)}
+                showLabel={false}
+              />
             </View>
           </View>
 
+          {/* Chat Section */}
           <View>
             <Text className="mb-1 mx-4 font-semibold mt-2">Chat</Text>
             <View className="flex-row items-center justify-between pt-2 mx-4">
@@ -100,7 +116,7 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     position: "absolute",
-    top: "50%",
+    top: "40%",
     left: "50%",
     transform: [{ translateX: -0.5 * 300 }, { translateY: -0.5 * 200 }],
     zIndex: 50,

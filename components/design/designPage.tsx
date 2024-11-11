@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useMemo, useRef } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useMemo, useRef, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
@@ -7,14 +7,12 @@ import Header from "@/components/common/Header";
 const DesignPage = () => {
   const snapPoints = useMemo(() => ["40%", "80%"], []);
   const bottomSheet = useRef(null);
+  const [activeTab, setActiveTab] = useState("Closet");
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView className="flex-1">
       <Header />
-      {/* <Text className="text-[14px] font-bold font-logo text-gray-800 text-center mt-4">
-        Create your own outfit
-      </Text> */}
-        <View className="w-full border-t-[1px] border-[#D9D9D9] h-72 mt-6"></View>
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6"></View>
       <BottomSheet
         ref={bottomSheet}
         index={0}
@@ -26,30 +24,50 @@ const DesignPage = () => {
           height: 5,
         }}
       >
-        <BottomSheetView style={styles.contentContainer}>
-          <View className="flex flex-row px-10 w-full justify-between mb-1">
-            <Text className="text-base text-center">Closet (3)</Text>
-            <Text className="text-base text-center">Pieces (10)</Text>
+        <BottomSheetView className="flex-1 p-3 items-center">
+          <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
+            <TouchableOpacity
+              onPress={() => setActiveTab("Closet")}
+              className="flex-1 items-center py-3 z-10"
+            >
+              <View
+                className={`${
+                  activeTab === "Closet" ? "border-b-[2px] border-black" : ""
+                }`}
+              >
+                <Text
+                  className={`text-sm ${
+                    activeTab === "Closet" ? "text-black font-bold" : "text-gray-800"
+                  }`}
+                >
+                  Closet (3)
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setActiveTab("Pieces")}
+              className="flex-1 items-center py-3 z-10"
+            >
+              <View
+                className={`${
+                  activeTab === "Pieces" ? "border-b-[2px] border-black" : ""
+                }`}
+              >
+                <Text
+                  className={`text-sm ${
+                    activeTab === "Pieces" ? "text-black font-bold" : "text-gray-800"
+                  }`}
+                >
+                  Pieces (10)
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={styles.dividerLine} />
+          <View className="w-full h-[2px] bg-white" />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    padding: 10,
-    alignItems: "center",
-  },
-  dividerLine: {
-    width: "100%",
-    height: 2,
-    backgroundColor: "white",
-    marginBottom: 10,
-  },
-});
 
 export default DesignPage;

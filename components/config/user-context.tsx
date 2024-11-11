@@ -40,6 +40,15 @@ type Clothes = {
   worn: any;
 };
 
+type PromptSettings = {
+  id: string;
+  user_id: string;
+  consider_skin_tone: boolean;
+  prioritize_preferences: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type UserDetails = {
   birth_date: string | null;
   budget_preferences: object;
@@ -59,8 +68,7 @@ type UserDetails = {
   weight: string;
   body_type: string;
   profile_url: string;
-  consider_skin_tone: boolean;
-  prioritize_preferences: boolean;
+  promptSettings: PromptSettings;
 };
 
 interface UserContextProps {

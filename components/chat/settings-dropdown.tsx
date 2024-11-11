@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
 import { clearConversationMessages } from "@/network/web/chat";
+import {
+  updateConsiderSkinTone,
+  updatePrioritizePreferences,
+} from "@/network/web/user";
 import { useUser } from "../config/user-context";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
@@ -9,18 +13,100 @@ import CloseModal from "../../assets/icons/modal/close.svg";
 import ToggleButton from "../buttons/ToggleButton";
 
 const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const [loading, setLoading] = useState(false);
 
   const [prioritizePreferences, setPrioritizePreferences] = useState(false);
   const [considerSkinTone, setConsiderSkinTone] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setPrioritizePreferences(user.prioritize_preferences || false);
-      setConsiderSkinTone(user.consider_skin_tone || false);
+    if (user && user.promptSettings) {
+      console.log("User in SettingsDropdown:", user);
+      setPrioritizePreferences(
+        user.promptSettings.prioritize_preferences || false
+      );
+      setConsiderSkinTone(user.promptSettings.consider_skin_tone || false);
     }
   }, [user, visible]);
+
+  const handleTogglePrioritizePreferences = async (state: boolean) => {
+    if (!user) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "User not found!",
+      });
+      return;
+    }
+
+    try {
+      const response = await updatePrioritizePreferences({
+        userId: user.id,
+        prioritizePreferences: state,
+      });
+
+      if (!response) {
+        throw new Error("Empty response from server");
+      }
+
+      setPrioritizePreferences(state);
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Prioritize Preferences updated successfully!",
+      });
+
+      refetchMe();
+    } catch (error: any) {
+      console.error("Error updating Prioritize Preferences:", error);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: `Failed to update Prioritize Preferences: ${error.message}`,
+      });
+    }
+  };
+
+  const handleToggleConsiderSkinTone = async (state: boolean) => {
+    if (!user) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "User not found!",
+      });
+      return;
+    }
+
+    try {
+      const response = await updateConsiderSkinTone({
+        userId: user.id,
+        considerSkinTone: state,
+      });
+
+      if (!response) {
+        throw new Error("Empty response from server");
+      }
+
+      setConsiderSkinTone(state);
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Consider Skin Tone updated successfully!",
+      });
+      refetchMe();
+    } catch (error: any) {
+      console.error("Error updating Consider Skin Tone:", error);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: `Failed to update Consider Skin Tone: ${error.message}`,
+      });
+    }
+  };
 
   const handleClearConversation = async () => {
     if (!user) return;
@@ -80,7 +166,7 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
               <Text className="text-gray-700">Prioritize Preferences</Text>
               <ToggleButton
                 initialState={prioritizePreferences}
-                onToggle={(state) => setPrioritizePreferences(state)}
+                onToggle={(state) => handleTogglePrioritizePreferences(state)}
                 showLabel={false}
               />
             </View>
@@ -88,7 +174,7 @@ const SettingsDropdown = ({ visible, onClose, resetChatState }: any) => {
               <Text className="text-gray-700">Consider Skin Tone</Text>
               <ToggleButton
                 initialState={considerSkinTone}
-                onToggle={(state) => setConsiderSkinTone(state)}
+                onToggle={(state) => handleToggleConsiderSkinTone(state)}
                 showLabel={false}
               />
             </View>

@@ -166,3 +166,63 @@ export const uploadUserProfileImage = async (formData: FormData) => {
     throw error;
   }
 };
+
+export const updateConsiderSkinTone = async ({
+  userId,
+  considerSkinTone,
+}: {
+  userId: string;
+  considerSkinTone: boolean;
+}) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-consider-skin-tone",
+      {
+        id: userId,
+        consider_skin_tone: considerSkinTone,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error updating consider skin tone: ${response.statusText}`
+      );
+    }
+
+    const updatedSettings = await response.json();
+    return updatedSettings;
+  } catch (error) {
+    console.error("Failed to update consider skin tone", error);
+    throw error;
+  }
+};
+
+export const updatePrioritizePreferences = async ({
+  userId,
+  prioritizePreferences,
+}: {
+  userId: string;
+  prioritizePreferences: boolean;
+}) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-prioritize-preferences",
+      {
+        id: userId,
+        prioritize_preferences: prioritizePreferences,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error updating prioritize preferences: ${response.statusText}`
+      );
+    }
+
+    const updatedSettings = await response.json();
+    return updatedSettings;
+  } catch (error) {
+    console.error("Failed to update prioritize preferences", error);
+    throw error;
+  }
+};

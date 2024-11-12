@@ -144,20 +144,12 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={styles.iconLabelContainer}>
+              <View style={[styles.iconLabelContainer, { paddingBottom:10, paddingVertical: 5, paddingHorizontal: 10 } ]}>
                 {focused ? (
-                  <AliActiveIcon width={44} height={24.19} />
+                  <AliActiveIcon width={75} height={55} />
                 ) : (
-                  <AliIcon width={44} height={24.19} />
+                  <AliIcon width={75} height={55} />
                 )}
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: focused ? "#7ab2b2" : "black" },
-                  ]}
-                >
-                  Ali
-                </Text>
               </View>
             ),
           }}

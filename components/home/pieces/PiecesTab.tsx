@@ -13,12 +13,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { useUser } from "@/components/config/user-context";
-import { categoryTypes } from "@/components/constants/clothing-details/categories";
-import { occasion } from "@/components/constants/clothing-details/occasion";
+// import { categoryTypes } from "@/components/constants/clothing-details/categories";
+// import { occasion } from "@/components/constants/clothing-details/occasion";
 import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
 import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
 import { PATTERN_LIST } from "@/components/constants/clothing-details/pattern";
-import { seasons } from "@/components/constants/clothing-details/seasons";
+// import { seasons } from "@/components/constants/clothing-details/seasons";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 
 const PiecesTab = () => {
@@ -60,7 +60,26 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const categoryNames = Object.keys(categoryTypes);
+  const getColorHexCode = (colorName: string): string | undefined => {
+    const color = COLOR_LIST.find(
+      (c) => c.name.toLowerCase() === colorName.toLowerCase()
+    );
+    return color ? color.colorCode : undefined;
+  };
+
+  const getMaterialSvg = (materialName: string) => {
+    const material = MATERIAL_LIST.find(
+      (mat) => mat.name.toLowerCase() === materialName.toLowerCase()
+    );
+    return material ? material.reference : null;
+  };
+
+  const getPatternSvg = (patternName: string) => {
+    const pattern = PATTERN_LIST.find(
+      (pat) => pat.name.toLowerCase() === patternName.toLowerCase()
+    );
+    return pattern ? pattern.reference : null;
+  };
 
   const searchFieldMatch = (field: string | string[] | null | never) => {
     if (typeof field === "string") {
@@ -74,6 +93,44 @@ const PiecesTab = () => {
     }
     return false;
   };
+
+  const filterOptions = () => {
+    const filterOptions = {
+      season: new Set<string>(),
+      occasion: new Set<string>(),
+      category: new Set<string>(),
+      color: new Set<{ name: string; colorCode: string }>(),
+      material: new Set<string>(),
+      pattern: new Set<string>(),
+    };
+
+    user?.clothes.forEach((item) => {
+      item.season?.forEach((s) => filterOptions.season.add(s));
+      item.occasion?.forEach((o) => filterOptions.occasion.add(o));
+      if (item.category?.name) filterOptions.category.add(item.category.name);
+
+      if (
+        typeof item.color === "string" &&
+        !Array.from(filterOptions.color).some((c) => c.name === item.color)
+      ) {
+        const colorCode = getColorHexCode(item.color) || "#FFFFFF";
+        filterOptions.color.add({ name: item.color, colorCode });
+      }
+      if (item.material) filterOptions.material.add(item.material);
+      if (item.pattern) filterOptions.pattern.add(item.pattern);
+    });
+
+    return {
+      season: Array.from(filterOptions.season),
+      occasion: Array.from(filterOptions.occasion),
+      color: Array.from(filterOptions.color),
+      category: Array.from(filterOptions.category),
+      material: Array.from(filterOptions.material),
+      pattern: Array.from(filterOptions.pattern),
+    };
+  };
+
+  const itemFilterOptions = filterOptions();
 
   const filteredClothes =
     user?.clothes.filter((item) => {
@@ -99,16 +156,25 @@ const PiecesTab = () => {
           item.material,
         ].some((field) => searchFieldMatch(field));
 
-      const itemCategory = item.category?.name?.toLowerCase() ?? "";
-      const itemColor = item.color?.toLowerCase() ?? "";
-      const itemMaterial = item.color?.toLowerCase() ?? "";
-      const itemPattern = item.color?.toLowerCase() ?? "";
-      const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((o) => (o as string).toLowerCase())
-        : [];
+      // Season
       const itemSeason = Array.isArray(item.season)
         ? item.season.map((s) => (s as string).toLowerCase())
         : [];
+      // Occasion
+      const itemOccasion = Array.isArray(item.occasion)
+        ? item.occasion.map((o) => (o as string).toLowerCase())
+        : [];
+      // Category
+      const itemCategory = item.category?.name?.toLowerCase() ?? "";
+      // Color
+      const itemColor =
+        typeof item.color === "string" ? item.color.toLowerCase() : "";
+      // Material
+      const itemMaterial =
+        (item.material as unknown as string)?.toLowerCase() || "";
+      // Pattern
+      const itemPattern =
+        (item.pattern as unknown as string)?.toLowerCase() || "";
 
       const matchesFilters =
         selectedFilters.length === 0 ||
@@ -121,6 +187,14 @@ const PiecesTab = () => {
             itemMaterial.includes(filter.toLowerCase()) ||
             itemPattern.includes(filter.toLowerCase())
         );
+
+      const colorHexCode =
+        typeof item.color === "string"
+          ? getColorHexCode(item.color)
+          : undefined;
+      if (colorHexCode) {
+        console.log(`Hex code for color ${item.color} is: ${colorHexCode}`);
+      }
 
       return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
     }) ?? [];
@@ -152,7 +226,7 @@ const PiecesTab = () => {
           transparent={true}
           visible={dropdownVisible}
           animationType="none"
-          onRequestClose={() => setDropdownVisible(false)} // Close the modal
+          onRequestClose={() => setDropdownVisible(false)}
         >
           <View className="flex-1 justify-center items-center bg-black opacity-0">
             <Pressable
@@ -174,7 +248,7 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Season</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {seasons.map((season) => (
+                {itemFilterOptions.season.map((season) => (
                   <Pressable
                     key={season}
                     onPress={() => toggleFilter(season)}
@@ -187,7 +261,7 @@ const PiecesTab = () => {
                     <Text
                       className={`${selectedFilters.includes(season) ? "text-white" : "text-[#7AB2B2]"}`}
                     >
-                      {season}
+                      {season.replace(/^\w/, (c) => c.toUpperCase())}
                     </Text>
                   </Pressable>
                 ))}
@@ -197,7 +271,7 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Occasion</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {occasion.map((occasion) => (
+                {itemFilterOptions.occasion.map((occasion) => (
                   <Pressable
                     key={occasion}
                     onPress={() => toggleFilter(occasion)}
@@ -214,7 +288,7 @@ const PiecesTab = () => {
                           : "text-[#7AB2B2]"
                       }`}
                     >
-                      {occasion}
+                      {occasion.replace(/^\w/, (c) => c.toUpperCase())}
                     </Text>
                   </Pressable>
                 ))}
@@ -224,7 +298,7 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Category</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {categoryNames.map((category) => (
+                {itemFilterOptions.category.map((category) => (
                   <Pressable
                     key={category}
                     onPress={() => toggleFilter(category)}
@@ -237,7 +311,7 @@ const PiecesTab = () => {
                     <Text
                       className={`${selectedFilters.includes(category) ? "text-white" : "text-[#7AB2B2]"}`}
                     >
-                      {category}
+                      {category.replace(/^\w/, (c) => c.toUpperCase())}
                     </Text>
                   </Pressable>
                 ))}
@@ -247,20 +321,21 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Color</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {COLOR_LIST.map(({ name, colorCode }) => (
+                {itemFilterOptions.color.map(({ name, colorCode }) => (
                   <Pressable
                     key={name}
-                    onPress={() => toggleFilter(name.toLowerCase())}
+                    onPress={() => toggleFilter(name)}
                     className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
-                      selectedFilters.includes(name.toLowerCase())
+                      selectedFilters.includes(name)
                         ? "bg-[#7AB2B2]"
                         : "bg-white"
                     }`}
                   >
                     <View
+                      className={`w-4 h-4 rounded-full mr-2 border-gray-400 border-[0.5px] color-swatch`}
                       style={{ backgroundColor: colorCode }}
-                      className="w-4 h-4 rounded-full mr-2 border-gray-400 border-[0.5px]"
                     />
+
                     <Text
                       className={`${
                         selectedFilters.includes(name.toLowerCase())
@@ -268,7 +343,7 @@ const PiecesTab = () => {
                           : "text-[#7AB2B2]"
                       }`}
                     >
-                      {name}
+                      {name.replace(/^\w/, (c) => c.toUpperCase())}
                     </Text>
                   </Pressable>
                 ))}
@@ -278,68 +353,69 @@ const PiecesTab = () => {
             <Text className="text-[#484848] text-[14px] mt-2">Material</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap">
-                {MATERIAL_LIST.map(({ name, reference: IconComponent }) => (
-                  <Pressable
-                    key={name}
-                    onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
-                      selectedFilters.includes(name.toLowerCase())
-                        ? "bg-[#7AB2B2]"
-                        : "bg-white"
-                    }`}
-                  >
-                    <View className="mr-2 rounded-lg overflow-hidden">
-                      <IconComponent
-                        width={20}
-                        height={20}
-                        style={{ width: "100%", height: "100%" }}
-                      />
-                    </View>
-                    <Text
-                      className={`${
+                {itemFilterOptions.material.map((name) => {
+                  const MaterialSvg = getMaterialSvg(name);
+
+                  return (
+                    <Pressable
+                      key={name}
+                      onPress={() => toggleFilter(name.toLowerCase())}
+                      className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                         selectedFilters.includes(name.toLowerCase())
-                          ? "text-white"
-                          : "text-[#7AB2B2]"
+                          ? "bg-[#7AB2B2]"
+                          : "bg-white"
                       }`}
                     >
-                      {name}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <View className="mr-2 rounded-lg overflow-hidden">
+                        {MaterialSvg && <MaterialSvg width={16} height={16} />}
+                      </View>
+
+                      <Text
+                        className={`${
+                          selectedFilters.includes(name.toLowerCase())
+                            ? "text-white"
+                            : "text-[#7AB2B2]"
+                        }`}
+                      >
+                        {name.replace(/^\w/, (c) => c.toUpperCase())}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
 
             <Text className="text-[#484848] text-[14px] mt-2">Pattern</Text>
             <View className="flex-row flex-wrap">
               <View className="flex-row flex-wrap mb-6">
-                {PATTERN_LIST.map(({ name, reference: IconComponent }) => (
-                  <Pressable
-                    key={name}
-                    onPress={() => toggleFilter(name.toLowerCase())}
-                    className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
-                      selectedFilters.includes(name.toLowerCase())
-                        ? "bg-[#7AB2B2]"
-                        : "bg-white"
-                    }`}
-                  >
-                    <View className="mr-2 rounded-lg overflow-hidden">
-                      <IconComponent
-                        width={20}
-                        height={20}
-                        style={{ width: "100%", height: "100%" }}
-                      />
-                    </View>
-                    <Text
-                      className={`${
+                {itemFilterOptions.pattern.map((name) => {
+                  const PatternSvg = getPatternSvg(name);
+                  return (
+                    <Pressable
+                      key={name}
+                      onPress={() => toggleFilter(name.toLowerCase())}
+                      className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
                         selectedFilters.includes(name.toLowerCase())
-                          ? "text-white"
-                          : "text-[#7AB2B2]"
+                          ? "bg-[#7AB2B2]"
+                          : "bg-white"
                       }`}
                     >
-                      {name}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <View className="mr-2 rounded-lg overflow-hidden">
+                        {PatternSvg && <PatternSvg width={16} height={16} />}
+                      </View>
+
+                      <Text
+                        className={`${
+                          selectedFilters.includes(name.toLowerCase())
+                            ? "text-white"
+                            : "text-[#7AB2B2]"
+                        }`}
+                      >
+                        {name.replace(/^\w/, (c) => c.toUpperCase())}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
           </ScrollView>
@@ -379,6 +455,7 @@ const PiecesTab = () => {
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
+        wornCount={0}
       />
     </SafeAreaView>
   );

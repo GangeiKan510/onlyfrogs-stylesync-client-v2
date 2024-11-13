@@ -1,13 +1,33 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useMemo, useRef, useState } from "react";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView, } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
+import { useUser } from "@/components/config/user-context";
+import ClothingCard from "@/components/cards/ClothingCard";
 
 const DesignPage = () => {
+  const { user } = useUser();
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef(null);
   const [activeTab, setActiveTab] = useState("Closet");
+
+  const renderItem = ({ item }) => (
+    <ClothingCard
+      clothingId={item.id}
+      uri={
+        item.image_url ||
+        "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+      }
+      onPress={() => handleItemPress(item.id, item.image_url)}
+    />
+  );
+
+  const clothes = user?.clothes ?? [];
+
+  const handleItemPress = (id: string, imageUrl: string) => {
+    console.log("Pressed item:", id, imageUrl);
+  };
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -25,6 +45,7 @@ const DesignPage = () => {
         }}
       >
         <BottomSheetView className="flex-1 p-3 items-center">
+          {/* Tabs */}
           <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
             <TouchableOpacity
               onPress={() => setActiveTab("Closet")}
@@ -68,6 +89,51 @@ const DesignPage = () => {
             </TouchableOpacity>
           </View>
           <View className="w-full h-[2px] bg-white" />
+
+          {/* BottomSheetFlatList for Pieces */}
+          {/* {activeTab === "Pieces" && (
+            <View className="">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow"
+                scrollEnabled={true}
+                data={filteredClothes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <ClothingCard
+                    clothingId={item.id}
+                    uri={
+                      item.image_url ||
+                      "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
+                    }
+                    onPress={() => handleItemPress(item.id, item.image_url)}
+                  />
+                )}
+                numColumns={3}
+                contentContainerStyle={{
+                  paddingBottom: 52,
+                }}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          )} */}
+          {activeTab === "Pieces" && (
+            <View className="">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow"
+                scrollEnabled={true}
+                data={clothes}
+                keyExtractor={(item) => item.id.toString()}
+                // keyExtractor={(item) => item.name}
+                renderItem={renderItem}
+                numColumns={3}
+                contentContainerStyle={{
+                  paddingBottom: 52,
+                }}
+              />
+            </View>
+          )}
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

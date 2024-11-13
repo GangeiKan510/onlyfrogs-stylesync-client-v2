@@ -34,7 +34,7 @@ const Subscription = () => {
             <Back width={20} height={20} />
           </TouchableOpacity>
           <Text className="flex-1 text-center text-[20px] font-bold">
-            Preferences and Budget
+            Subscription
           </Text>
         </View>
         <Text className="text-center font-semibold text-[24px] mt-20">

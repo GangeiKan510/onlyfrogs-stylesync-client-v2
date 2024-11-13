@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
 
 const DesignPage = () => {
-  const snapPoints = useMemo(() => ["40%", "80%"], []);
+  const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef(null);
   const [activeTab, setActiveTab] = useState("Closet");
 
@@ -37,7 +37,9 @@ const DesignPage = () => {
               >
                 <Text
                   className={`text-sm ${
-                    activeTab === "Closet" ? "text-black font-bold" : "text-gray-800"
+                    activeTab === "Closet"
+                      ? "text-black font-bold"
+                      : "text-gray-800"
                   }`}
                 >
                   Closet (3)
@@ -55,7 +57,9 @@ const DesignPage = () => {
               >
                 <Text
                   className={`text-sm ${
-                    activeTab === "Pieces" ? "text-black font-bold" : "text-gray-800"
+                    activeTab === "Pieces"
+                      ? "text-black font-bold"
+                      : "text-gray-800"
                   }`}
                 >
                   Pieces (10)

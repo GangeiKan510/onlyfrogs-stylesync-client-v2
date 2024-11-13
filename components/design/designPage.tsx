@@ -1,18 +1,43 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useMemo, useRef, useState } from "react";
-import BottomSheet, { BottomSheetView, } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/ClothingCard";
+import ClosetCard from "@/components/cards/ClosetCard";
 
 const DesignPage = () => {
   const { user } = useUser();
+  const closets = user?.closets || [];
+  const clothes = user?.clothes ?? [];
+  const clothesLength = clothes.length;
+  const closetsLength = closets.length;
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef(null);
   const [activeTab, setActiveTab] = useState("Closet");
 
-  const renderItem = ({ item }) => (
+  const renderCloset = ({ item: closet }) => {
+    const clothingInCloset = user?.clothes.filter(
+      (clothing) => clothing.closet_id === closet.id
+    );
+
+    const imageUri =
+      clothingInCloset && clothingInCloset.length > 0
+        ? clothingInCloset[0].image_url
+        : "https://lh3.googleusercontent.com/pw/AP1GczMpwiLxbGQkZGPAbApzNsZPrj7I8aqlXXj1gVqKU4UindflHV1YdgnaH3yWBP35nufvm1dZNmYcoCBg1XrBed4zrYPt8VuOgpWjZk0vZfW56vuptA=w2400";
+
+    return (
+      <ClosetCard
+        key={closet.id}
+        id={closet.id}
+        name={closet.name}
+        uri={imageUri}
+      />
+    );
+  };
+
+  const renderClothing = ({ item }) => (
     <ClothingCard
       clothingId={item.id}
       uri={
@@ -22,8 +47,6 @@ const DesignPage = () => {
       onPress={() => handleItemPress(item.id, item.image_url)}
     />
   );
-
-  const clothes = user?.clothes ?? [];
 
   const handleItemPress = (id: string, imageUrl: string) => {
     console.log("Pressed item:", id, imageUrl);
@@ -37,7 +60,7 @@ const DesignPage = () => {
         ref={bottomSheet}
         index={0}
         snapPoints={snapPoints}
-        backgroundStyle={{ backgroundColor: "#EFEFEF" }}
+        backgroundStyle={{ backgroundColor: "#DFDFDF" }}
         handleIndicatorStyle={{
           backgroundColor: "#7AB2B2",
           width: 40,
@@ -63,7 +86,7 @@ const DesignPage = () => {
                       : "text-gray-800"
                   }`}
                 >
-                  Closet (3)
+                  Closet ({closetsLength})
                 </Text>
               </View>
             </TouchableOpacity>
@@ -83,54 +106,39 @@ const DesignPage = () => {
                       : "text-gray-800"
                   }`}
                 >
-                  Pieces (10)
+                  Pieces ({clothesLength})
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
           <View className="w-full h-[2px] bg-white" />
-
-          {/* BottomSheetFlatList for Pieces */}
-          {/* {activeTab === "Pieces" && (
-            <View className="">
+          
+          {/* Closet Tab */}
+          {activeTab === "Closet" && (
+            <View className="h-[80%]">
               <FlatList
                 key={activeTab}
-                className="mt-5 z-20 flex-grow"
+                className="mt-5 z-20 flex-grow px-2"
                 scrollEnabled={true}
-                data={filteredClothes}
+                data={closets} // Use the closets data here
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <ClothingCard
-                    clothingId={item.id}
-                    uri={
-                      item.image_url ||
-                      "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
-                    }
-                    onPress={() => handleItemPress(item.id, item.image_url)}
-                  />
-                )}
+                renderItem={renderCloset}
                 numColumns={3}
-                contentContainerStyle={{
-                  paddingBottom: 52,
-                }}
-                showsVerticalScrollIndicator={false}
               />
             </View>
-          )} */}
+          )}
+
+          {/* Pieces Tab */}
           {activeTab === "Pieces" && (
-            <View className="">
+            <View className="h-[80%]">
               <FlatList
                 key={activeTab}
-                className="mt-5 z-20 flex-grow"
+                className="mt-5 z-20 flex-grow px-2"
                 scrollEnabled={true}
-                data={clothes}
+                data={clothes} // Use the clothes data here
                 keyExtractor={(item) => item.id.toString()}
-                // keyExtractor={(item) => item.name}
-                renderItem={renderItem}
+                renderItem={renderClothing}
                 numColumns={3}
-                contentContainerStyle={{
-                  paddingBottom: 52,
-                }}
               />
             </View>
           )}

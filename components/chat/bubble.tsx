@@ -46,7 +46,7 @@ const Bubble = ({ type, message }: BubbleProps) => {
       {type !== "user" && <BotIcon width={45} height={45} className="mr-2" />}
       <View
         className={`rounded-[10px] px-3 max-w-[80%] ${
-          type === "user" ? "bg-tertiary" : "bg-light-gray"
+          type === "user" ? "bg-tertiary" : "bg-light-gray py-3"
         }`}
         style={{
           alignSelf: type === "user" ? "flex-end" : "flex-start",

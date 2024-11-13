@@ -63,3 +63,26 @@ export const clearConversationMessages = async (userId: string) => {
     throw error;
   }
 };
+
+export const getSuggesteddPrompt = async (userMessage: string) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/chat/generate-prompt-suggestions",
+      {
+        userMessage: userMessage,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error getting suggested prompts: ${response.statusText}`
+      );
+    }
+
+    const messageSent = await response.json();
+    return messageSent;
+  } catch (error) {
+    console.error("Failed to get suggested prompts", error);
+    throw error;
+  }
+};

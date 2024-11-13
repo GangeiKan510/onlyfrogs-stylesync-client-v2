@@ -7,6 +7,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  Text,
 } from "react-native";
 import Header from "@/components/common/Header";
 import Bubble from "@/components/chat/bubble";
@@ -21,6 +22,8 @@ import ScrollDownIcon from "../../assets/icons/chat/scroll-down-icon.svg";
 import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
+import SparkleIcon from "../../assets/icons/sparkle.svg";
+import { getSuggesteddPrompt } from "@/network/web/chat";
 
 interface MessageProps {
   id: string;
@@ -37,6 +40,7 @@ export default function HomeScreen() {
   const [isReplying, setIsReplying] = useState(false);
   const [showScrollDown, setShowScrollDown] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -61,12 +65,21 @@ export default function HomeScreen() {
     fetchChatSession();
   }, [user]);
 
-  const handleSendMessage = async () => {
-    if (user?.id && message.trim()) {
+  const resetChatState = () => {
+    setMessages([]);
+    setSuggestedPrompts([]);
+    setMessage("");
+    setIsSending(false);
+    setIsReplying(false);
+    setShowScrollDown(false);
+  };
+
+  const handleSendMessage = async (content: string) => {
+    if (user?.id && content.trim()) {
       const newMessage = {
         id: new Date().toISOString(),
         role: "user",
-        content: message,
+        content,
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
@@ -76,23 +89,38 @@ export default function HomeScreen() {
       setIsSending(true);
 
       try {
-        const response = await sendMessage(user.id, message);
+        const assistantResponse = await sendMessage(user.id, content);
 
         const assistantMessage = {
-          id: response.id,
+          id: assistantResponse.id,
           role: "assistant",
-          content: response.message,
+          content: assistantResponse.message,
         };
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+
+        const response = await getSuggesteddPrompt(content);
+        if (response.suggestions) {
+          setSuggestedPrompts(response.suggestions);
+        }
       } catch (error) {
-        console.error("Failed to send message:", error);
+        console.error(
+          "Failed to send message or fetch suggested prompts:",
+          error
+        );
       } finally {
         setIsSending(false);
         setIsReplying(false);
       }
     }
   };
+
+  const handleSuggestionClick = (prompt: string) => {
+    const sanitizedPrompt = prompt.replace(/^"|"$/g, "").trim();
+    setSuggestedPrompts([]);
+    handleSendMessage(sanitizedPrompt);
+  };
+
   const handleScroll = (event: any) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
@@ -127,10 +155,11 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Settings Dropdown*/}
+        {/* Settings Dropdown */}
         <SettingsDropdown
           visible={dropdownVisible}
           onClose={() => setDropdownVisible(false)}
+          resetChatState={resetChatState} // Pass resetChatState
         />
 
         <View className="flex-1">
@@ -164,6 +193,25 @@ export default function HomeScreen() {
                   <ReplyLoading />
                 </View>
               )}
+              {suggestedPrompts.length > 0 && (
+                <View>
+                  <View className="flex-row gap-1 mb-2">
+                    <SparkleIcon width={22} height={22} />
+                    <Text className="text-tertiary">Suggested prompts...</Text>
+                  </View>
+                  <View className="flex flex-col gap-2 mb-4">
+                    {suggestedPrompts.map((prompt, index) => (
+                      <Pressable
+                        key={`suggestion-${index}`}
+                        onPress={() => handleSuggestionClick(prompt)}
+                        className="border-[1.5px] border-bg-tertiary rounded-[8px] p-3"
+                      >
+                        <Text>{prompt}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </View>
+              )}
             </ScrollView>
           )}
 
@@ -192,7 +240,7 @@ export default function HomeScreen() {
               isSendButtonDisabled ? "opacity-25" : "opacity-100"
             }`}
             disabled={isSendButtonDisabled}
-            onPress={handleSendMessage}
+            onPress={() => handleSendMessage(message)}
           >
             <SendMessageIcon width={14} height={14} />
           </Pressable>

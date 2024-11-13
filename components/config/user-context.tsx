@@ -40,6 +40,15 @@ type Clothes = {
   worn: any;
 };
 
+type PromptSettings = {
+  id: string;
+  user_id: string;
+  consider_skin_tone: boolean;
+  prioritize_preferences: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type UserDetails = {
   birth_date: string | null;
   budget_preferences: object;
@@ -59,6 +68,7 @@ type UserDetails = {
   weight: string;
   body_type: string;
   profile_url: string;
+  promptSettings: PromptSettings;
 };
 
 interface UserContextProps {
@@ -83,7 +93,17 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
       try {
         const userInfo = await getMe({ email });
         if (userInfo) {
-          updateUser(userInfo);
+          const {
+            consider_skin_tone = false,
+            prioritize_preferences = false,
+            ...rest
+          } = userInfo;
+
+          updateUser({
+            ...rest,
+            consider_skin_tone,
+            prioritize_preferences,
+          });
           return;
         }
       } catch (error) {

@@ -13,13 +13,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FilterIcon from "../../../assets/icons/filter-icon.svg";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { useUser } from "@/components/config/user-context";
-// import { categoryTypes } from "@/components/constants/clothing-details/categories";
-// import { occasion } from "@/components/constants/clothing-details/occasion";
-import { COLOR_LIST } from "@/components/constants/clothing-details/color-list";
-import { MATERIAL_LIST } from "@/components/constants/clothing-details/material";
-import { PATTERN_LIST } from "@/components/constants/clothing-details/pattern";
-// import { seasons } from "@/components/constants/clothing-details/seasons";
+import getColorHexCode from "@/utils/clothingUtils/colorUtils";
+import getMaterialSvg from "@/utils/clothingUtils/materialUtils";
+import getPatternSvg from "@/utils/clothingUtils/patternUtils";
+
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
+import { COLOR_LIST } from "@/components/constants/color-list";
 
 const PiecesTab = () => {
   const { user } = useUser();
@@ -60,26 +59,7 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const getColorHexCode = (colorName: string): string | undefined => {
-    const color = COLOR_LIST.find(
-      (c) => c.name.toLowerCase() === colorName.toLowerCase()
-    );
-    return color ? color.colorCode : undefined;
-  };
-
-  const getMaterialSvg = (materialName: string) => {
-    const material = MATERIAL_LIST.find(
-      (mat) => mat.name.toLowerCase() === materialName.toLowerCase()
-    );
-    return material ? material.reference : null;
-  };
-
-  const getPatternSvg = (patternName: string) => {
-    const pattern = PATTERN_LIST.find(
-      (pat) => pat.name.toLowerCase() === patternName.toLowerCase()
-    );
-    return pattern ? pattern.reference : null;
-  };
+  
 
   const searchFieldMatch = (field: string | string[] | null | never) => {
     if (typeof field === "string") {
@@ -113,7 +93,7 @@ const PiecesTab = () => {
         typeof item.color === "string" &&
         !Array.from(filterOptions.color).some((c) => c.name === item.color)
       ) {
-        const colorCode = getColorHexCode(item.color) || "#FFFFFF";
+        const colorCode = getColorHexCode(item.color, COLOR_LIST) || "#FFFFFF";
         filterOptions.color.add({ name: item.color, colorCode });
       }
       if (item.material) filterOptions.material.add(item.material);
@@ -190,7 +170,7 @@ const PiecesTab = () => {
 
       const colorHexCode =
         typeof item.color === "string"
-          ? getColorHexCode(item.color)
+          ? getColorHexCode(item.color, COLOR_LIST)
           : undefined;
       if (colorHexCode) {
         console.log(`Hex code for color ${item.color} is: ${colorHexCode}`);

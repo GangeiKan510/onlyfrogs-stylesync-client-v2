@@ -45,18 +45,19 @@ const DesignPage = () => {
         item.image_url ||
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
-      onPress={() => handleItemPress(item.image_url)}
+      onPress={handleItemPress}
+      selected={selectedImages.includes(item.image_url)} // Pass selected state
     />
   );
 
-  const handleItemPress = (imageUrl: string) => {
-    setSelectedImages(
-      (current) =>
-        current.includes(imageUrl)
-          ? current.filter((url) => url !== imageUrl) // Remove image if already selected
-          : [...current, imageUrl] // Add image if not already selected
+  const handleItemPress = (clothingId: string, imageUrl: string) => {
+    setSelectedImages((current) =>
+      current.includes(imageUrl)
+        ? current.filter((url) => url !== imageUrl) // Remove image if already selected
+        : [...current, imageUrl] // Add image if not already selected
     );
   };
+  
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -75,9 +76,9 @@ const DesignPage = () => {
                 source={{ uri: image }}
                 className="w-24 h-24 absolute"
                 style={{
-                  top: index * 5, // Adjust the top offset for overlapping
-                  left: index * 2, // Adjust the left offset for overlapping
-                  zIndex: selectedImages.length, // Ensure higher-index images appear on top
+                  top: index * 5,
+                  left: index * 2,
+                  zIndex: selectedImages.length,
                 }}
                 resizeMode="contain"
               />
@@ -157,13 +158,14 @@ const DesignPage = () => {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderCloset}
                 numColumns={3}
+                contentContainerStyle={{ paddingBottom: 16 }}
               />
             </View>
           )}
 
           {/* Pieces Tab */}
           {activeTab === "Pieces" && (
-            <View className="h-[80%] flex-grow">
+            <View className="h-[80%]">
               <FlatList
                 key={activeTab}
                 className="mt-5 z-20 flex-grow px-2"

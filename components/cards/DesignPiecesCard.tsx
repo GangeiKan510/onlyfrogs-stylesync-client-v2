@@ -3,16 +3,16 @@ import { ImageBackground, TouchableOpacity, View } from "react-native";
 
 interface CardProps {
   uri: string;
-  onPress: () => void;
+  onPress: (clothingId: string, imageUrl: string) => void; 
   clothingId: string;
+  selected: boolean;
 }
 
-const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
-  const [selected, setSelected] = useState(false);
+const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId, selected  }) => {
+  // const [selected, setSelected] = useState(false);
 
   const handlePress = () => {
-    setSelected(!selected); 
-    onPress();
+    onPress(clothingId, uri); // Pass the arguments to onPress
   };
 
   return (
@@ -31,14 +31,13 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
               selected ? "border-[1px] border-[#7AB2B2] bg-white" : "border-[#7AB2B2] bg-transparent"
             } justify-center items-center`}
           >
-            {selected && (
-              <View className="w-3 h-3 rounded-full bg-[#7AB2B2]" />
-            )}
+            {selected && <View className="w-3 h-3 rounded-full bg-[#7AB2B2]" />}
           </View>
         </ImageBackground>
       </View>
     </TouchableOpacity>
   );
 };
+
 
 export default ClothingCard;

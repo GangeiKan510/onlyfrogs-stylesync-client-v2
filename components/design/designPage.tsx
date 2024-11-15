@@ -4,8 +4,8 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
-import ClothingCard from "@/components/cards/ClothingCard";
-import ClosetCard from "@/components/cards/ClosetCard";
+import ClothingCard from "@/components/cards/DesignPiecesCard";
+import ClosetCard from "@/components/cards/DesignClosetCard";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -68,7 +68,6 @@ const DesignPage = () => {
         }}
       >
         <BottomSheetView className="flex-1 p-3 items-center">
-          {/* Tabs */}
           <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
             <TouchableOpacity
               onPress={() => setActiveTab("Closet")}
@@ -112,7 +111,7 @@ const DesignPage = () => {
             </TouchableOpacity>
           </View>
           <View className="w-full h-[2px] bg-white" />
-          
+
           {/* Closet Tab */}
           {activeTab === "Closet" && (
             <View className="h-[80%]">
@@ -120,7 +119,7 @@ const DesignPage = () => {
                 key={activeTab}
                 className="mt-5 z-20 flex-grow px-2"
                 scrollEnabled={true}
-                data={closets} // Use the closets data here
+                data={closets}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderCloset}
                 numColumns={3}

@@ -129,15 +129,16 @@ const DesignPage = () => {
 
           {/* Pieces Tab */}
           {activeTab === "Pieces" && (
-            <View className="h-[80%]">
+            <View className="h-[80%] flex-grow">
               <FlatList
                 key={activeTab}
                 className="mt-5 z-20 flex-grow px-2"
                 scrollEnabled={true}
-                data={clothes} // Use the clothes data here
+                data={clothes}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderClothing}
                 numColumns={3}
+                contentContainerStyle={{ paddingBottom: 16 }}
               />
             </View>
           )}

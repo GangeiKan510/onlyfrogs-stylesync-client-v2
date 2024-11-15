@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
 import { useMemo, useRef, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -15,7 +15,8 @@ const DesignPage = () => {
   const closetsLength = closets.length;
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef(null);
-  const [activeTab, setActiveTab] = useState("Closet");
+  const [activeTab, setActiveTab] = useState("Pieces");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const renderCloset = ({ item: closet }) => {
     const clothingInCloset = user?.clothes.filter(
@@ -44,18 +45,51 @@ const DesignPage = () => {
         item.image_url ||
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
-      onPress={() => handleItemPress(item.id, item.image_url)}
+      onPress={() => handleItemPress(item.image_url)}
     />
   );
 
-  const handleItemPress = (id: string, imageUrl: string) => {
-    console.log("Pressed item:", id, imageUrl);
+  const handleItemPress = (imageUrl: string) => {
+    setSelectedImages(
+      (current) =>
+        current.includes(imageUrl)
+          ? current.filter((url) => url !== imageUrl) // Remove image if already selected
+          : [...current, imageUrl] // Add image if not already selected
+    );
   };
 
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6"></View>
+
+      {/* Empty View with Selected Images */}
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
+        {selectedImages.length > 0 ? (
+          <View
+            className="absolute top-1/2 left-1/2"
+            style={{ transform: [{ translateX: -48 }, { translateY: -48 }] }}
+          >
+            {selectedImages.map((image, index) => (
+              <Image
+                key={index}
+                source={{ uri: image }}
+                className="w-24 h-24 absolute"
+                style={{
+                  top: index * 5, // Adjust the top offset for overlapping
+                  left: index * 2, // Adjust the left offset for overlapping
+                  zIndex: selectedImages.length, // Ensure higher-index images appear on top
+                }}
+                resizeMode="contain"
+              />
+            ))}
+          </View>
+        ) : (
+          <Text className="text-gray-500 font-bold">
+            Create your own outfit
+          </Text>
+        )}
+      </View>
+
       <BottomSheet
         ref={bottomSheet}
         index={0}

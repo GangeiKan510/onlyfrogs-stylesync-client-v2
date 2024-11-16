@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
@@ -14,11 +14,15 @@ const DesignPage = () => {
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
   const snapPoints = useMemo(() => ["45%", "80%"], []);
-  const bottomSheet = useRef(null);
+  const bottomSheet = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
-  const renderCloset = ({ item: closet }) => {
+  useEffect(() => {
+    bottomSheet.current?.snapToIndex(0);
+  }, [activeTab, closets, clothes]);
+
+  const renderCloset = ({ item: closet }: { item: { id: string; name: string } }) => {
     const clothingInCloset = user?.clothes.filter(
       (clothing) => clothing.closet_id === closet.id
     );
@@ -38,7 +42,7 @@ const DesignPage = () => {
     );
   };
 
-  const renderClothing = ({ item }) => (
+  const renderClothing = ({ item }: { item: { id: string; image_url: string } }) => (
     <ClothingCard
       clothingId={item.id}
       uri={
@@ -46,15 +50,15 @@ const DesignPage = () => {
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
       onPress={handleItemPress}
-      selected={selectedImages.includes(item.image_url)} // Pass selected state
+      selected={selectedImages.includes(item.image_url)}
     />
   );
 
   const handleItemPress = (clothingId: string, imageUrl: string) => {
     setSelectedImages((current) =>
       current.includes(imageUrl)
-        ? current.filter((url) => url !== imageUrl) // Remove image if already selected
-        : [...current, imageUrl] // Add image if not already selected
+        ? current.filter((url) => url !== imageUrl)
+        : [...current, imageUrl]
     );
   };
   
@@ -63,7 +67,6 @@ const DesignPage = () => {
     <GestureHandlerRootView className="flex-1">
       <Header />
 
-      {/* Empty View with Selected Images */}
       <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
         {selectedImages.length > 0 ? (
           <View

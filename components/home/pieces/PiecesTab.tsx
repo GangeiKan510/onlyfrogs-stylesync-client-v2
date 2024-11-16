@@ -85,13 +85,13 @@ const PiecesTab = () => {
     };
 
     user?.clothes.forEach((item) => {
-      item.season?.forEach((s) => filterOptions.season.add(s));
-      item.occasion?.forEach((o) => filterOptions.occasion.add(o));
+      item.season?.forEach((season) => filterOptions.season.add(season));
+      item.occasion?.forEach((occasion) => filterOptions.occasion.add(occasion));
       if (item.category?.name) filterOptions.category.add(item.category.name);
 
       if (
         typeof item.color === "string" &&
-        !Array.from(filterOptions.color).some((c) => c.name === item.color)
+        !Array.from(filterOptions.color).some((color) => color.name === item.color)
       ) {
         const colorCode = getColorHexCode(item.color, COLOR_LIST) || "#FFFFFF";
         filterOptions.color.add({ name: item.color, colorCode });

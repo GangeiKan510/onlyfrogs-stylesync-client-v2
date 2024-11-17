@@ -90,24 +90,24 @@ const DesignPage = () => {
       onPanResponderMove: (e, gestureState) => {
         setDragPositions((prevPositions) => {
           const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
-  
-          const imageWidth = 96; 
-          const imageHeight = 96; 
-          const offsetLeft = 130; 
+
+          const imageWidth = 96;
+          const imageHeight = 96;
+          const offsetLeft = 130;
           const offsetRight = 130;
           const offsetTop = 80;
           const offsetBottom = 80;
-  
+
           const newX = Math.min(
             Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
             offsetRight - imageWidth / 2
           );
-  
+
           const newY = Math.min(
             Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
             offsetBottom - imageHeight / 2
           );
-  
+
           return {
             ...prevPositions,
             [image]: { x: newX, y: newY },
@@ -115,7 +115,6 @@ const DesignPage = () => {
         });
       },
     });
-  
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -164,46 +163,29 @@ const DesignPage = () => {
       >
         <BottomSheetView className="flex-1 p-3 items-center">
           <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
-            <TouchableOpacity
-              onPress={() => setActiveTab("Closet")}
-              className="flex-1 items-center py-3 z-10"
-            >
-              <View
-                className={`${
-                  activeTab === "Closet" ? "border-b-[2px] border-black" : ""
-                }`}
-              >
-                <Text
-                  className={`text-sm ${
-                    activeTab === "Closet"
-                      ? "text-black font-bold"
-                      : "text-gray-800"
-                  }`}
+            {["Closet", "Pieces"].map((tab) => {
+              const isActive = activeTab === tab;
+              const length = tab === "Closet" ? closetsLength : clothesLength;
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  onPress={() => setActiveTab(tab)}
+                  className="flex-1 items-center py-3 z-10"
                 >
-                  Closet ({closetsLength})
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab("Pieces")}
-              className="flex-1 items-center py-3 z-10"
-            >
-              <View
-                className={`${
-                  activeTab === "Pieces" ? "border-b-[2px] border-black" : ""
-                }`}
-              >
-                <Text
-                  className={`text-sm ${
-                    activeTab === "Pieces"
-                      ? "text-black font-bold"
-                      : "text-gray-800"
-                  }`}
-                >
-                  Pieces ({clothesLength})
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <View
+                    className={`${isActive ? "border-b-[2px] border-black" : ""}`}
+                  >
+                    <Text
+                      className={`text-sm ${
+                        isActive ? "text-black font-bold" : "text-gray-800"
+                      }`}
+                    >
+                      {tab} ({length})
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           <View className="w-full h-[2px] bg-white" />
 

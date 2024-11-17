@@ -91,13 +91,12 @@ const DesignPage = () => {
         setDragPositions((prevPositions) => {
           const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
   
-          const imageWidth = 96; // Width of the draggable image
-          const imageHeight = 96; // Height of the draggable image
-  
-          const offsetLeft = 130; // Left boundary offset
-          const offsetRight = 130; // Right boundary offset
-          const offsetTop = 80; // Top boundary offset
-          const offsetBottom = 80; // Bottom boundary offset
+          const imageWidth = 96; 
+          const imageHeight = 96; 
+          const offsetLeft = 130; 
+          const offsetRight = 130;
+          const offsetTop = 80;
+          const offsetBottom = 80;
   
           const newX = Math.min(
             Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),

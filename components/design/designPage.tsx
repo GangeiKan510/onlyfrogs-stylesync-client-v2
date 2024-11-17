@@ -1,4 +1,12 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  PanResponder,
+  StyleSheet,
+} from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -16,7 +24,8 @@ const DesignPage = () => {
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState("Pieces");
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]); // Specify the type as an array of strings
+  const [dragPositions, setDragPositions] = useState<{ [key: string]: { x: number; y: number } }>({});
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
@@ -26,7 +35,6 @@ const DesignPage = () => {
     const clothingInCloset = user?.clothes.filter(
       (clothing) => clothing.closet_id === closet.id
     );
-
     const imageUri =
       clothingInCloset && clothingInCloset.length > 0
         ? clothingInCloset[0].image_url
@@ -54,14 +62,32 @@ const DesignPage = () => {
     />
   );
 
-  const handleItemPress = (clothingId: string, imageUrl: string) => {
+  const handleItemPress = (clothingId: string, image_url: string) => {
     setSelectedImages((current) =>
-      current.includes(imageUrl)
-        ? current.filter((url) => url !== imageUrl)
-        : [...current, imageUrl]
+      current.includes(image_url)
+        ? current.filter((url) => url !== image_url)
+        : [...current, image_url]
     );
+
+    setDragPositions((current) => ({
+      ...current,
+      [image_url]: { x: 0, y: 0 },
+    }));
   };
-  
+
+  const panResponder = (image: string) =>
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gestureState) => {
+        setDragPositions((prevPositions) => ({
+          ...prevPositions,
+          [image]: {
+            x: prevPositions[image]?.x + gestureState.dx || gestureState.dx,
+            y: prevPositions[image]?.y + gestureState.dy || gestureState.dy,
+          },
+        }));
+      },
+    });
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -69,24 +95,27 @@ const DesignPage = () => {
 
       <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
         {selectedImages.length > 0 ? (
-          <View
-            className="absolute top-1/2 left-1/2"
-            style={{ transform: [{ translateX: -48 }, { translateY: -48 }] }}
-          >
-            {selectedImages.map((image, index) => (
+          selectedImages.map((image, index) => (
+            <View
+              {...panResponder(image).panHandlers}
+              key={index}
+              style={[
+                styles.draggableImage,
+                {
+                  transform: [
+                    { translateX: dragPositions[image]?.x || -48 },
+                    { translateY: dragPositions[image]?.y || -48 },
+                  ],
+                },
+              ]}
+            >
               <Image
-                key={index}
                 source={{ uri: image }}
                 className="w-24 h-24 absolute"
-                style={{
-                  top: index * 5,
-                  left: index * 2,
-                  zIndex: selectedImages.length,
-                }}
                 resizeMode="contain"
               />
-            ))}
-          </View>
+            </View>
+          ))
         ) : (
           <Text className="text-gray-500 font-bold">
             Create your own outfit
@@ -186,5 +215,12 @@ const DesignPage = () => {
     </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  draggableImage: {
+    position: "absolute",
+    zIndex: 1000,
+  },
+});
 
 export default DesignPage;

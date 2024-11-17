@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Animated,
+  Easing,
+} from "react-native";
 
 interface ToggleButtonProps {
   onToggle: (newState: boolean) => void;
@@ -18,6 +25,17 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
 }) => {
   const [isToggled, setIsToggled] = useState(initialState);
 
+  const translateX = useRef(new Animated.Value(initialState ? 22 : 2)).current;
+
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: isToggled ? 22 : 2,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, [isToggled]);
+
   const handleToggle = () => {
     const newState = !isToggled;
     setIsToggled(newState);
@@ -26,7 +44,6 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Toggle Button */}
       <Pressable
         onPress={handleToggle}
         style={[
@@ -34,15 +51,14 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
           isToggled ? styles.toggleEnabled : styles.toggleDisabled,
         ]}
       >
-        <View
+        <Animated.View
           style={[
             styles.toggleIndicator,
-            isToggled ? styles.indicatorEnabled : styles.indicatorDisabled,
+            { transform: [{ translateX }] },
           ]}
         />
       </Pressable>
 
-      {/* Label */}
       {showLabel && (
         <Text style={styles.label}>
           {isToggled ? positiveText : negativeText}
@@ -81,12 +97,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
-  indicatorEnabled: {
-    transform: [{ translateX: 22 }],
-  },
-  indicatorDisabled: {
-    transform: [{ translateX: 2 }],
   },
   label: {
     fontSize: 14,

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Image } from "react-native";
 import Spinner from "./Spinner";
+import NoProfileImage from "../../assets/icons/profile/no-profile-img.svg";
 
 interface AvatarProps {
   url: string;
@@ -17,13 +18,17 @@ const Avatar = ({ url, alt }: AvatarProps) => {
           <Spinner type="secondary" />
         </View>
       )}
-      <Image
-        source={{ uri: url }}
-        accessibilityLabel={alt}
-        className="w-full h-full object-cover"
-        onLoad={() => setLoading(false)}
-        onError={() => setLoading(false)}
-      />
+      {url ? (
+        <Image
+          source={{ uri: url }}
+          accessibilityLabel={alt}
+          className="w-full h-full object-cover"
+          onLoad={() => setLoading(false)}
+          onError={() => setLoading(false)}
+        />
+      ) : (
+        <NoProfileImage width="100%" height="100%" />
+      )}
     </View>
   );
 };

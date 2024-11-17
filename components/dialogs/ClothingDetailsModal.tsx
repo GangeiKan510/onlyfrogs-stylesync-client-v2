@@ -95,19 +95,19 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       id: clothingId,
       name: itemName,
       brand: brandName,
-      season: selectedSeasons.map((season) => season.toLowerCase()),
-      occasion: selectedOccasions.map((occasion) => occasion.toLowerCase()),
+      season: selectedSeasons, 
+      occasion: selectedOccasions, 
       category: {
-        name: selectedCategory.name?.toLowerCase() || null,
-        type: selectedCategory.type?.toLowerCase() || null,
+        name: selectedCategory.name || null,
+        type: selectedCategory.type || null,
       },
-      color: selectedColor?.toLowerCase() || null,
-      material: selectedMaterial?.toLowerCase() || null,
-      pattern: selectedPattern?.toLowerCase() || null,
+      color: selectedColor || null, 
+      material: selectedMaterial || null, 
+      pattern: selectedPattern || null,
     };
-
+  
     setIsSaving(true);
-
+  
     try {
       await updateClothing(clothingDetails);
       Toast.show({
@@ -130,6 +130,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       refetchMe();
     }
   };
+  
 
   const handleDelete = async () => {
     if (clothingId) {

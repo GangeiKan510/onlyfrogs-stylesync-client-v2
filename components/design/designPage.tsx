@@ -88,15 +88,35 @@ const DesignPage = () => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (e, gestureState) => {
-        setDragPositions((prevPositions) => ({
-          ...prevPositions,
-          [image]: {
-            x: prevPositions[image]?.x + gestureState.dx || gestureState.dx,
-            y: prevPositions[image]?.y + gestureState.dy || gestureState.dy,
-          },
-        }));
+        setDragPositions((prevPositions) => {
+          const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
+  
+          const imageWidth = 96; // Width of the draggable image
+          const imageHeight = 96; // Height of the draggable image
+  
+          const offsetLeft = 130; // Left boundary offset
+          const offsetRight = 130; // Right boundary offset
+          const offsetTop = 80; // Top boundary offset
+          const offsetBottom = 80; // Bottom boundary offset
+  
+          const newX = Math.min(
+            Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
+            offsetRight - imageWidth / 2
+          );
+  
+          const newY = Math.min(
+            Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
+            offsetBottom - imageHeight / 2
+          );
+  
+          return {
+            ...prevPositions,
+            [image]: { x: newX, y: newY },
+          };
+        });
       },
     });
+  
 
   return (
     <GestureHandlerRootView className="flex-1">

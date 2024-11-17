@@ -5,7 +5,6 @@ import {
   FlatList,
   Image,
   PanResponder,
-  StyleSheet,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -24,14 +23,20 @@ const DesignPage = () => {
   const snapPoints = useMemo(() => ["45%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState("Pieces");
-  const [selectedImages, setSelectedImages] = useState<string[]>([]); // Specify the type as an array of strings
-  const [dragPositions, setDragPositions] = useState<{ [key: string]: { x: number; y: number } }>({});
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [dragPositions, setDragPositions] = useState<{
+    [key: string]: { x: number; y: number };
+  }>({});
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
   }, [activeTab, closets, clothes]);
 
-  const renderCloset = ({ item: closet }: { item: { id: string; name: string } }) => {
+  const renderCloset = ({
+    item: closet,
+  }: {
+    item: { id: string; name: string };
+  }) => {
     const clothingInCloset = user?.clothes.filter(
       (clothing) => clothing.closet_id === closet.id
     );
@@ -50,7 +55,11 @@ const DesignPage = () => {
     );
   };
 
-  const renderClothing = ({ item }: { item: { id: string; image_url: string } }) => (
+  const renderClothing = ({
+    item,
+  }: {
+    item: { id: string; image_url: string };
+  }) => (
     <ClothingCard
       clothingId={item.id}
       uri={
@@ -71,7 +80,7 @@ const DesignPage = () => {
 
     setDragPositions((current) => ({
       ...current,
-      [image_url]: { x: 0, y: 0 },
+      [image_url]: { x: -48, y: -48 },
     }));
   };
 
@@ -99,15 +108,15 @@ const DesignPage = () => {
             <View
               {...panResponder(image).panHandlers}
               key={index}
-              style={[
-                styles.draggableImage,
-                {
-                  transform: [
-                    { translateX: dragPositions[image]?.x || -48 },
-                    { translateY: dragPositions[image]?.y || -48 },
-                  ],
-                },
-              ]}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [
+                  { translateX: dragPositions[image]?.x || -48 },
+                  { translateY: dragPositions[image]?.y || -48 },
+                ],
+              }}
             >
               <Image
                 source={{ uri: image }}
@@ -215,12 +224,5 @@ const DesignPage = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  draggableImage: {
-    position: "absolute",
-    zIndex: 1000,
-  },
-});
 
 export default DesignPage;

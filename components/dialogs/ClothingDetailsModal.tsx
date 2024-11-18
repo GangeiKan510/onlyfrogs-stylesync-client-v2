@@ -23,6 +23,7 @@ import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
 import SparkIcon from "../../assets/icons/spark.svg";
+import { analyzeClothing } from "@/network/web/clothes";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -55,6 +56,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     if (clothingId && user?.clothes) {
@@ -132,6 +134,32 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     }
   };
 
+  const handleAnalyzeWithAI = async () => {
+    if (!clothingImage) return;
+
+    setIsAnalyzing(true);
+    try {
+      const analysisResult = await analyzeClothing(clothingImage);
+      console.log("AI Analysis Result:", analysisResult);
+      Toast.show({
+        type: "success",
+        text1: "Analysis completed!",
+        position: "top",
+        swipeable: true,
+      });
+    } catch (error) {
+      console.error("Failed to analyze clothing:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to analyze clothing",
+        position: "top",
+        swipeable: true,
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (clothingId) {
       setIsDeleting(true);
@@ -197,15 +225,20 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             )}
             <View className="mt-4 w-full px-4">
               <TouchableOpacity
-                onPress={() => {
-                  console.log("Analyze with AI clicked");
-                }}
+                onPress={handleAnalyzeWithAI}
                 className="w-full flex flex-row justify-center bg-[#7ab3b3] py-2 rounded-md mb-4"
+                disabled={isAnalyzing}
               >
-                <Text className="text-center text-white mr-1">
-                  Analyze with Ali
-                </Text>
-                <SparkIcon width={20} height={20} color={"white"} />
+                {isAnalyzing ? (
+                  <Spinner type={"primary"} />
+                ) : (
+                  <>
+                    <Text className="text-center text-white mr-1">
+                      Analyze with Ali
+                    </Text>
+                    <SparkIcon width={20} height={20} color={"white"} />
+                  </>
+                )}
               </TouchableOpacity>
 
               <Text className="mb-1 text-lg text-[#484848] font-bold">

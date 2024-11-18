@@ -82,6 +82,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   // Helper function to check if all required fields are filled
   const isFormValid = () => {
+    if (selectedCategory.name === "Jewelry" && selectedCategory.type) {
+      return true;
+    }
+
     return (
       selectedSeasons.length > 0 &&
       selectedOccasions.length > 0 &&
@@ -154,7 +158,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         setSelectedOccasions(occasion || []);
         setSelectedPattern(pattern || null);
         setSelectedSeasons(season || []);
-        setSelectedColor(color || null); 
+        setSelectedColor(color || null);
       }
 
       Toast.show({

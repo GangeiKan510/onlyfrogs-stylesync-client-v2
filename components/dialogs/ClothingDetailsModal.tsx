@@ -22,6 +22,7 @@ import { updateClothing, deleteItem } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
+import SparkIcon from "../../assets/icons/spark.svg";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -95,19 +96,19 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       id: clothingId,
       name: itemName,
       brand: brandName,
-      season: selectedSeasons, 
-      occasion: selectedOccasions, 
+      season: selectedSeasons,
+      occasion: selectedOccasions,
       category: {
         name: selectedCategory.name || null,
         type: selectedCategory.type || null,
       },
-      color: selectedColor || null, 
-      material: selectedMaterial || null, 
+      color: selectedColor || null,
+      material: selectedMaterial || null,
       pattern: selectedPattern || null,
     };
-  
+
     setIsSaving(true);
-  
+
     try {
       await updateClothing(clothingDetails);
       Toast.show({
@@ -130,7 +131,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       refetchMe();
     }
   };
-  
 
   const handleDelete = async () => {
     if (clothingId) {
@@ -196,6 +196,18 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             )}
             <View className="mt-4 w-full px-4">
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Analyze with AI clicked");
+                }}
+                className="w-full flex flex-row justify-center bg-[#7ab3b3] py-2 rounded-md mb-4"
+              >
+                <Text className="text-center text-white mr-1">
+                  Analyze with Ali
+                </Text>
+                <SparkIcon width={20} height={20} color={"white"} />
+              </TouchableOpacity>
+
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 When will you wear it?
               </Text>

@@ -247,17 +247,17 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             <View className="mt-4 w-full px-4">
               <TouchableOpacity
                 onPress={handleAnalyzeWithAI}
-                className="w-full flex flex-row justify-center bg-[#7ab3b3] py-2 rounded-md mb-4"
+                className="w-[150px] ml-auto flex flex-row justify-center border border-[#7ab3b3] py-2 rounded-md mb-4"
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
-                  <Spinner type={"primary"} />
+                  <Spinner type={"secondary"} />
                 ) : (
                   <>
-                    <Text className="text-center text-white mr-1">
+                    <Text className="text-center text-tertiary mr-1">
                       Analyze with Ali
                     </Text>
-                    <SparkIcon width={20} height={20} color={"white"} />
+                    <SparkIcon width={20} height={20} color={"#7AB2B2"} />
                   </>
                 )}
               </TouchableOpacity>

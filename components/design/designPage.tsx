@@ -1,5 +1,12 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
-import { useMemo, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  PanResponder,
+} from "react-native";
+import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
@@ -14,15 +21,25 @@ const DesignPage = () => {
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
   const snapPoints = useMemo(() => ["45%", "80%"], []);
-  const bottomSheet = useRef(null);
+  const bottomSheet = useRef<BottomSheet>(null);
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [dragPositions, setDragPositions] = useState<{
+    [key: string]: { x: number; y: number };
+  }>({});
 
-  const renderCloset = ({ item: closet }) => {
+  useEffect(() => {
+    bottomSheet.current?.snapToIndex(0);
+  }, [activeTab, closets, clothes]);
+
+  const renderCloset = ({
+    item: closet,
+  }: {
+    item: { id: string; name: string };
+  }) => {
     const clothingInCloset = user?.clothes.filter(
       (clothing) => clothing.closet_id === closet.id
     );
-
     const imageUri =
       clothingInCloset && clothingInCloset.length > 0
         ? clothingInCloset[0].image_url
@@ -38,7 +55,11 @@ const DesignPage = () => {
     );
   };
 
-  const renderClothing = ({ item }) => (
+  const renderClothing = ({
+    item,
+  }: {
+    item: { id: string; image_url: string };
+  }) => (
     <ClothingCard
       clothingId={item.id}
       uri={
@@ -46,44 +67,82 @@ const DesignPage = () => {
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
       onPress={handleItemPress}
-      selected={selectedImages.includes(item.image_url)} // Pass selected state
+      selected={selectedImages.includes(item.image_url)}
     />
   );
 
-  const handleItemPress = (clothingId: string, imageUrl: string) => {
+  const handleItemPress = (clothingId: string, image_url: string) => {
     setSelectedImages((current) =>
-      current.includes(imageUrl)
-        ? current.filter((url) => url !== imageUrl) // Remove image if already selected
-        : [...current, imageUrl] // Add image if not already selected
+      current.includes(image_url)
+        ? current.filter((url) => url !== image_url)
+        : [...current, image_url]
     );
+
+    setDragPositions((current) => ({
+      ...current,
+      [image_url]: { x: -48, y: -48 },
+    }));
   };
-  
+
+  const panResponder = (image: string) =>
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gestureState) => {
+        setDragPositions((prevPositions) => {
+          const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
+
+          const imageWidth = 96;
+          const imageHeight = 96;
+          const offsetLeft = 130;
+          const offsetRight = 130;
+          const offsetTop = 80;
+          const offsetBottom = 80;
+
+          const newX = Math.min(
+            Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
+            offsetRight - imageWidth / 2
+          );
+
+          const newY = Math.min(
+            Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
+            offsetBottom - imageHeight / 2
+          );
+
+          return {
+            ...prevPositions,
+            [image]: { x: newX, y: newY },
+          };
+        });
+      },
+    });
 
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
 
-      {/* Empty View with Selected Images */}
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative ">
         {selectedImages.length > 0 ? (
-          <View
-            className="absolute top-1/2 left-1/2"
-            style={{ transform: [{ translateX: -48 }, { translateY: -48 }] }}
-          >
-            {selectedImages.map((image, index) => (
+          selectedImages.map((image, index) => (
+            <View
+              {...panResponder(image).panHandlers}
+              key={index}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [
+                  { translateX: dragPositions[image]?.x || -48 },
+                  { translateY: dragPositions[image]?.y || -48 },
+                ],
+              }}
+            >
               <Image
-                key={index}
                 source={{ uri: image }}
                 className="w-24 h-24 absolute"
-                style={{
-                  top: index * 5,
-                  left: index * 2,
-                  zIndex: selectedImages.length,
-                }}
                 resizeMode="contain"
               />
-            ))}
-          </View>
+            </View>
+          ))
         ) : (
           <Text className="text-gray-500 font-bold">
             Create your own outfit
@@ -104,46 +163,29 @@ const DesignPage = () => {
       >
         <BottomSheetView className="flex-1 p-3 items-center">
           <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
-            <TouchableOpacity
-              onPress={() => setActiveTab("Closet")}
-              className="flex-1 items-center py-3 z-10"
-            >
-              <View
-                className={`${
-                  activeTab === "Closet" ? "border-b-[2px] border-black" : ""
-                }`}
-              >
-                <Text
-                  className={`text-sm ${
-                    activeTab === "Closet"
-                      ? "text-black font-bold"
-                      : "text-gray-800"
-                  }`}
+            {["Closet", "Pieces"].map((tab) => {
+              const isActive = activeTab === tab;
+              const length = tab === "Closet" ? closetsLength : clothesLength;
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  onPress={() => setActiveTab(tab)}
+                  className="flex-1 items-center py-3 z-10"
                 >
-                  Closet ({closetsLength})
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab("Pieces")}
-              className="flex-1 items-center py-3 z-10"
-            >
-              <View
-                className={`${
-                  activeTab === "Pieces" ? "border-b-[2px] border-black" : ""
-                }`}
-              >
-                <Text
-                  className={`text-sm ${
-                    activeTab === "Pieces"
-                      ? "text-black font-bold"
-                      : "text-gray-800"
-                  }`}
-                >
-                  Pieces ({clothesLength})
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <View
+                    className={`${isActive ? "border-b-[2px] border-black" : ""}`}
+                  >
+                    <Text
+                      className={`text-sm ${
+                        isActive ? "text-black font-bold" : "text-gray-800"
+                      }`}
+                    >
+                      {tab} ({length})
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           <View className="w-full h-[2px] bg-white" />
 

@@ -22,6 +22,9 @@ import { updateClothing, deleteItem } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import { useUser } from "../config/user-context";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
+import SparkIcon from "../../assets/icons/spark.svg";
+import { analyzeClothing } from "@/network/web/clothes";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -54,6 +57,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     if (clothingId && user?.clothes) {
@@ -79,6 +83,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
 
   // Helper function to check if all required fields are filled
   const isFormValid = () => {
+    if (selectedCategory.name === "Jewelry" && selectedCategory.type) {
+      return true;
+    }
+
     return (
       selectedSeasons.length > 0 &&
       selectedOccasions.length > 0 &&
@@ -95,19 +103,19 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       id: clothingId,
       name: itemName,
       brand: brandName,
-      season: selectedSeasons, 
-      occasion: selectedOccasions, 
+      season: selectedSeasons,
+      occasion: selectedOccasions,
       category: {
         name: selectedCategory.name || null,
         type: selectedCategory.type || null,
       },
-      color: selectedColor || null, 
-      material: selectedMaterial || null, 
+      color: selectedColor || null,
+      material: selectedMaterial || null,
       pattern: selectedPattern || null,
     };
-  
+
     setIsSaving(true);
-  
+
     try {
       await updateClothing(clothingDetails);
       Toast.show({
@@ -130,7 +138,49 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       refetchMe();
     }
   };
-  
+
+  const handleAnalyzeWithAI = async () => {
+    if (!clothingImage) return;
+
+    setIsAnalyzing(true);
+    try {
+      const analysisResult = await analyzeClothing(clothingImage);
+      console.log("AI Analysis Result:", analysisResult);
+
+      if (analysisResult?.tags) {
+        const { category, material, occasion, pattern, season, color } =
+          analysisResult.tags;
+
+        setSelectedCategory({
+          name: category?.name || null,
+          type: category?.type || null,
+        });
+        setSelectedMaterial(material || null);
+        setSelectedOccasions(occasion || []);
+        setSelectedPattern(pattern || null);
+        setSelectedSeasons(season || []);
+        setSelectedColor(color || null);
+
+        Toast.show({
+          type: "success",
+          text1: "Analysis completed and fields updated!",
+          position: "top",
+          swipeable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to analyze clothing:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to analyze clothing. Please try again.",
+        position: "top",
+        swipeable: true,
+      });
+      onClose();
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const handleDelete = async () => {
     if (clothingId) {
@@ -196,6 +246,34 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               />
             )}
             <View className="mt-4 w-full px-4">
+              <TouchableOpacity
+                onPress={handleAnalyzeWithAI}
+                disabled={isAnalyzing}
+                className="w-full ml-auto rounded-lg border-2 border-transparent overflow-hidden"
+              >
+                <LinearGradient
+                  colors={["#7AB2B2", "#B088CD"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                  }}
+                  className="flex-row items-center justify-center"
+                >
+                  {isAnalyzing ? (
+                    <Spinner type={"primary"} />
+                  ) : (
+                    <>
+                      <Text className="text-white text-center mr-1">
+                        Analyze with Ali
+                      </Text>
+                      <SparkIcon width={20} height={20} color={"#ffffff"} />
+                    </>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+
               <Text className="mb-1 text-lg text-[#484848] font-bold">
                 When will you wear it?
               </Text>

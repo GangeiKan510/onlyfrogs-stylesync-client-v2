@@ -103,3 +103,21 @@ export const updateWornDate = async (clothingId: string) => {
     throw error;
   }
 };
+
+export const analyzeClothing = async (imageUrl: string) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/clothes/analyze-item", {
+      imageUrl,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error analyzing clothing: ${response.statusText}`);
+    }
+
+    const analysisResult = await response.json();
+    return analysisResult;
+  } catch (error) {
+    console.error("Failed to analyze clothing", error);
+    throw error;
+  }
+};

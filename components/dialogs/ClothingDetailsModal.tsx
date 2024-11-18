@@ -143,7 +143,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
       console.log("AI Analysis Result:", analysisResult);
 
       if (analysisResult?.tags) {
-        const { category, material, occasion, pattern, season } =
+        const { category, material, occasion, pattern, season, color } =
           analysisResult.tags;
 
         setSelectedCategory({
@@ -154,6 +154,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         setSelectedOccasions(occasion || []);
         setSelectedPattern(pattern || null);
         setSelectedSeasons(season || []);
+        setSelectedColor(color || null); 
       }
 
       Toast.show({

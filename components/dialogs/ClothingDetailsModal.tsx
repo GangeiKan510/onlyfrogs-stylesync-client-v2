@@ -24,6 +24,7 @@ import { useUser } from "../config/user-context";
 import DeleteIcon from "../../assets/icons/delete-icon.svg";
 import SparkIcon from "../../assets/icons/spark.svg";
 import { analyzeClothing } from "@/network/web/clothes";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface ClothingDetailsModalProps {
   isVisible: boolean;
@@ -247,19 +248,30 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
             <View className="mt-4 w-full px-4">
               <TouchableOpacity
                 onPress={handleAnalyzeWithAI}
-                className="w-[150px] ml-auto flex flex-row justify-center border border-[#7ab3b3] py-2 rounded-md mb-4"
                 disabled={isAnalyzing}
+                className="w-full ml-auto rounded-lg border-2 border-transparent overflow-hidden"
               >
-                {isAnalyzing ? (
-                  <Spinner type={"secondary"} />
-                ) : (
-                  <>
-                    <Text className="text-center text-tertiary mr-1">
-                      Analyze with Ali
-                    </Text>
-                    <SparkIcon width={20} height={20} color={"#7AB2B2"} />
-                  </>
-                )}
+                <LinearGradient
+                  colors={["#7AB2B2", "#B088CD"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                  }}
+                  className="flex-row items-center justify-center"
+                >
+                  {isAnalyzing ? (
+                    <Spinner type={"primary"} />
+                  ) : (
+                    <>
+                      <Text className="text-white text-center mr-1">
+                        Analyze with Ali
+                      </Text>
+                      <SparkIcon width={20} height={20} color={"#ffffff"} />
+                    </>
+                  )}
+                </LinearGradient>
               </TouchableOpacity>
 
               <Text className="mb-1 text-lg text-[#484848] font-bold">

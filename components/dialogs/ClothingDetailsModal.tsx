@@ -141,9 +141,24 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     try {
       const analysisResult = await analyzeClothing(clothingImage);
       console.log("AI Analysis Result:", analysisResult);
+
+      if (analysisResult?.tags) {
+        const { category, material, occasion, pattern, season } =
+          analysisResult.tags;
+
+        setSelectedCategory({
+          name: category?.name || null,
+          type: category?.type || null,
+        });
+        setSelectedMaterial(material || null);
+        setSelectedOccasions(occasion || []);
+        setSelectedPattern(pattern || null);
+        setSelectedSeasons(season || []);
+      }
+
       Toast.show({
         type: "success",
-        text1: "Analysis completed!",
+        text1: "Analysis completed and fields updated!",
         position: "top",
         swipeable: true,
       });

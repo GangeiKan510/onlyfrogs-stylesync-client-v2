@@ -159,22 +159,23 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
         setSelectedPattern(pattern || null);
         setSelectedSeasons(season || []);
         setSelectedColor(color || null);
-      }
 
-      Toast.show({
-        type: "success",
-        text1: "Analysis completed and fields updated!",
-        position: "top",
-        swipeable: true,
-      });
+        Toast.show({
+          type: "success",
+          text1: "Analysis completed and fields updated!",
+          position: "top",
+          swipeable: true,
+        });
+      }
     } catch (error) {
       console.error("Failed to analyze clothing:", error);
       Toast.show({
         type: "error",
-        text1: "Failed to analyze clothing",
+        text1: "Failed to analyze clothing. Please try again.",
         position: "top",
         swipeable: true,
       });
+      onClose();
     } finally {
       setIsAnalyzing(false);
     }

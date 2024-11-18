@@ -120,7 +120,7 @@ const DesignPage = () => {
     <GestureHandlerRootView className="flex-1">
       <Header />
 
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative ">
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => (
             <View

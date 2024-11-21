@@ -40,7 +40,7 @@ const CategorySelection = ({ selectedCategory, setSelectedCategory }: any) => {
       ? selectedCategory?.name
         ? categoriesHeight
         : Object.keys(categoryTypes).length * itemHeight + 40
-      : 0;
+      : 0; 
 
     const safeTotalHeight = isNaN(totalHeight) ? 0 : totalHeight;
 

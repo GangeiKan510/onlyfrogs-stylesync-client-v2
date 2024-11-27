@@ -7,9 +7,6 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import Back from "../assets/icons/back-icon.svg";
 import CirclesIcon from "../assets/icons/circles-icon.svg";
-import LockIcon from "../assets/icons/lock-icon.svg";
-import { Href, Link } from "expo-router";
-import { routes } from "@/utils/routes";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");

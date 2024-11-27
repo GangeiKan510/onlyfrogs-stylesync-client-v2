@@ -59,14 +59,14 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const searchFieldMatch = (field: string | string[] | null | undefined) => {
+  const searchFieldMatch = (field: string | string[] | null | never) => {
     if (typeof field === "string") {
       return field.toLowerCase().includes(search.toLowerCase());
     } else if (Array.isArray(field)) {
       return field.some(
-        (searchField) =>
-          typeof searchField === "string" &&
-          searchField.toLowerCase().includes(search.toLowerCase())
+        (f) =>
+          typeof f === "string" &&
+          f.toLowerCase().includes(search.toLowerCase())
       );
     }
     return false;
@@ -120,8 +120,19 @@ const PiecesTab = () => {
 
   const filteredClothes =
     user?.clothes.filter((item) => {
+      const hasDetails =
+        item.name &&
+        item.category &&
+        item.brand &&
+        item.color &&
+        item.material &&
+        item.season &&
+        item.pattern;
+
+      const isSearchActive = search.length > 0;
+
       const matchesSearch =
-        search.length === 0 ||
+        !isSearchActive ||
         [
           item.name,
           item.color,
@@ -133,12 +144,11 @@ const PiecesTab = () => {
 
       // Season
       const itemSeason = Array.isArray(item.season)
-        ? item.season.map((season) => (season as string).toLowerCase())
+        ? item.season.map((s) => (s as string).toLowerCase())
         : [];
-
       // Occasion
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((occasion) => (occasion as string).toLowerCase())
+        ? item.occasion.map((o) => (o as string).toLowerCase())
         : [];
       // Category
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
@@ -164,7 +174,7 @@ const PiecesTab = () => {
             itemPattern.includes(filter.toLowerCase())
         );
 
-      return matchesSearch && matchesFilters;
+      return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
     }) ?? [];
 
   return (
@@ -416,13 +426,6 @@ const PiecesTab = () => {
       </View>
 
       <View className="h-[80%]">
-        {filteredClothes.length === 0 && search.length > 0 && (
-          <View className="h-20 items-center justify-center">
-            <Text className="text-[16px] text-center text-gray-500 font-semibold mb-2">
-              No items found.
-            </Text>
-          </View>
-        )}
         <FlatList
           className="mt-5 z-20 flex-grow"
           scrollEnabled={true}
@@ -445,6 +448,10 @@ const PiecesTab = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      {filteredClothes.length === 0 && (
+        <Text className="text-center mt-5">No items found.</Text>
+      )}
 
       <ClothingDetailsModal
         isVisible={isModalVisible}

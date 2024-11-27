@@ -94,7 +94,7 @@ export default function ForgotPassword() {
                   keyboardType="email-address"
                 />
                 {emailError ? (
-                  <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{emailError}</Text>
                 ) : null}
               </View>
 

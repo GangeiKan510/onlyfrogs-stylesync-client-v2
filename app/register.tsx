@@ -216,7 +216,7 @@ export default function Register() {
                   autoCapitalize="words"
                 />
                 {firstNameError ? (
-                  <Text className="text-[#EE4E4E] italic">
+                  <Text className="text-[#EE4E4E] italic text-xs">
                     {firstNameError}
                   </Text>
                 ) : null}
@@ -235,7 +235,7 @@ export default function Register() {
                   autoCapitalize="words"
                 />
                 {lastNameError ? (
-                  <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{lastNameError}</Text>
                 ) : null}
               </View>
 
@@ -252,7 +252,7 @@ export default function Register() {
                   keyboardType="email-address"
                 />
                 {emailError ? (
-                  <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{emailError}</Text>
                 ) : null}
               </View>
 
@@ -288,7 +288,7 @@ export default function Register() {
                     !passwordValidations.hasSpecialChar,
                     !passwordValidations.hasNumber,
                   ].some(Boolean) && (
-                    <Text className="mt-2 italic text-[#EE4E4E]">
+                    <Text className="italic text-[#EE4E4E] text-xs">
                       Password must include
                       {[
                         !passwordValidations.hasMinLength &&
@@ -329,7 +329,7 @@ export default function Register() {
                     )}
                   </TouchableOpacity>
                   {confirmPasswordError ? (
-                    <Text className="text-[#EE4E4E] italic">
+                    <Text className="text-[#EE4E4E] italic text-xs">
                       {confirmPasswordError}
                     </Text>
                   ) : null}

@@ -249,7 +249,12 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <TouchableOpacity
                 onPress={handleAnalyzeWithAI}
                 disabled={isAnalyzing}
-                className="w-full ml-auto rounded-lg border-2 border-transparent overflow-hidden"
+                className="absolute w-28 right-4 bottom-52 ml-auto rounded-full border-2 border-transparent overflow-hidden"
+                style={{
+                  elevation: 6,
+                  shadowOffset: { width: 5, height: 5 },
+                  shadowOpacity: 0.2,
+                }}
               >
                 <LinearGradient
                   colors={["#7AB2B2", "#B088CD"]}
@@ -257,7 +262,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   end={{ x: 1, y: 0 }}
                   style={{
                     paddingVertical: 10,
-                    borderRadius: 8,
+                    borderRadius: 9999, // Fully rounded button
                   }}
                   className="flex-row items-center justify-center"
                 >
@@ -265,10 +270,10 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                     <Spinner type={"primary"} />
                   ) : (
                     <>
-                      <Text className="text-white text-center mr-1">
-                        Analyze with Ali
-                      </Text>
                       <SparkIcon width={20} height={20} color={"#ffffff"} />
+                      <Text className="text-white text-center ml-1">
+                        Analyze
+                      </Text>
                     </>
                   )}
                 </LinearGradient>

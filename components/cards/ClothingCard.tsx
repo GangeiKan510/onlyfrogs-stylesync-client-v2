@@ -17,6 +17,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState("Wear");
 
   const isDateToday = (date: Date | string) => {
     const today = new Date();
@@ -35,8 +36,10 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
 
     if (lastWorn && isDateToday(lastWorn)) {
       setIsDisabled(true);
+      setButtonLabel("Worn");
     } else {
       setIsDisabled(false);
+      setButtonLabel("Wear");
     }
   }, [user, clothingId]);
 
@@ -50,6 +53,8 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
         text2: "The worn date has been updated successfully.",
       });
       refetchMe();
+      setButtonLabel("Worn"); // Update label after successful click
+      setIsDisabled(true); // Disable button to prevent multiple clicks
     } catch (error) {
       Toast.show({
         type: "error",
@@ -92,7 +97,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
             ) : (
               <>
                 <DesignIcon width={12} color="white" />
-                <Text className="text-white">Worn</Text>
+                <Text className="text-white text-[10px]">{buttonLabel}</Text>
               </>
             )}
           </View>

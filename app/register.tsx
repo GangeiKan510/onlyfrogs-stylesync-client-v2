@@ -297,10 +297,11 @@ export default function Register() {
                           " an uppercase letter",
                         !passwordValidations.hasSpecialChar &&
                           " a special character",
-                        !passwordValidations.hasNumber && " and a number",
+                        !passwordValidations.hasNumber && " a number",
                       ]
                         .filter(Boolean)
-                        .join(", ")}
+                        .join(", ")
+                        .replace(/, ([^,]*)$/, " and$1")}
                     </Text>
                   )}
               </View>

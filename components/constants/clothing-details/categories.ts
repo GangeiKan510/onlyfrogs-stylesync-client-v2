@@ -83,7 +83,7 @@ export const categoryTypes: CategoryTypes = {
     "Luggage Bags",
     "Briefcases",
   ],
-  Jewelry: ["Necklaces", "Bracelets", "Earrings", "Rings", "Brooces/Pins"],
+  Jewelry: ["Necklaces", "Watch", "Bracelets", "Earrings", "Rings", "Brooces/Pins"],
   Headwear: ["Hats", "Caps", "Scarves", "Sun Hats", "Bunnet", "Beanie"],
   OtherItems: [
     "Socks",

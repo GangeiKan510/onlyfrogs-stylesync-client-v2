@@ -236,20 +236,26 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-          <View className="w-full h-full flex-1 items-center">
-            {clothingImage && (
-              <Image
-                source={{ uri: clothingImage }}
-                className="w-full h-60 my-4"
-                resizeMode="contain"
-              />
-            )}
-            <View className="mt-4 w-full px-4">
+        <View className="flex-1 relative">
+          <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+            <View className="w-full h-full flex-1 items-center">
+              {clothingImage && (
+                <Image
+                  source={{ uri: clothingImage }}
+                  className="w-full h-60 my-4"
+                  resizeMode="contain"
+                />
+              )}
+
               <TouchableOpacity
                 onPress={handleAnalyzeWithAI}
                 disabled={isAnalyzing}
-                className="w-full ml-auto rounded-lg border-2 border-transparent overflow-hidden"
+                className="absolute w-28 right-4 top-60 ml-auto rounded-full border-2 border-transparent overflow-hidden"
+                style={{
+                  elevation: 6,
+                  shadowOffset: { width: 5, height: 5 },
+                  shadowOpacity: 0.2,
+                }}
               >
                 <LinearGradient
                   colors={["#7AB2B2", "#B088CD"]}
@@ -257,7 +263,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   end={{ x: 1, y: 0 }}
                   style={{
                     paddingVertical: 10,
-                    borderRadius: 8,
+                    borderRadius: 9999,
                   }}
                   className="flex-row items-center justify-center"
                 >
@@ -265,117 +271,149 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                     <Spinner type={"primary"} />
                   ) : (
                     <>
-                      <Text className="text-white text-center mr-1">
-                        Analyze with Ali
-                      </Text>
                       <SparkIcon width={20} height={20} color={"#ffffff"} />
+                      <Text className="text-white text-center ml-1">
+                        Analyze
+                      </Text>
                     </>
                   )}
                 </LinearGradient>
               </TouchableOpacity>
-
-              <Text className="mb-1 text-lg text-[#484848] font-bold">
-                When will you wear it?
-              </Text>
-              <SeasonAccordion
-                selectedSeasons={selectedSeasons}
-                setSelectedSeasons={setSelectedSeasons}
-              />
-              <View className="mt-4 w-full">
-                <OccasionSelection
-                  selectedOccasions={selectedOccasions}
-                  setSelectedOccasions={setSelectedOccasions}
+              <View className="mt-4 w-full px-4">
+                <Text className="mb-1 text-lg text-[#484848] font-bold">
+                  When will you wear it?
+                </Text>
+                <SeasonAccordion
+                  selectedSeasons={selectedSeasons}
+                  setSelectedSeasons={setSelectedSeasons}
                 />
+                <View className="mt-4 w-full">
+                  <OccasionSelection
+                    selectedOccasions={selectedOccasions}
+                    setSelectedOccasions={setSelectedOccasions}
+                  />
+                </View>
+              </View>
+
+              <View className="mt-5 w-full px-4">
+                <Text className="mb-1 text-lg text-[#484848] font-bold">
+                  What kind of item is this?
+                </Text>
+                <CategorySelection
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+                <View className="mt-4 w-full mb-4">
+                  <ColorAccordion
+                    selectedColor={selectedColor}
+                    setSelectedColor={setSelectedColor}
+                  />
+                </View>
+                <View className="w-full mb-4">
+                  <MaterialAccordion
+                    selectedMaterial={selectedMaterial}
+                    setSelectedMaterial={setSelectedMaterial}
+                  />
+                </View>
+                <View className="w-full mb-4">
+                  <PatternAccordion
+                    selectedPattern={selectedPattern}
+                    setSelectedPattern={setSelectedPattern}
+                  />
+                </View>
+                <View className="bg-[#F3F3F3] px-4 py-3 rounded-md">
+                  <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
+                  <TextInput
+                    placeholder="Enter brand name"
+                    value={brandName as string}
+                    onChangeText={(text) => {
+                      setBrandName(text);
+                      setIsTyping(text.length > 0);
+                    }}
+                    style={{
+                      color: isTyping ? "#7ab3b3" : "#000",
+                    }}
+                  />
+                </View>
+                <Text className="text-lg text-[#484848] font-bold mt-5">
+                  Additional information
+                </Text>
+                <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
+                  <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
+                  <TextInput
+                    placeholder="Give it a name (optional)"
+                    value={itemName}
+                    onChangeText={(text) => {
+                      setItemName(text);
+                      setIsTyping(text.length > 0);
+                    }}
+                    style={{
+                      color: isTyping ? "#7ab3b3" : "#000",
+                    }}
+                  />
+                </View>
+                <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
+                  <Text className="text-[16px] text-[#484848] mb-2">
+                    Number of wears
+                  </Text>
+                  <Text className="text-[16px] text-[#B7B7B7]">
+                    {wornCount ? wornCount : 0}
+                  </Text>
+                </View>
               </View>
             </View>
 
-            <View className="mt-5 w-full px-4">
-              <Text className="mb-1 text-lg text-[#484848] font-bold">
-                What kind of item is this?
-              </Text>
-              <CategorySelection
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-              <View className="mt-4 w-full mb-4">
-                <ColorAccordion
-                  selectedColor={selectedColor}
-                  setSelectedColor={setSelectedColor}
-                />
-              </View>
-              <View className="w-full mb-4">
-                <MaterialAccordion
-                  selectedMaterial={selectedMaterial}
-                  setSelectedMaterial={setSelectedMaterial}
-                />
-              </View>
-              <View className="w-full mb-4">
-                <PatternAccordion
-                  selectedPattern={selectedPattern}
-                  setSelectedPattern={setSelectedPattern}
-                />
-              </View>
-              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md">
-                <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
-                <TextInput
-                  placeholder="Enter brand name"
-                  value={brandName as string}
-                  onChangeText={(text) => {
-                    setBrandName(text);
-                    setIsTyping(text.length > 0);
-                  }}
-                  style={{
-                    color: isTyping ? "#7ab3b3" : "#000",
-                  }}
-                />
-              </View>
-              <Text className="text-lg text-[#484848] font-bold mt-5">
-                Additional information
-              </Text>
-              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-1">
-                <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
-                <TextInput
-                  placeholder="Give it a name (optional)"
-                  value={itemName}
-                  onChangeText={(text) => {
-                    setItemName(text);
-                    setIsTyping(text.length > 0);
-                  }}
-                  style={{
-                    color: isTyping ? "#7ab3b3" : "#000",
-                  }}
-                />
-              </View>
-              <View className="bg-[#F3F3F3] px-4 py-3 rounded-md mt-4">
-                <Text className="text-[16px] text-[#484848] mb-2">
-                  Number of wears
-                </Text>
-                <Text className="text-[16px] text-[#B7B7B7]">
-                  {wornCount ? wornCount : 0}
-                </Text>
-              </View>
+            <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2">
+              <TouchableOpacity onPress={() => setShowModal(true)}>
+                <DeleteIcon width={32} height={32} color={"red"} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSave}
+                className={`w-72 h-[42px] flex items-center justify-center rounded-[10px] ${
+                  !isFormValid() ? "bg-[#9fcccc]" : "bg-bg-tertiary" // Disable button if form is invalid
+                }`}
+                disabled={!isFormValid() || isSaving}
+              >
+                {isSaving ? (
+                  <Spinner type={"primary"} />
+                ) : (
+                  <Text className="text-white font-bold">Save</Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
 
-          <View className="flex-row items-center self-center space-x-4 mb-4 absolute bottom-2">
-            <TouchableOpacity onPress={() => setShowModal(true)}>
-              <DeleteIcon width={32} height={32} color={"red"} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleSave}
-              className={`w-72 h-[42px] flex items-center justify-center rounded-[10px] ${
-                !isFormValid() ? "bg-[#9fcccc]" : "bg-bg-tertiary" // Disable button if form is invalid
-              }`}
-              disabled={!isFormValid() || isSaving}
+          {/* <TouchableOpacity
+            onPress={handleAnalyzeWithAI}
+            disabled={isAnalyzing}
+            className="absolute w-28 right-4 top-60 ml-auto rounded-full border-2 border-transparent overflow-hidden"
+            style={{
+              elevation: 6,
+              shadowOffset: { width: 5, height: 5 },
+              shadowOpacity: 0.2,
+            }}
+          >
+            <LinearGradient
+              colors={["#7AB2B2", "#B088CD"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                paddingVertical: 10,
+                borderRadius: 9999,
+              }}
+              className="flex-row items-center justify-center"
             >
-              {isSaving ? (
+              {isAnalyzing ? (
                 <Spinner type={"primary"} />
               ) : (
-                <Text className="text-white font-bold">Save</Text>
+                <>
+                  <SparkIcon width={20} height={20} color={"#ffffff"} />
+                  <Text className="text-white text-center ml-1">Analyze</Text>
+                </>
               )}
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+            </LinearGradient>
+          </TouchableOpacity> */}
+        </View>
 
         <Modal animationType="fade" transparent={true} visible={showModal}>
           <View

@@ -7,14 +7,13 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import Back from "../assets/icons/back-icon.svg";
 import CirclesIcon from "../assets/icons/circles-icon.svg";
-import LockIcon from "../assets/icons/lock-icon.svg";
-import { Href, Link } from "expo-router";
-import { routes } from "@/utils/routes";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const [emailError, setEmailError] = useState("");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleResetPassword = async () => {
     if (!email) {
@@ -40,12 +39,25 @@ export default function ForgotPassword() {
       setLoading(false);
       Toast.show({
         type: "error",
-        text1: "Failed to send reset email",
+        text1: "Failed to send reset link",
         text2: "Please check the email address and try again.",
         position: "top",
       });
       console.log("Error sending password reset email:", error);
     }
+  };
+
+  const validateEmail = (value: string) => {
+    if (!emailRegex.test(value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const handleEmailChange = (value: string) => {
+    validateEmail(value);
+    setEmail(value);
   };
 
   return (
@@ -57,9 +69,6 @@ export default function ForgotPassword() {
       </View>
       <Header />
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <View className="absolute top-[14%] left-[31.5%] z-10">
-          <LockIcon />
-        </View>
         <View className="justify-center items-center mt-16">
           <CirclesIcon />
         </View>
@@ -73,13 +82,21 @@ export default function ForgotPassword() {
             </Text>
           </View>
 
-          <Text className="mb-1">Email</Text>
-          <TextInput
-            className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 mb-4"
-            value={email}
-            onChangeText={(input) => setEmail(input)}
-            keyboardType="email-address"
-          />
+          <View className="mb-3">
+                <Text className="mb-1">
+                  Email<Text className="text-[#EE4E4E]"> *</Text>
+                </Text>
+                <TextInput
+                  className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4"
+                  value={email}
+                  onChangeText={handleEmailChange}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+                {emailError ? (
+                  <Text className="text-[#EE4E4E] italic text-xs">{emailError}</Text>
+                ) : null}
+              </View>
 
           <Pressable
             className="bg-[#7ab2b2] h-[42px] rounded-[10px] px-4 mb-6 justify-center items-center"

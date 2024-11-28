@@ -2,7 +2,6 @@ import {
   TextInput,
   View,
   Text,
-  Pressable,
   KeyboardAvoidingView,
   ScrollView,
   TouchableOpacity,
@@ -78,19 +77,32 @@ export default function Register() {
   };
 
   const validatePassword = (value: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)(?=.{6,})/;
-    if (!passwordRegex.test(value)) {
-      setPasswordError(
-        "Password must contain at least 1 uppercase letter, 1 special character, 1 number, and be at least 6 characters long."
-      );
-    } else {
-      setPasswordError("");
-    }
+    const uppercaseRegex = /[A-Z]/;
+    const specialCharRegex = /[!@#$%^&*]/;
+    const numberRegex = /\d/;
+    const lengthRequirement = value.length >= 6;
+
+    const validations = {
+      hasUppercase: uppercaseRegex.test(value),
+      hasSpecialChar: specialCharRegex.test(value),
+      hasNumber: numberRegex.test(value),
+      hasMinLength: lengthRequirement,
+    };
+
+    return validations;
   };
+
+  const [passwordValidations, setPasswordValidations] = useState({
+    hasUppercase: false,
+    hasSpecialChar: false,
+    hasNumber: false,
+    hasMinLength: false,
+  });
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    validatePassword(value);
+    const validations = validatePassword(value);
+    setPasswordValidations(validations);
   };
 
   const validateConfirmPassword = (value: string) => {
@@ -204,7 +216,7 @@ export default function Register() {
                   autoCapitalize="words"
                 />
                 {firstNameError ? (
-                  <Text className="text-[#EE4E4E] italic">
+                  <Text className="text-[#EE4E4E] italic text-xs">
                     {firstNameError}
                   </Text>
                 ) : null}
@@ -223,7 +235,7 @@ export default function Register() {
                   autoCapitalize="words"
                 />
                 {lastNameError ? (
-                  <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{lastNameError}</Text>
                 ) : null}
               </View>
 
@@ -240,7 +252,7 @@ export default function Register() {
                   keyboardType="email-address"
                 />
                 {emailError ? (
-                  <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{emailError}</Text>
                 ) : null}
               </View>
 
@@ -266,12 +278,32 @@ export default function Register() {
                       <Eye width={20} height={20} fill="#B7B7B7" />
                     )}
                   </TouchableOpacity>
-                  {passwordError ? (
-                    <Text className="text-[#EE4E4E] italic">
-                      {passwordError}
-                    </Text>
-                  ) : null}
                 </View>
+
+                {/* Validation Messages */}
+                {password !== "" &&
+                  [
+                    !passwordValidations.hasMinLength,
+                    !passwordValidations.hasUppercase,
+                    !passwordValidations.hasSpecialChar,
+                    !passwordValidations.hasNumber,
+                  ].some(Boolean) && (
+                    <Text className="italic text-[#EE4E4E] text-xs">
+                      Password must include
+                      {[
+                        !passwordValidations.hasMinLength &&
+                          " at least 6 characters long",
+                        !passwordValidations.hasUppercase &&
+                          " an uppercase letter",
+                        !passwordValidations.hasSpecialChar &&
+                          " a special character",
+                        !passwordValidations.hasNumber && " a number",
+                      ]
+                        .filter(Boolean)
+                        .join(", ")
+                        .replace(/, ([^,]*)$/, " and$1")}
+                    </Text>
+                  )}
               </View>
 
               {/* Confirm Password */}
@@ -297,7 +329,7 @@ export default function Register() {
                     )}
                   </TouchableOpacity>
                   {confirmPasswordError ? (
-                    <Text className="text-[#EE4E4E] italic">
+                    <Text className="text-[#EE4E4E] italic text-xs">
                       {confirmPasswordError}
                     </Text>
                   ) : null}

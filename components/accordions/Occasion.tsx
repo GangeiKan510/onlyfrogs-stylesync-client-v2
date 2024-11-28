@@ -39,7 +39,10 @@ const OccasionSelection = ({
         onPress={toggleAccordion}
         className="h-[42px] flex-row justify-between items-center"
       >
-        <Text className="text-[16px] text-[#484848]">Occasion</Text>
+        <View className="flex-row justify-center items-center">
+          <Text className="text-[16px] text-[#484848]">Occasion</Text>
+          <Text className="text-red"> *</Text>
+        </View>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />
         ) : (

@@ -102,7 +102,7 @@ export default function Login() {
               keyboardType="email-address"
             />
             {emailError ? (
-              <Text className="text-[#EE4E4E] italic">{emailError}</Text>
+              <Text className="text-[#EE4E4E] italic text-xs">{emailError}</Text>
             ) : null}
           </View>
           <Text className="text-[16px] mb-1">Password</Text>

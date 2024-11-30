@@ -84,13 +84,11 @@ const DesignPage = () => {
       const isSelected = current.includes(image_url);
   
       if (isSelected) {
-        // Reset the size of the image when it is removed
         setImageSizes((prevSizes) => {
           const { [image_url]: _, ...remainingSizes } = prevSizes;
           return remainingSizes;
         });
-  
-        // Reset the position of the image when it is removed
+        
         setDragPositions((prevPositions) => {
           const { [image_url]: _, ...remainingPositions } = prevPositions;
           return remainingPositions;
@@ -101,8 +99,7 @@ const DesignPage = () => {
         ? current.filter((url) => url !== image_url)
         : [...current, image_url];
     });
-  
-    // Set the default drag position when the image is added
+
     if (!selectedImages.includes(image_url)) {
       setDragPositions((current) => ({
         ...current,

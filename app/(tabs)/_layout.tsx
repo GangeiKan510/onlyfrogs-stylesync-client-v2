@@ -7,8 +7,8 @@ import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
 import AliActiveIcon from "../../assets/icons/tabs/ali-active.svg";
-import { View, Text, StyleSheet, Keyboard, Animated } from "react-native";
-import { Href, useRouter } from "expo-router";
+import { View, Text, Keyboard, Animated } from "react-native";
+import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
 import { onAuthStateChanged } from "firebase/auth";
@@ -24,27 +24,14 @@ export default function TabLayout() {
       if (user) {
         setLoading(false);
       } else {
-        router.replace(routes.welcome as Href<string | object>);
+        router.replace(routes.welcome as "/welcome");
       }
     });
 
     return () => unsubscribe();
   }, [router]);
 
-  // useEffect(() => {
-  //   const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-  //     setKeyboardVisible(true);
-  //   });
-
-  //   const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-  //     setKeyboardVisible(false);
-  //   });
-
-  //   return () => {
-  //     showSubscription.remove();
-  //     hideSubscription.remove();
-  //   };
-  // }, []);
+  
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       Animated.timing(tabBarOffset, {
@@ -79,15 +66,19 @@ export default function TabLayout() {
           tabBarInactiveTintColor: "black",
           tabBarActiveTintColor: "#7ab2b2",
           headerShown: false,
+          position: "absolute",
           tabBarStyle: {
             height: 60,
             bottom: 0,
             backgroundColor: "#f3f3f3",
             paddingVertical: 20,
+            paddingTop:10,
+            position: "fixed",
             // display: keyboardVisible ? "none" : "flex",
             transform: [{ translateY: tabBarOffset }],
           },
           tabBarLabelStyle: {
+            
             fontSize: 14,
             fontWeight: route.name === "index" ? "bold" : "normal",
           },
@@ -98,17 +89,15 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={styles.iconLabelContainer}>
+              <View className="flex flex-col items-center justify-center w-16">
                 <HomeIcon
-                  width={22}
-                  height={22}
+                  className="w-5 h-5"
                   color={focused ? "#7ab2b2" : "black"}
                 />
                 <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: focused ? "#7ab2b2" : "black" },
-                  ]}
+                className={`mt-1 text-xs text-center whitespace-nowrap ${
+                  focused ? "text-[#7ab2b2]" : "text-black"
+                }`}
                 >
                   Home
                 </Text>
@@ -121,17 +110,16 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={styles.iconLabelContainer}>
+              <View className="flex flex-col items-center justify-center w-16">
                 <DesignIcon
                   width={23.36}
                   height={22}
                   color={focused ? "#7ab2b2" : "black"}
                 />
                 <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: focused ? "#7ab2b2" : "black" },
-                  ]}
+                   className={`mt-1 text-xs text-center whitespace-nowrap ${
+                    focused ? "text-[#7ab2b2]" : "text-black"
+                  }`}
                 >
                   Design
                 </Text>
@@ -144,9 +132,9 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={[styles.iconLabelContainer, { paddingBottom:10, paddingVertical: 5, paddingHorizontal: 10 } ]}>
+              <View className="flex flex-col items-center justify-center w-16">
                 {focused ? (
-                  <AliActiveIcon width={75} height={55} />
+                  <AliActiveIcon width={65} height={55} />
                 ) : (
                   <AliIcon width={75} height={55} />
                 )}
@@ -159,17 +147,16 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={styles.iconLabelContainer}>
+              <View className="flex flex-col items-center justify-center w-20">
                 <NotificationsIcon
                   width={22}
                   height={22}
                   color={focused ? "#7ab2b2" : "black"}
                 />
                 <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: focused ? "#7ab2b2" : "black" },
-                  ]}
+                 className={`mt-1 text-xs text-center whitespace-nowrap ${
+                  focused ? "text-[#7ab2b2]" : "text-black"
+                }`}
                 >
                   Notifications
                 </Text>
@@ -182,17 +169,16 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={styles.iconLabelContainer}>
+              <View className="flex flex-col items-center justify-center w-20">
                 <ProfileIcon
                   width={22}
                   height={22}
                   color={focused ? "#7ab2b2" : "black"}
                 />
                 <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: focused ? "#7ab2b2" : "black" },
-                  ]}
+                 className={`mt-1 text-xs text-center whitespace-nowrap ${
+                  focused ? "text-[#7ab2b2]" : "text-black"
+                }`}
                 >
                   Profile
                 </Text>
@@ -271,23 +257,3 @@ export default function TabLayout() {
     </UserProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  aliIconContainer: {
-    position: "absolute",
-    top: -45,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 89,
-    height: 89,
-    borderRadius: 44.5,
-  },
-  iconLabelContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tabLabel: {
-    marginTop: 4,
-    fontSize: 12,
-  },
-});

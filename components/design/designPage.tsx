@@ -82,19 +82,19 @@ const DesignPage = () => {
   const handleItemPress = (clothingId: string, image_url: string) => {
     setSelectedImages((current) => {
       const isSelected = current.includes(image_url);
-  
+
       if (isSelected) {
         setImageSizes((prevSizes) => {
           const { [image_url]: _, ...remainingSizes } = prevSizes;
           return remainingSizes;
         });
-        
+
         setDragPositions((prevPositions) => {
           const { [image_url]: _, ...remainingPositions } = prevPositions;
           return remainingPositions;
         });
       }
-  
+
       return isSelected
         ? current.filter((url) => url !== image_url)
         : [...current, image_url];
@@ -107,10 +107,9 @@ const DesignPage = () => {
       }));
     }
   };
-  
 
   const handleImageSelection = (image: string) => {
-    console.log("hello " + image);
+    console.log("Resize image");
     setSelectedImage((prev) => (prev === image ? null : image));
   };
 
@@ -123,24 +122,20 @@ const DesignPage = () => {
       onPanResponderGrant: () => setActiveGesture("dragging"),
       onPanResponderMove: (e, gestureState) => {
         setDragPositions((prevPositions) => {
-          const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
+          const { x = 0, y = 0 } = prevPositions[image] || { x: 0, y: 0 };
+          const { width = 96, height = 96 } = imageSizes[image] || {
+            width: 96,
+            height: 96,
+          };
 
-          const imageWidth = 96;
-          const imageHeight = 96;
-          const offsetLeft = 90;
-          const offsetRight = 180;
-          const offsetTop = 40;
-          const offsetBottom = 85;
+          const containerWidth = 400;
+          const containerHeight = 280;
 
-          const newX = Math.min(
-            Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
-            offsetRight - imageWidth / 2
-          );
+          const maxX = containerWidth / 2 - width / 2;
+          const maxY = containerHeight / 2 - height / 2;
 
-          const newY = Math.min(
-            Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
-            offsetBottom - imageHeight / imageHeight / 2
-          );
+          const newX = Math.min(Math.max(x + gestureState.dx, -maxX), maxX);
+          const newY = Math.min(Math.max(y + gestureState.dy, -maxY), maxY);
 
           return {
             ...prevPositions,
@@ -158,9 +153,22 @@ const DesignPage = () => {
       onPanResponderGrant: () => setActiveGesture("resizing"),
       onPanResponderMove: (event, gestureState) => {
         setImageSizes((prevSizes) => {
-          const currentSize = prevSizes[image] || { width: 96, height: 96 };
-          const newWidth = Math.max(48, currentSize.width + gestureState.dx);
-          const newHeight = Math.max(48, currentSize.height + gestureState.dy);
+          const { width = 96, height = 96 } = prevSizes[image] || {
+            width: 96,
+            height: 96,
+          };
+
+          const containerWidth = 400;
+          const containerHeight = 280;
+
+          const newWidth = Math.max(
+            48,
+            Math.min(width + gestureState.dx, containerWidth)
+          );
+          const newHeight = Math.max(
+            48,
+            Math.min(height + gestureState.dy, containerHeight)
+          );
 
           return {
             ...prevSizes,

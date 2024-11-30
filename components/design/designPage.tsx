@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   PanResponder,
+  Pressable,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -13,6 +14,7 @@ import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
+import ResizeArrow from "../../assets/icons/resize.svg";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -84,30 +86,42 @@ const DesignPage = () => {
     }));
   };
 
+  const handleImageSelection = (image: string) => {
+    console.log("hello " + image);
+  };
+
   const panResponder = (image: string) =>
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: (e, gestureState) => {
+        // Only activate pan responder if the user is dragging significantly
+        return Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
+      },
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        // Allow pan responder to move when gesture is significant
+        return true;
+      },
       onPanResponderMove: (e, gestureState) => {
+        // Update drag position
         setDragPositions((prevPositions) => {
           const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
-
+  
           const imageWidth = 96;
           const imageHeight = 96;
           const offsetLeft = 130;
           const offsetRight = 130;
           const offsetTop = 80;
           const offsetBottom = 80;
-
+  
           const newX = Math.min(
             Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
             offsetRight - imageWidth / 2
           );
-
+  
           const newY = Math.min(
             Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
-            offsetBottom - imageHeight / 2
+            offsetBottom - imageHeight / imageHeight / 2
           );
-
+  
           return {
             ...prevPositions,
             [image]: { x: newX, y: newY },
@@ -115,6 +129,7 @@ const DesignPage = () => {
         });
       },
     });
+  
 
   return (
     <GestureHandlerRootView className="flex-1">
@@ -136,11 +151,13 @@ const DesignPage = () => {
                 ],
               }}
             >
-              <Image
-                source={{ uri: image }}
-                className="w-24 h-24 absolute"
-                resizeMode="contain"
-              />
+              <Pressable onPress={() => handleImageSelection(image)}>
+                <Image
+                  source={{ uri: image }}
+                  className="w-24 h-24 absolute"
+                  resizeMode="contain"
+                />
+              </Pressable>
             </View>
           ))
         ) : (

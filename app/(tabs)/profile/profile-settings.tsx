@@ -66,7 +66,6 @@ const ProfileSettings = () => {
     };
   }, []);
 
-
   const resetToInitialState = () => {
     setFirstName(user?.first_name || "");
     setLastName(user?.last_name || "");
@@ -369,7 +368,7 @@ const ProfileSettings = () => {
                   ) : (
                     <NoProfileImg width={130} height={130} />
                   )}
-                  <View className="absolute right-1 bottom-2">
+                  <View className="absolute right-0 bottom-1">
                     <CameraIcon width={30} height={30} />
                   </View>
                 </View>
@@ -388,7 +387,7 @@ const ProfileSettings = () => {
                   autoCapitalize="words"
                 />
                 {firstNameError ? (
-                  <Text className="text-[#EE4E4E] italic">
+                  <Text className="text-[#EE4E4E] italic text-xs">
                     {firstNameError}
                   </Text>
                 ) : null}
@@ -406,7 +405,7 @@ const ProfileSettings = () => {
                   autoCapitalize="words"
                 />
                 {lastNameError ? (
-                  <Text className="text-[#EE4E4E] italic">{lastNameError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">{lastNameError}</Text>
                 ) : null}
               </View>
               <View className="mb-3">

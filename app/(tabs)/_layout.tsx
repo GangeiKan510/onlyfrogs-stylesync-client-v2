@@ -7,7 +7,7 @@ import NotificationsIcon from "../../assets/icons/tabs/notifications.svg";
 import ProfileIcon from "../../assets/icons/tabs/profile.svg";
 import AliIcon from "../../assets/icons/tabs/ali.svg";
 import AliActiveIcon from "../../assets/icons/tabs/ali-active.svg";
-import { View, Text, StyleSheet, Keyboard, Animated } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Href, useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
@@ -17,7 +17,6 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 export default function TabLayout() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const tabBarOffset = new Animated.Value(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,43 +29,6 @@ export default function TabLayout() {
 
     return () => unsubscribe();
   }, [router]);
-
-  // useEffect(() => {
-  //   const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-  //     setKeyboardVisible(true);
-  //   });
-
-  //   const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-  //     setKeyboardVisible(false);
-  //   });
-
-  //   return () => {
-  //     showSubscription.remove();
-  //     hideSubscription.remove();
-  //   };
-  // }, []);
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      Animated.timing(tabBarOffset, {
-        toValue: 60,
-        duration: 50,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      Animated.timing(tabBarOffset, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
 
   if (loading) {
     return <LoadingScreen message={"Preparing the app."} />;
@@ -81,11 +43,8 @@ export default function TabLayout() {
           headerShown: false,
           tabBarStyle: {
             height: 60,
-            bottom: 0,
             backgroundColor: "#f3f3f3",
             paddingVertical: 20,
-            // display: keyboardVisible ? "none" : "flex",
-            transform: [{ translateY: tabBarOffset }],
           },
           tabBarLabelStyle: {
             fontSize: 14,
@@ -144,7 +103,16 @@ export default function TabLayout() {
           options={{
             title: "",
             tabBarIcon: ({ focused }) => (
-              <View style={[styles.iconLabelContainer, { paddingBottom:10, paddingVertical: 5, paddingHorizontal: 10 } ]}>
+              <View
+                style={[
+                  styles.iconLabelContainer,
+                  {
+                    paddingBottom: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
+                  },
+                ]}
+              >
                 {focused ? (
                   <AliActiveIcon width={75} height={55} />
                 ) : (

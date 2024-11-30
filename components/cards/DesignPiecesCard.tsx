@@ -9,10 +9,9 @@ interface CardProps {
 }
 
 const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId, selected  }) => {
-  // const [selected, setSelected] = useState(false);
 
   const handlePress = () => {
-    onPress(clothingId, uri); // Pass the arguments to onPress
+    onPress(clothingId, uri);
   };
 
   return (

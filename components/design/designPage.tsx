@@ -80,17 +80,37 @@ const DesignPage = () => {
   );
 
   const handleItemPress = (clothingId: string, image_url: string) => {
-    setSelectedImages((current) =>
-      current.includes(image_url)
+    setSelectedImages((current) => {
+      const isSelected = current.includes(image_url);
+  
+      if (isSelected) {
+        // Reset the size of the image when it is removed
+        setImageSizes((prevSizes) => {
+          const { [image_url]: _, ...remainingSizes } = prevSizes;
+          return remainingSizes;
+        });
+  
+        // Reset the position of the image when it is removed
+        setDragPositions((prevPositions) => {
+          const { [image_url]: _, ...remainingPositions } = prevPositions;
+          return remainingPositions;
+        });
+      }
+  
+      return isSelected
         ? current.filter((url) => url !== image_url)
-        : [...current, image_url]
-    );
-
-    setDragPositions((current) => ({
-      ...current,
-      [image_url]: { x: -5, y: -10 },
-    }));
+        : [...current, image_url];
+    });
+  
+    // Set the default drag position when the image is added
+    if (!selectedImages.includes(image_url)) {
+      setDragPositions((current) => ({
+        ...current,
+        [image_url]: { x: -5, y: -10 },
+      }));
+    }
   };
+  
 
   const handleImageSelection = (image: string) => {
     console.log("hello " + image);

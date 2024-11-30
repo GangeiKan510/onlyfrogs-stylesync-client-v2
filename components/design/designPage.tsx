@@ -29,6 +29,7 @@ const DesignPage = () => {
   const [dragPositions, setDragPositions] = useState<{
     [key: string]: { x: number; y: number };
   }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
@@ -88,6 +89,7 @@ const DesignPage = () => {
 
   const handleImageSelection = (image: string) => {
     console.log("hello " + image);
+    setSelectedImage((prev) => (prev === image ? null : image));
   };
 
   const panResponder = (image: string) =>
@@ -104,24 +106,24 @@ const DesignPage = () => {
         // Update drag position
         setDragPositions((prevPositions) => {
           const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
-  
+
           const imageWidth = 96;
           const imageHeight = 96;
           const offsetLeft = 130;
           const offsetRight = 130;
           const offsetTop = 80;
           const offsetBottom = 80;
-  
+
           const newX = Math.min(
             Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
             offsetRight - imageWidth / 2
           );
-  
+
           const newY = Math.min(
             Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
             offsetBottom - imageHeight / imageHeight / 2
           );
-  
+
           return {
             ...prevPositions,
             [image]: { x: newX, y: newY },
@@ -129,17 +131,16 @@ const DesignPage = () => {
         });
       },
     });
-  
 
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
 
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative ">
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => (
             <View
-              {...panResponder(image).panHandlers}
+              {...panResponder(image).panHandlers} // Attach pan responder for dragging
               key={index}
               style={{
                 position: "absolute",
@@ -151,13 +152,42 @@ const DesignPage = () => {
                 ],
               }}
             >
-              <Pressable onPress={() => handleImageSelection(image)}>
-                <Image
-                  source={{ uri: image }}
-                  className="w-24 h-24 absolute"
-                  resizeMode="contain"
-                />
-              </Pressable>
+              <View
+                style={{
+                  width: 96,
+                  height: 96,
+                  borderWidth: selectedImage === image ? 1 : 0,
+                  borderStyle: "dashed",
+                  borderColor: "#DFDFDF",
+                  borderRadius: 10,
+                  position: "relative",
+                }}
+              >
+                <Pressable onPress={() => handleImageSelection(image)}>
+                  <Image
+                    source={{ uri: image }}
+                    className="w-24 h-24 absolute"
+                    resizeMode="contain"
+                  />
+                </Pressable>
+                {selectedImage === image && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: -6,
+                      right: -6,
+                      width: 14,
+                      height: 14,
+                      backgroundColor: "rgba(147, 147, 147, 0.7)",
+                      borderRadius: 7,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ResizeArrow width="50%" height="50%" />
+                  </View>
+                )}
+              </View>
             </View>
           ))
         ) : (

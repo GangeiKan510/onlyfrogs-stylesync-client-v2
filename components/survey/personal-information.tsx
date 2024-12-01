@@ -58,25 +58,37 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       setBirthDateError("Please enter a valid date in MM/DD/YYYY format.");
       return false;
     }
-
+  
     const [month, day, year] = dateString.split("/").map(Number);
+  
+    // Check days in the month
+    const daysInMonth = (month: number, year: number): number => {
+      return new Date(year, month, 0).getDate();
+    };
+  
+    if (day > daysInMonth(month, year)) {
+      setBirthDateError("Invalid day for the given month.");
+      return false;
+    }
+  
     const enteredDate = new Date(year, month - 1, day);
     const today = new Date();
-
+  
     if (isNaN(enteredDate.getTime())) {
       setBirthDateError("Invalid date.");
       return false;
     }
-
+  
     if (enteredDate >= today) {
       setBirthDateError("Birthdate must be in the past.");
       return false;
     }
-
-    setBirthDateError(null); // Clear error if the date is valid
-    setParsedBirthDate(enteredDate); // Set the parsed date
+  
+    setBirthDateError(null);
+    setParsedBirthDate(enteredDate);
     return true;
   };
+  
 
   const handleBirthDateChange = (value: string) => {
     const formattedDate = formatDateInput(value);

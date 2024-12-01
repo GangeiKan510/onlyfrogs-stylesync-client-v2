@@ -23,7 +23,7 @@ function SuccessScreen() {
       </View>
       <View className="flex-1 justify-center items-center px-8">
         <TouchableOpacity className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
-          onPress={() => router.push(routes.profile as Href<string>)}
+          onPress={() =>  router.push("/(tabs)/profile")}
           >
           <Text className="text-[16px] text-white">OK</Text>
         </TouchableOpacity>

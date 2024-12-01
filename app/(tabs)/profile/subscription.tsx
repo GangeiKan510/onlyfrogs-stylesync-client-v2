@@ -28,7 +28,7 @@ const Subscription = () => {
       <View className="absolute top-10 left-0 right-0 flex items-center justify-center z-10">
         <View className="w-full flex-row items-center top-2 px-6 z-30 mb-4">
           <TouchableOpacity
-            onPress={() => router.push(routes.profile as Href<string | object>)}
+            onPress={() =>  router.push("/(tabs)/profile")}
             className="absolute left-6 z-40"
           >
             <Back width={20} height={20} />
@@ -126,7 +126,7 @@ const Subscription = () => {
       </View>
       <View className="flex-1 justify-center items-center px-8">
         <TouchableOpacity className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
-          onPress={() => router.push(routes.success as Href<string>)}
+          onPress={() => router.push("/(tabs)/profile/success")}
           >
           <Text className="text-[16px] text-white">Continue to Purchase</Text>
         </TouchableOpacity>

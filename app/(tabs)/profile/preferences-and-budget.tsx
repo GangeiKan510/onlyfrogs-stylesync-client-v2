@@ -36,7 +36,7 @@ const PreferencesAndBudget = () => {
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30 mt-8 mb-4">
         <TouchableOpacity
-          onPress={() => router.push(routes.profile as Href<string | object>)}
+          onPress={() =>  router.push("/(tabs)/profile")}
           className="absolute left-6 z-40"
         >
           <Back width={20} height={20} />

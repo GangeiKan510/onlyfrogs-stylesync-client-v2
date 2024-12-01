@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Href, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useUser } from "@/components/config/user-context";
 import Back from "../../../assets/icons/back-icon.svg";
-import { routes } from "@/utils/routes";
 import { updatePersonalInformation } from "@/network/web/user";
 import Toast from "react-native-toast-message";
 import Spinner from "@/components/common/Spinner";
@@ -87,20 +86,30 @@ function PersonalInformation() {
 
   const handleSave = async () => {
     if (!birthDateError && (!isBirthDateEdited || validateBirthDate(birthDate))) {
+      if (isNaN(Number(height)) || isNaN(Number(weight))) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Please enter valid height and weight values.",
+          position: "top",
+        });
+        return;
+      }
+  
       setLoading(true);
       try {
         const [month, day, year] = birthDate.split("/");
         const formattedBirthDate = `${year}-${month}-${day}`;
-
+  
         const validDate = new Date(formattedBirthDate);
         if (isNaN(validDate.getTime())) {
           setBirthDateError("Invalid date format.");
           setLoading(false);
           return;
         }
-
+  
         const userId = user?.id;
-
+  
         if (userId) {
           const personalInformationData = {
             id: userId,
@@ -109,18 +118,18 @@ function PersonalInformation() {
             height: Number(height),
             weight: Number(weight),
           };
-
+  
           await updatePersonalInformation(personalInformationData);
-
+  
           refetchMe();
-
+  
           Toast.show({
             type: "success",
             text1: "Success",
             text2: "Personal information updated successfully",
             position: "top",
           });
-          router.push(routes.profile as Href<string | object>);
+          router.push("/(tabs)/profile");
         } else {
           Toast.show({
             type: "error",
@@ -144,12 +153,13 @@ function PersonalInformation() {
       console.log("Please correct the errors before saving.");
     }
   };
+  
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
-          onPress={() => router.push(routes.profile as Href<string | object>)}
+          onPress={() =>  router.push("/(tabs)/profile")}
           className="absolute left-6 z-40"
         >
           <Back width={20} height={20} />

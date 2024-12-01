@@ -73,13 +73,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         text1: "Body Type Saved",
         text2: "Your body type has been saved successfully.",
       });
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "profile" }],
-        })
-      );
+      router.push("/(tabs)/profile")
     } catch (error) {
       console.error("Error saving body type:", error);
       Toast.show({
@@ -104,7 +98,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
-          onPress={() => router.push(routes.profile as Href<string | object>)}
+          onPress={() =>  router.push("/(tabs)/profile")}
           className="absolute left-6 z-40"
         >
           <Back width={20} height={20} />

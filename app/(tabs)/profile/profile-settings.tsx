@@ -318,7 +318,7 @@ const ProfileSettings = () => {
     ) {
       setShowModal(true);
     } else {
-      router.push(routes.profile as Href<string | object>);
+      router.push("/(tabs)/profile")
     }
   };
 

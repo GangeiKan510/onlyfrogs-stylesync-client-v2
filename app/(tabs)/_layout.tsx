@@ -186,7 +186,7 @@ export default function TabLayout() {
                   pointerEvents: "auto",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 60, 
+                  height: 60,
                   backgroundColor: "#f3f3f3",
                   paddingVertical: 20,
                 }
@@ -206,10 +206,10 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="survey/survey"
+          name="survey"
           options={{
             href: null,
-            tabBarStyle: { display: "none" },
+            tabBarStyle: { opacity: 0, pointerEvents: "none", height: 0 },
           }}
         />
       </Tabs>

@@ -203,7 +203,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 />
               </View>
               {birthDateError && (
-                <Text style={{ color: "red", marginTop: 5 }}>
+                <Text className="text-red text-xs italic">
                   {birthDateError}
                 </Text>
               )}

@@ -152,7 +152,7 @@ const Survey = () => {
     personalInfo.birthday &&
     personalInfo.height_cm > 0 &&
     personalInfo.weight_kg > 0 &&
-    isLocationValid; // Add this check for location validity
+    isLocationValid;
   
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

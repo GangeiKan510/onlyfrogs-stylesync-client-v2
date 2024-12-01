@@ -4,7 +4,7 @@ export const routes = {
   forgotPassword: "/forgotPassword",
   verificationCode: "/verificationCode",
   setUpNewPassword: "/setUpNewPassword",
-  survey: "(tabs)/survey/survey",
+  // survey: "(tabs)/survey/survey",
   tabs: "(tabs)",
   welcome: "/welcome",
   // profile: "/profile",

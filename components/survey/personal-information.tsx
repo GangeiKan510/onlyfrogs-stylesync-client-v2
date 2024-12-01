@@ -58,7 +58,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;
 
     if (!dateString) {
-      // If the input is empty, reset the error and return
       setBirthDateError(null);
       return true;
     }
@@ -69,7 +68,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
     const [month, day, year] = dateString.split("/").map(Number);
 
-    // Check days in the month
     const daysInMonth = (month: number, year: number): number => {
       return new Date(year, month, 0).getDate();
     };

@@ -120,7 +120,7 @@ export default function Register() {
 
   const handleSignUp = async () => {
     setLoading(true);
-
+    
     const lowercasedEmail = email.toLowerCase();
 
     const { success, message } = validateForm(
@@ -175,7 +175,7 @@ export default function Register() {
           position: "top",
           swipeable: true,
         });
-        router.replace(routes.survey as Href<string | object>);
+        router.push("/(tabs)/survey" as Href<string | object>)
       }
     } catch (error) {
       console.error(error);

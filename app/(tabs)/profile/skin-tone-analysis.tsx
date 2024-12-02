@@ -191,7 +191,7 @@ const SkinToneAnalysis = () => {
       ) : (
         <View>
           <TouchableOpacity
-            onPress={() => router.push(routes.profile as Href<string | object>)}
+            onPress={() =>  router.push("/(tabs)/profile")}
             className="absolute left-8 z-40 top-16"
           >
             <Back width={20} height={20} />

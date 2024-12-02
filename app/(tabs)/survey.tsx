@@ -99,6 +99,22 @@ const Survey = () => {
   };
 
   const handleFinish = async () => {
+    // Check if any required personal info fields are empty
+    if (
+      !personalInfo.birthday ||
+      personalInfo.weight_kg === 0 ||
+      personalInfo.height_cm === 0 ||
+      !personalInfo.location
+    ) {
+      Toast.show({
+        type: "error",
+        text1: "Please fill in all the required fields before proceeding.",
+        position: "top",
+        swipeable: true,
+      });
+      return; // Prevent submission if fields are incomplete
+    }
+  
     const surveyData: UpdateUserData = {
       id: user?.id as string,
       birth_date: personalInfo.birthday,
@@ -117,7 +133,7 @@ const Survey = () => {
       budget_min: preferences.budget_range?.min,
       budget_max: preferences.budget_range?.max,
     };
-
+  
     try {
       setLoading(true);
       await updateUser(surveyData);
@@ -145,15 +161,26 @@ const Survey = () => {
     }
   };
 
-  const isLocationValid = personalInfo.location && personalInfo.location.lat && personalInfo.location.lon;
+  const isLocationValid =
+    personalInfo.location &&
+    personalInfo.location.lat &&
+    personalInfo.location.lon;
+
+  const isHeightValid =
+    personalInfo.height_cm >= 70 && personalInfo.height_cm <= 215;
+
+  const isWeightValid =
+    personalInfo.weight_kg >= 8 && personalInfo.weight_kg <= 150;
 
   const isPersonalInfoComplete =
     personalInfo.gender &&
     personalInfo.birthday &&
-    personalInfo.height_cm > 0 &&
-    personalInfo.weight_kg > 0 &&
-    isLocationValid; // Add this check for location validity
-  
+    isHeightValid &&
+    isWeightValid &&
+    isLocationValid;
+
+  console.log(personalInfo.birthday)
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -177,12 +204,10 @@ const Survey = () => {
           <TouchableOpacity
             onPress={handleNext}
             disabled={
-              (currentIndex === 4 && !isPersonalInfoComplete) ||
-              loading
+              (currentIndex === 4 && !isPersonalInfoComplete) || loading
             }
             className={`flex items-center justify-center h-[42px] rounded-[10px] w-[346px] ${
-              (currentIndex === 4 && !isPersonalInfoComplete) ||
-              loading
+              (currentIndex === 4 && !isPersonalInfoComplete) || loading
                 ? "bg-[#9fcccc]"
                 : "bg-bg-tertiary"
             }`}

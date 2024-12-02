@@ -5,6 +5,8 @@ import {
   FlatList,
   Image,
   PanResponder,
+  Pressable,
+  Animated,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -13,6 +15,7 @@ import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
+import ResizeArrow from "../../assets/icons/resize.svg";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -27,6 +30,11 @@ const DesignPage = () => {
   const [dragPositions, setDragPositions] = useState<{
     [key: string]: { x: number; y: number };
   }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageSizes, setImageSizes] = useState<{
+    [key: string]: { width: number; height: number };
+  }>({});
+  const [activeGesture, setActiveGesture] = useState<string | null>(null);
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
@@ -72,41 +80,62 @@ const DesignPage = () => {
   );
 
   const handleItemPress = (clothingId: string, image_url: string) => {
-    setSelectedImages((current) =>
-      current.includes(image_url)
-        ? current.filter((url) => url !== image_url)
-        : [...current, image_url]
-    );
+    setSelectedImages((current) => {
+      const isSelected = current.includes(image_url);
 
-    setDragPositions((current) => ({
-      ...current,
-      [image_url]: { x: -48, y: -48 },
-    }));
+      if (isSelected) {
+        setImageSizes((prevSizes) => {
+          const { [image_url]: _, ...remainingSizes } = prevSizes;
+          return remainingSizes;
+        });
+
+        setDragPositions((prevPositions) => {
+          const { [image_url]: _, ...remainingPositions } = prevPositions;
+          return remainingPositions;
+        });
+      }
+
+      return isSelected
+        ? current.filter((url) => url !== image_url)
+        : [...current, image_url];
+    });
+
+    if (!selectedImages.includes(image_url)) {
+      setDragPositions((current) => ({
+        ...current,
+        [image_url]: { x: -5, y: -10 },
+      }));
+    }
+  };
+
+  const handleImageSelection = (image: string) => {
+    console.log("Resize image");
+    setSelectedImage((prev) => (prev === image ? null : image));
   };
 
   const panResponder = (image: string) =>
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () =>
+        activeGesture === null || activeGesture === "dragging",
+      onMoveShouldSetPanResponder: () =>
+        activeGesture === null || activeGesture === "dragging",
+      onPanResponderGrant: () => setActiveGesture("dragging"),
       onPanResponderMove: (e, gestureState) => {
         setDragPositions((prevPositions) => {
-          const { x = 0, y = 0 } = prevPositions[image] || { x: -48, y: -48 };
+          const { x = 0, y = 0 } = prevPositions[image] || { x: 0, y: 0 };
+          const { width = 96, height = 96 } = imageSizes[image] || {
+            width: 96,
+            height: 96,
+          };
 
-          const imageWidth = 96;
-          const imageHeight = 96;
-          const offsetLeft = 130;
-          const offsetRight = 130;
-          const offsetTop = 80;
-          const offsetBottom = 80;
+          const containerWidth = 400;
+          const containerHeight = 280;
 
-          const newX = Math.min(
-            Math.max(x + gestureState.dx, -imageWidth / 2 - offsetLeft),
-            offsetRight - imageWidth / 2
-          );
+          const maxX = containerWidth / 2 - width / 2;
+          const maxY = containerHeight / 2 - height / 2;
 
-          const newY = Math.min(
-            Math.max(y + gestureState.dy, -imageHeight / 2 - offsetTop),
-            offsetBottom - imageHeight / 2
-          );
+          const newX = Math.min(Math.max(x + gestureState.dx, -maxX), maxX);
+          const newY = Math.min(Math.max(y + gestureState.dy, -maxY), maxY);
 
           return {
             ...prevPositions,
@@ -114,35 +143,106 @@ const DesignPage = () => {
           };
         });
       },
+      onPanResponderRelease: () => setActiveGesture(null),
+    });
+
+  const resizeResponder = (image: string) =>
+    PanResponder.create({
+      onStartShouldSetPanResponder: () =>
+        activeGesture === null || activeGesture === "resizing",
+      onPanResponderGrant: () => setActiveGesture("resizing"),
+      onPanResponderMove: (event, gestureState) => {
+        setImageSizes((prevSizes) => {
+          const { width = 96, height = 96 } = prevSizes[image] || {
+            width: 96,
+            height: 96,
+          };
+
+          const containerWidth = 400;
+          const containerHeight = 280;
+
+          const newWidth = Math.max(
+            48,
+            Math.min(width + gestureState.dx, containerWidth)
+          );
+          const newHeight = Math.max(
+            48,
+            Math.min(height + gestureState.dy, containerHeight)
+          );
+
+          return {
+            ...prevSizes,
+            [image]: { width: newWidth, height: newHeight },
+          };
+        });
+      },
+      onPanResponderRelease: () => setActiveGesture(null),
     });
 
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
 
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative ">
+      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
         {selectedImages.length > 0 ? (
-          selectedImages.map((image, index) => (
-            <View
-              {...panResponder(image).panHandlers}
-              key={index}
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: [
-                  { translateX: dragPositions[image]?.x || -48 },
-                  { translateY: dragPositions[image]?.y || -48 },
-                ],
-              }}
-            >
-              <Image
-                source={{ uri: image }}
-                className="w-24 h-24 absolute"
-                resizeMode="contain"
-              />
-            </View>
-          ))
+          selectedImages.map((image, index) => {
+            const isSelected = selectedImage === image;
+            const size = imageSizes[image] || { width: 96, height: 96 };
+            const position = dragPositions[image] || { x: -48, y: -48 };
+
+            return (
+              <Animated.View
+                key={index}
+                style={{
+                  position: "absolute",
+                  transform: [
+                    { translateX: position.x },
+                    { translateY: position.y },
+                  ],
+                }}
+                {...panResponder(image).panHandlers}
+              >
+                <View
+                  style={{
+                    width: size.width,
+                    height: size.height,
+                    borderWidth: isSelected ? 1 : 0,
+                    borderStyle: "dashed",
+                    borderColor: "#DFDFDF",
+                    borderRadius: 10,
+                    position: "relative",
+                  }}
+                >
+                  <Pressable onPress={() => handleImageSelection(image)}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: size.width, height: size.height }}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
+
+                  {isSelected && (
+                    <View
+                      style={{
+                        position: "absolute",
+                        bottom: -6,
+                        right: -6,
+                        width: 14,
+                        height: 14,
+                        backgroundColor: "rgba(147, 147, 147, 0.7)",
+                        borderRadius: 7,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      {...resizeResponder(image).panHandlers}
+                    >
+                      <ResizeArrow width="50%" height="50%" />
+                    </View>
+                  )}
+                </View>
+              </Animated.View>
+            );
+          })
         ) : (
           <Text className="text-gray-500 font-bold">
             Create your own outfit

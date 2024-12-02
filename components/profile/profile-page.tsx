@@ -86,7 +86,7 @@ const ProfilePage = () => {
             <View>
               <TouchableOpacity
                 className="flex-row h-10 w-96 mt-10 px-5 justify-between items-center"
-                onPress={() => router.push(routes.subscription as Href<string>)}
+                onPress={() => router.push("/(tabs)/profile/subscription")}
               >
                 <LinearGradient
                   colors={["#7AB2B2", "#B088CD"]}
@@ -125,7 +125,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push(routes.profileSettings as Href<string>)
+                  router.push("/(tabs)/profile/profile-settings")
                 }
               >
                 <View className="flex-row items-center">
@@ -140,7 +140,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push(routes.personalInformation as Href<string>)
+                  router.push("/(tabs)/profile/personal-information")
                 }
               >
                 <View className="flex-row items-center">
@@ -155,7 +155,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push(routes.preferencesAndBudget as Href<string>)
+                  router.push("/(tabs)/profile/preferences-and-budget")
                 }
               >
                 <View className="flex-row items-center">
@@ -170,7 +170,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push(routes.skinToneAnalysis as Href<string>)
+                  router.push("/(tabs)/profile/skin-tone-analysis")
                 }
               >
                 <View className="flex-row items-center">
@@ -184,7 +184,7 @@ const ProfilePage = () => {
 
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
-                onPress={() => router.push(routes.bodyType as Href<string>)}
+                onPress={() => router.push("/(tabs)/profile/body-type")}
               >
                 <View className="flex-row items-center">
                   <BodyTypeIcon width={24} height={24} />

@@ -253,10 +253,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         <View className="px-5">
           {/* Birthday */}
           <View className="mb-5">
-            <Text className="text-lg">Birthday</Text>
+            <Text className="mb-1">Birthday</Text>
             <View className="flex-row items-center">
               <TextInput
-                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
+                className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="MM/DD/YYYY"
                 value={birthDate}
@@ -269,9 +269,9 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           </View>
 
           {/* Gender */}
-          <View className="mb-5">
-            <Text className="text-lg">Gender</Text>
-            <View className="flex flex-row flex-wrap justify-between mt-3">
+          <View className="mb-3">
+            <Text className="mb-1">Gender</Text>
+            <View className="flex flex-row flex-wrap justify-between">
               {genderButtons.map((button) => (
                 <TouchableOpacity
                   key={button.id}
@@ -299,14 +299,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Height */}
           <View className="mb-5">
             <View className="flex-row justify-between">
-              <Text className="text-lg">Height</Text>
+              <Text className="mb-1">Height</Text>
               <Text className="ml-2 text-tertiary">cm</Text>
             </View>
             <View className="flex-row items-center">
               <TextInput
-                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
+                className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
-                placeholder="Enter Height"
+                placeholder="0"
                 value={height.toString()}
                 onChangeText={(value) => {
                   const numericValue = Number(value);
@@ -325,14 +325,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Weight */}
           <View className="mb-5">
             <View className="flex-row justify-between">
-              <Text className="text-lg">Weight</Text>
+              <Text className="mb-1">Weight</Text>
               <Text className="ml-2 text-tertiary">kg</Text>
             </View>
             <View className="flex-row items-center">
               <TextInput
-                className="flex-1 border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
+                className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
-                placeholder="Enter Weight"
+                placeholder="0"
                 value={weight.toString()}
                 onChangeText={(value) => {
                   const numericValue = Number(value);
@@ -350,10 +350,10 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
           {/* Location */}
           <View className="mb-5">
-            <Text className="text-lg">Location</Text>
+            <Text className="mb-1">Location</Text>
             <TouchableOpacity onPress={requestLocationPermission}>
-              <View className="border-[#F3F3F3] bg-[#F3F3F3] p-3 rounded-lg">
-                <Text>{text}</Text>
+              <View className="h-[48px] justify-center border-[#F3F3F3] bg-[#F3F3F3] p-3 rounded-lg">
+                <Text className="">{text}</Text>
               </View>
             </TouchableOpacity>
           </View>

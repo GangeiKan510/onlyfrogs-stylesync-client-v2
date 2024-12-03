@@ -24,6 +24,7 @@ import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
 import { getSuggesteddPrompt } from "@/network/web/chat";
+import { scrapeMissingPieces } from "@/network/web/scraping";
 
 interface MessageProps {
   id: string;
@@ -82,15 +83,14 @@ export default function HomeScreen() {
         content,
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-
       setMessage("");
 
       setIsReplying(true);
       setIsSending(true);
 
       try {
+        // Send message to assistant and receive response
         const assistantResponse = await sendMessage(user.id, content);
-
         const assistantMessage = {
           id: assistantResponse.id,
           role: "assistant",
@@ -98,6 +98,35 @@ export default function HomeScreen() {
         };
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+
+        console.log("Assistant Response:", assistantMessage.content);
+
+        try {
+          const scrapedData = await scrapeMissingPieces(
+            user.id,
+            assistantMessage.content
+          );
+          console.log("Scraped Data:", scrapedData);
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: new Date().toISOString(),
+              role: "system",
+              content: `Scraped Missing Pieces: ${JSON.stringify(scrapedData)}`,
+            },
+          ]);
+        } catch (scrapeError) {
+          console.error("Error during scraping:", scrapeError);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: new Date().toISOString(),
+              role: "system",
+              content: "Failed to scrape missing pieces.",
+            },
+          ]);
+        }
 
         const response = await getSuggesteddPrompt(content);
         if (response.suggestions) {

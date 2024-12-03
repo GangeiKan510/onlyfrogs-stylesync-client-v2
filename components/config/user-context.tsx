@@ -52,6 +52,8 @@ type PromptSettings = {
 type UserDetails = {
   birth_date: string | null;
   budget_preferences: object;
+  preferred_styles: string | null;
+  preferred_brands: string | null;
   email: string;
   favorite_color: string | null;
   first_name: string;

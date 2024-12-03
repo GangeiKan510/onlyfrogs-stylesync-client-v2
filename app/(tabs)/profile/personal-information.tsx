@@ -256,7 +256,7 @@ function PersonalInformation() {
       <View className="flex-1 px-6 mt-10">
         {/* Birthday Input */}
         <View className="mb-5">
-          <Text className="mb-1">Birthday</Text>
+          <Text className="mb-1 font-bold">Birthday</Text>
           <TextInput
             className="h-[48px] border border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
             placeholder="MM/DD/YYYY"
@@ -271,7 +271,7 @@ function PersonalInformation() {
 
         {/* Gender Selection */}
         <View className="mb-3">
-          <Text className="mb-1">Gender</Text>
+          <Text className="mb-1 font-bold">Gender</Text>
           <View className="flex flex-row flex-wrap justify-between">
             {genderOptions.map((gender) => (
               <TouchableOpacity
@@ -296,7 +296,7 @@ function PersonalInformation() {
         {/* Height Input */}
         <View className="mb-5">
           <View className="flex-row justify-between">
-            <Text className="mb-1">Height</Text>
+            <Text className="mb-1 font-bold">Height</Text>
             <Text className="ml-2 text-tertiary">cm</Text>
           </View>
           <View className="flex-row items-center">
@@ -323,7 +323,7 @@ function PersonalInformation() {
         {/* Weight Input */}
         <View className="mb-5">
           <View className="flex-row justify-between">
-            <Text className="mb-1">Weight</Text>
+            <Text className="mb-1 font-semibold">Weight</Text>
             <Text className="ml-2 text-tertiary">kg</Text>
           </View>
           <View className="flex-row items-center">

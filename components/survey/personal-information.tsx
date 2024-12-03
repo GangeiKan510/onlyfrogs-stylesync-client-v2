@@ -253,7 +253,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
         <View className="px-5">
           {/* Birthday */}
           <View className="mb-5">
-            <Text className="mb-1">Birthday</Text>
+            <Text className="mb-1 font-bold">Birthday</Text>
             <View className="flex-row items-center">
               <TextInput
                 className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
@@ -270,7 +270,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
 
           {/* Gender */}
           <View className="mb-3">
-            <Text className="mb-1">Gender</Text>
+            <Text className="mb-1 font-bold">Gender</Text>
             <View className="flex flex-row flex-wrap justify-between">
               {genderButtons.map((button) => (
                 <TouchableOpacity
@@ -299,7 +299,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Height */}
           <View className="mb-5">
             <View className="flex-row justify-between">
-              <Text className="mb-1">Height</Text>
+              <Text className="mb-1 font-bold">Height</Text>
               <Text className="ml-2 text-tertiary">cm</Text>
             </View>
             <View className="flex-row items-center">
@@ -325,7 +325,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
           {/* Weight */}
           <View className="mb-5">
             <View className="flex-row justify-between">
-              <Text className="mb-1">Weight</Text>
+              <Text className="mb-1 font-bold">Weight</Text>
               <Text className="ml-2 text-tertiary">kg</Text>
             </View>
             <View className="flex-row items-center">

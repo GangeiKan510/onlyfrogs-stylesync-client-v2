@@ -39,8 +39,8 @@ const PiecesTab = () => {
 
   const handleItemPress = (id: string, imageUrl: string) => {
     const selectedClothing = filteredClothes.find((item) => item.id === id);
-
     const wornCount = selectedClothing?.worn?.[0]?.count ?? 0;
+
     setSelectedClothingImage(imageUrl);
     setSelectedClothingId(id);
     setIsModalVisible(true);
@@ -105,6 +105,13 @@ const PiecesTab = () => {
       }
       if (item.material) filterOptions.material.add(item.material);
       if (item.pattern) filterOptions.pattern.add(item.pattern);
+      const wornCount = item.worn?.[0]?.count ?? 0;
+      if (wornCount === 0) filterOptions.worn.add("Never Worn");
+      else if (wornCount >= 1 && wornCount <= 5)
+        filterOptions.worn.add("1-5 times");
+      else if (wornCount >= 6 && wornCount <= 10)
+        filterOptions.worn.add("6-10 times");
+      else if (wornCount > 10) filterOptions.worn.add("More than 10 times");
 
       console.log("Worn count:", item.worn);
     });
@@ -170,7 +177,15 @@ const PiecesTab = () => {
       const itemPattern =
         (item.pattern as unknown as string)?.toLowerCase() || "";
       // Worn
-    
+      const wornCount = item.worn?.[0]?.count ?? 0;
+      const itemWorn =
+        wornCount === 0
+          ? "Never Worn"
+          : wornCount >= 1 && wornCount <= 5
+            ? "1-5 times"
+            : wornCount >= 6 && wornCount <= 10
+              ? "6-10 times"
+              : "More than 10 times";
 
       const matchesFilters =
         selectedFilters.length === 0 ||
@@ -181,7 +196,8 @@ const PiecesTab = () => {
             itemSeason.includes(filter.toLowerCase()) ||
             itemColor.includes(filter.toLowerCase()) ||
             itemMaterial.includes(filter.toLowerCase()) ||
-            itemPattern.includes(filter.toLowerCase()) 
+            itemPattern.includes(filter.toLowerCase()) ||
+            itemWorn.toLowerCase().includes(filter.toLowerCase())
         );
 
       return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
@@ -251,7 +267,11 @@ const PiecesTab = () => {
                         }`}
                       >
                         <Text
-                          className={`${selectedFilters.includes(season) ? "text-white" : "text-[#7AB2B2]"}`}
+                          className={`${
+                            selectedFilters.includes(season)
+                              ? "text-white"
+                              : "text-[#7AB2B2]"
+                          }`}
                         >
                           {season.replace(/^\w/, (c) => c.toUpperCase())}
                         </Text>
@@ -305,7 +325,11 @@ const PiecesTab = () => {
                         }`}
                       >
                         <Text
-                          className={`${selectedFilters.includes(category) ? "text-white" : "text-[#7AB2B2]"}`}
+                          className={`${
+                            selectedFilters.includes(category)
+                              ? "text-white"
+                              : "text-[#7AB2B2]"
+                          }`}
                         >
                           {category.replace(/^\w/, (c) => c.toUpperCase())}
                         </Text>
@@ -421,7 +445,36 @@ const PiecesTab = () => {
                   </View>
                 </View>
 
-              
+                <Text className="text-[#484848] text-[14px] ">
+                  Wear Count
+                </Text>
+                <View className="flex-row flex-wrap">
+                  <View className="flex-row flex-wrap mb-6">
+                    {itemFilterOptions.worn.map((itemWorn) => {
+                      return (
+                        <Pressable
+                          key={itemWorn}
+                          onPress={() => toggleFilter(itemWorn.toLowerCase())}
+                          className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
+                            selectedFilters.includes(itemWorn.toLowerCase())
+                              ? "bg-[#7AB2B2]"
+                              : "bg-white"
+                          }`}
+                        >
+                          <Text
+                            className={`${
+                              selectedFilters.includes(itemWorn.toLowerCase())
+                                ? "text-white"
+                                : "text-[#7AB2B2]"
+                            }`}
+                          >
+                            {itemWorn}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
               </>
             ) : (
               <View className="h-20 items-center justify-center">

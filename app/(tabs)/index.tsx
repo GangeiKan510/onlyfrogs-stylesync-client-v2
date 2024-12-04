@@ -25,6 +25,8 @@ import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
 import { getSuggesteddPrompt } from "@/network/web/chat";
 import { scrapeMissingPieces } from "@/network/web/scraping";
+import SuggestedProductCard from "@/components/cards/SuggestedProductCard";
+import { removeLineBreaks } from "@/utils/helpers/remove-line-breaks";
 
 interface MessageProps {
   id: string;
@@ -104,23 +106,17 @@ export default function HomeScreen() {
         console.log("Assistant Response:", assistantMessage.content);
 
         try {
+          const formattedResponse = removeLineBreaks(assistantMessage.content);
+
           const scrapedData = await scrapeMissingPieces(
             user.id,
-            assistantMessage.content
+            formattedResponse
           );
-          console.log("Scraped Data:", scrapedData);
 
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: new Date().toISOString(),
-              role: "system",
-              content: `Scraped Missing Pieces: ${JSON.stringify(scrapedData)}`,
-            },
-          ]);
-
-          setScrapedPieces(scrapedData?.searchResults?.products);
-          console.log(scrapedPieces);
+          const allProducts = scrapedData.searchResults.flatMap(
+            (result: any) => result.products || []
+          );
+          setScrapedPieces(allProducts);
         } catch (scrapeError) {
           console.error("Error during scraping:", scrapeError);
           setMessages((prevMessages) => [
@@ -225,6 +221,25 @@ export default function HomeScreen() {
                 >
                   <BotIcon width={45} height={45} className="mr-2" />
                   <ReplyLoading />
+                </View>
+              )}
+              {scrapedPieces?.length > 0 && (
+                <View className="mt-4">
+                  <Text className="font-bold text-lg mb-2">
+                    Recommended Products
+                  </Text>
+                  {scrapedPieces.map((product: any, index) => (
+                    <SuggestedProductCard
+                      key={`product-${index}`}
+                      name={product.name}
+                      price={product.price}
+                      originalPrice={product.originalPrice}
+                      discount={product.discount}
+                      image={product.image}
+                      productUrl={product.productUrl}
+                      brand={product.brand}
+                    />
+                  ))}
                 </View>
               )}
               {suggestedPrompts.length > 0 && (

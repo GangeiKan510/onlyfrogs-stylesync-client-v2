@@ -16,7 +16,6 @@ import { useUser } from "@/components/config/user-context";
 import getColorHexCode from "@/utils/clothingUtils/colorUtils";
 import getMaterialSvg from "@/utils/clothingUtils/materialUtils";
 import getPatternSvg from "@/utils/clothingUtils/patternUtils";
-
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import { COLOR_LIST } from "@/components/constants/color-list";
 
@@ -32,15 +31,20 @@ const PiecesTab = () => {
   const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
     null
   );
+  const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
 
   const handleItemPress = (id: string, imageUrl: string) => {
+    const selectedClothing = filteredClothes.find((item) => item.id === id);
+
+    const wornCount = selectedClothing?.worn?.[0]?.count ?? 0;
     setSelectedClothingImage(imageUrl);
     setSelectedClothingId(id);
     setIsModalVisible(true);
+    setSelectedClothingCount(wornCount);
   };
 
   const toggleDropdownVisibility = () => {
@@ -80,6 +84,7 @@ const PiecesTab = () => {
       color: new Set<{ name: string; colorCode: string }>(),
       material: new Set<string>(),
       pattern: new Set<string>(),
+      worn: new Set<string>(),
     };
 
     user?.clothes.forEach((item) => {
@@ -100,6 +105,8 @@ const PiecesTab = () => {
       }
       if (item.material) filterOptions.material.add(item.material);
       if (item.pattern) filterOptions.pattern.add(item.pattern);
+
+      console.log("Worn count:", item.worn);
     });
 
     return {
@@ -109,6 +116,7 @@ const PiecesTab = () => {
       category: Array.from(filterOptions.category),
       material: Array.from(filterOptions.material),
       pattern: Array.from(filterOptions.pattern),
+      worn: Array.from(filterOptions.worn),
     };
   };
 
@@ -144,11 +152,11 @@ const PiecesTab = () => {
 
       // Season
       const itemSeason = Array.isArray(item.season)
-        ? item.season.map((s) => (s as string).toLowerCase())
+        ? item.season.map((season) => (season as string).toLowerCase())
         : [];
       // Occasion
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((o) => (o as string).toLowerCase())
+        ? item.occasion.map((occasion) => (occasion as string).toLowerCase())
         : [];
       // Category
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
@@ -161,6 +169,8 @@ const PiecesTab = () => {
       // Pattern
       const itemPattern =
         (item.pattern as unknown as string)?.toLowerCase() || "";
+      // Worn
+    
 
       const matchesFilters =
         selectedFilters.length === 0 ||
@@ -171,7 +181,7 @@ const PiecesTab = () => {
             itemSeason.includes(filter.toLowerCase()) ||
             itemColor.includes(filter.toLowerCase()) ||
             itemMaterial.includes(filter.toLowerCase()) ||
-            itemPattern.includes(filter.toLowerCase())
+            itemPattern.includes(filter.toLowerCase()) 
         );
 
       return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
@@ -410,6 +420,8 @@ const PiecesTab = () => {
                     })}
                   </View>
                 </View>
+
+              
               </>
             ) : (
               <View className="h-20 items-center justify-center">
@@ -458,7 +470,7 @@ const PiecesTab = () => {
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
-        wornCount={0}
+        wornCount={selectedClothingCount}
       />
     </SafeAreaView>
   );

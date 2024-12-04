@@ -63,6 +63,8 @@ type UserDetails = {
   last_name: string;
   serial: number;
   skin_tone_classification: string | null;
+  sub_season: string | null;
+  skin_tone_complements?: string[];
   style_preferences: string[];
   tokens: number;
   closets: Closet[];

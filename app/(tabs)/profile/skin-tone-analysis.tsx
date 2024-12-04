@@ -171,7 +171,7 @@ const SkinToneAnalysis = () => {
             subSeason={analysisResult.sub_season}
             complements={analysisResult.complements}
           />
-          <View className="flex-row justify-between px-4 bottom-4">
+          <View className="flex-row justify-between px-8 bottom-4">
             <TouchableOpacity
               onPress={handleCancel}
               className="items-center justify-center flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"

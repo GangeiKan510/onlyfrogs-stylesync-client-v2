@@ -192,14 +192,14 @@ const PreferencesAndBudget = () => {
                   </TouchableOpacity>
                   {!showAllStyles && STYLE_LIST.length > 8 && index === 7 && (
                     <TouchableOpacity onPress={() => setShowAllStyles(true)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                         Show more...
                       </Text>
                     </TouchableOpacity>
                   )}
                   {showAllStyles && index === STYLE_LIST.length - 1 && (
                     <TouchableOpacity onPress={() => setShowAllStyles(false)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                         Show less
                       </Text>
                     </TouchableOpacity>
@@ -264,14 +264,14 @@ const PreferencesAndBudget = () => {
                   </TouchableOpacity>
                   {!showAllColors && COLOR_LIST.length > 8 && index === 7 && (
                     <TouchableOpacity onPress={() => setShowAllColors(true)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                         Show more...
                       </Text>
                     </TouchableOpacity>
                   )}
                   {showAllColors && index === COLOR_LIST.length - 1 && (
                     <TouchableOpacity onPress={() => setShowAllColors(false)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-2">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-2">
                         Show less
                       </Text>
                     </TouchableOpacity>
@@ -319,14 +319,14 @@ const PreferencesAndBudget = () => {
                   </TouchableOpacity>
                   {!showAllBrands && brandsList.length > 4 && index === 3 && (
                     <TouchableOpacity onPress={() => setShowAllBrands(true)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                         Show more...
                       </Text>
                     </TouchableOpacity>
                   )}
                   {showAllBrands && index === brandsList.length - 1 && (
                     <TouchableOpacity onPress={() => setShowAllBrands(false)}>
-                      <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                      <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                         Show less
                       </Text>
                     </TouchableOpacity>

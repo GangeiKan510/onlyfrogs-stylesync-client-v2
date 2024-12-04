@@ -9,6 +9,7 @@ import Result from "./result";
 import { analyzeUserSkinTone } from "@/network/web/user";
 import FloatingActionMenu from "../buttons/FloatingActionMenu";
 import Toast from "react-native-toast-message";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SkinToneAnalysis = ({
   onAnalyzeComplete,
@@ -144,12 +145,14 @@ const SkinToneAnalysis = ({
           complements={analysisResult.complements}
         />
       ) : (
-        <View>
+        <SafeAreaView className="flex-1 bg-white">
+          <View className="w-full flex-row items-center top-2 px-6 z-30">
+            <Text className="flex-1 text-center text-[20px] font-bold">
+              Skint Tone Analysis
+            </Text>
+          </View>
           <View className="h-[85vh] flex justify-center items-center mt-10">
             <View className="mb-14">
-              <Text className="text-[20px] font-bold text-center">
-                Skin Tone Analysis
-              </Text>
               <Text className="text-[16px] text-center mb-5">
                 Let&apos;s find your perfect shades.
               </Text>
@@ -162,7 +165,7 @@ const SkinToneAnalysis = ({
               </View>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       )}
       {!isLoading && !analysisResult && (
         <FloatingActionMenu actions={actions as any} loading={isLoading} />

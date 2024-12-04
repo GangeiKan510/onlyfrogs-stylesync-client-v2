@@ -303,14 +303,13 @@ function PersonalInformation() {
             <TextInput
               className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
               keyboardType="numeric"
-              placeholder="Enter Height"
+              placeholder="0"
+              maxLength={3}
               value={height.toString()}
               onBlur={() => validateHeight(Number(height))}
               onChangeText={(value) => {
                 const numericValue = Number(value);
-                if (numericValue <= 250) {
-                  setHeight(numericValue);
-                }
+                setHeight(numericValue);
                 validateHeight(numericValue);
               }}
             />
@@ -330,14 +329,13 @@ function PersonalInformation() {
             <TextInput
               className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
               keyboardType="numeric"
-              placeholder="Enter Weight"
+              placeholder="0"
+              maxLength={3}
               value={weight.toString()}
               onBlur={() => validateWeight(Number(weight))}
               onChangeText={(value) => {
                 const numericValue = Number(value);
-                if (numericValue <= 115) {
-                  setWeight(numericValue);
-                }
+                setWeight(numericValue);
                 validateWeight(numericValue);
               }}
             />

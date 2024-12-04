@@ -156,7 +156,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     return true;
   };
   
-
   const requestLocationPermission = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -307,12 +306,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="0"
+                maxLength={3}
                 value={height.toString()}
                 onChangeText={(value) => {
                   const numericValue = Number(value);
-                  if (numericValue <= 250) {
-                    setHeight(numericValue);
-                  }
+                  setHeight(numericValue);
                   validateHeight(numericValue);
                 }}
               />
@@ -333,12 +331,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                 className="flex-1 h-[48px] border-[#F3F3F3] bg-[#F3F3F3] rounded-lg p-3"
                 keyboardType="numeric"
                 placeholder="0"
+                maxLength={3}
                 value={weight.toString()}
                 onChangeText={(value) => {
                   const numericValue = Number(value);
-                  if (numericValue <= 115) {
-                    setWeight(numericValue);
-                  }
+                  setWeight(numericValue); 
                   validateWeight(numericValue);
                 }}
               />

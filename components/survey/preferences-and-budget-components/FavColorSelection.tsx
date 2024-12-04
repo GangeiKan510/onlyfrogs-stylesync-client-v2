@@ -45,14 +45,14 @@ const FavColorSelection = () => {
             </TouchableOpacity>
             {!showAll && COLOR_LIST.length > 8 && index === 7 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                   Show more...
                 </Text>
               </TouchableOpacity>
             )}
             {showAll && index === COLOR_LIST.length - 1 && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-2">
+                <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                   Show less
                 </Text>
               </TouchableOpacity>

@@ -4,7 +4,7 @@ import {
   View,
   Text,
   Alert,
-  Pressable,
+
   BackHandler,
   TouchableOpacity,
 } from "react-native";
@@ -152,11 +152,13 @@ const SkinToneAnalysis = () => {
   const handleCancel = () => {
     setSelectedImage(null);
     setAnalysisResult(null);
+    router.push("/(tabs)/profile/result");
   };
 
   const handleSave = () => {
     // Save the skin tone analysis result
     console.log("Saving skin tone analysis result:", skinToneAnalysisResult);
+    router.push("/(tabs)/profile");
   };
 
   return (
@@ -169,31 +171,31 @@ const SkinToneAnalysis = () => {
             subSeason={analysisResult.sub_season}
             complements={analysisResult.complements}
           />
-          <View className="flex-row justify-between  mt-[-40px] px-4">
-            <Pressable
+          <View className="flex-row justify-between px-4 bottom-4">
+            <TouchableOpacity
               onPress={handleCancel}
-              className="flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[#7AB2B2] text-[16px] py-2">
                 Cancel
               </Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable
+            <TouchableOpacity
               onPress={handleSave}
-              className="bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[16px] text-white py-2">
                 Save
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       ) : (
         <SafeAreaView className="flex-1 bg-white">
           <View className="w-full flex-row items-center top-2 px-6 z-30">
             <TouchableOpacity
-              onPress={() => router.push("/(tabs)/profile")}
+              onPress={() => router.push("/(tabs)/profile/result")}
               className="absolute left-6 z-40"
             >
               <Back width={20} height={20} />

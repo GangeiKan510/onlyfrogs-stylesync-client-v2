@@ -42,6 +42,7 @@ export default function HomeScreen() {
   const [showScrollDown, setShowScrollDown] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [scrapedPieces, setScrapedPieces] = useState([]);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -87,6 +88,7 @@ export default function HomeScreen() {
 
       setIsReplying(true);
       setIsSending(true);
+      setSuggestedPrompts([]);
 
       try {
         // Send message to assistant and receive response
@@ -116,6 +118,9 @@ export default function HomeScreen() {
               content: `Scraped Missing Pieces: ${JSON.stringify(scrapedData)}`,
             },
           ]);
+
+          setScrapedPieces(scrapedData?.searchResults?.products);
+          console.log(scrapedPieces);
         } catch (scrapeError) {
           console.error("Error during scraping:", scrapeError);
           setMessages((prevMessages) => [

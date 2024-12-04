@@ -23,6 +23,7 @@ import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
+import RecommendedProductsIcon from "../../assets/icons/recommended-products-icon.svg";
 import { getSuggesteddPrompt } from "@/network/web/chat";
 import { scrapeMissingPieces } from "@/network/web/scraping";
 import SuggestedProductCard from "@/components/cards/SuggestedProductCard";
@@ -225,9 +226,13 @@ export default function HomeScreen() {
               )}
               {scrapedPieces?.length > 0 && (
                 <View className="mt-4">
-                  <Text className="font-bold text-lg mb-2">
-                    Recommended Products
-                  </Text>
+                  <View className="flex flex-row items-center mb-2">
+                    <RecommendedProductsIcon width={22} height={22} />
+                    <Text className="text-tertiary ml-1">
+                      Outift Recommendation from Shops...
+                    </Text>
+                  </View>
+
                   {scrapedPieces.map((product: any, index) => (
                     <SuggestedProductCard
                       key={`product-${index}`}

@@ -46,6 +46,7 @@ export default function HomeScreen() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
   const [scrapedPieces, setScrapedPieces] = useState([]);
+  const [isScraping, setIsScraping] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -92,6 +93,7 @@ export default function HomeScreen() {
       setIsReplying(true);
       setIsSending(true);
       setSuggestedPrompts([]);
+      setScrapedPieces([]);
 
       try {
         // Send message to assistant and receive response
@@ -108,7 +110,7 @@ export default function HomeScreen() {
 
         try {
           const formattedResponse = removeLineBreaks(assistantMessage.content);
-
+          setIsScraping(true);
           const scrapedData = await scrapeMissingPieces(
             user.id,
             formattedResponse
@@ -118,16 +120,11 @@ export default function HomeScreen() {
             (result: any) => result.products || []
           );
           setScrapedPieces(allProducts);
+          setIsScraping(false);
         } catch (scrapeError) {
           console.error("Error during scraping:", scrapeError);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: new Date().toISOString(),
-              role: "system",
-              content: "Failed to scrape missing pieces.",
-            },
-          ]);
+        } finally {
+          setIsScraping(false);
         }
 
         const response = await getSuggesteddPrompt(content);
@@ -221,6 +218,9 @@ export default function HomeScreen() {
                   className="flex-row justify-start items-center mb-4"
                 >
                   <BotIcon width={45} height={45} className="mr-2" />
+                  {isScraping && (
+                    <Text className="mr-1">Completing your outfit</Text>
+                  )}
                   <ReplyLoading />
                 </View>
               )}

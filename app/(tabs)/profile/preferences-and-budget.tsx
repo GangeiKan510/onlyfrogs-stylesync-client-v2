@@ -7,27 +7,31 @@ import {
   TouchableOpacity,
   BackHandler,
 } from "react-native";
-import BudgetRange from "@/components/survey/preferences-and-budget-components/BudgetRange";
+import RangeSlider from "@/components/survey/preferences-and-budget-components/RangeSlider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Back from "../../../assets/icons/back-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import { useUser } from "@/components/config/user-context";
-import { Href, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { STYLE_LIST } from "@/components/constants/style-list";
 import { COLOR_LIST } from "@/components/constants/color-list";
 import SheinLogo from "../../../assets/images/shein.svg";
 import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
 import UniqloLogo from "../../../assets/images/uniqlo.svg";
 import BenchLogo from "../../../assets/images/bench.svg";
+import Toast from "react-native-toast-message";
 
 const PreferencesAndBudget = () => {
   const router = useRouter();
   const { user, refetchMe } = useUser();
-  const [preferredStyles, setPreferredStyles] = useState<string[]>(
-    user?.preferred_styles ? user.preferred_styles.split(",") : []
-  );
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const MIN_DEFAULT = 100;
+  const MAX_DEFAULT = 5000;
+  const [minValue, setMinValue] = useState<number>(MIN_DEFAULT);
+  const [maxValue, setMaxValue] = useState<number>(MAX_DEFAULT);
+  const [styles, setStyles] = useState<string[]>([]);
+  const [favoriteColors, setFavoriteColors] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+
   const [showAllStyles, setShowAllStyles] = useState<boolean>(false);
   const [showAllColors, setShowAllColors] = useState<boolean>(false);
   const [showAllBrands, setShowAllBrands] = useState<boolean>(false);
@@ -40,33 +44,98 @@ const PreferencesAndBudget = () => {
     { name: "Bench", logo: BenchLogo },
   ];
 
-  const toggleStyleSelection = (styleName: string) => {
-    if (selectedStyles.includes(styleName)) {
-      setSelectedStyles(selectedStyles.filter((style) => style !== styleName));
+  const toggleStyleSelection = (styleName: string): string[] => {
+    let updatedStyles;
+  
+    if (styles.includes(styleName)) {
+      updatedStyles = styles.filter((style) => style !== styleName);
     } else {
-      setSelectedStyles([...selectedStyles, styleName]);
+      updatedStyles = [...styles, styleName];
     }
+  
+    setStyles(updatedStyles);
+  
+    console.log(updatedStyles); // Log the updated array
+    return updatedStyles; // Return the updated array
+  };
+  
+
+  const toggleColorSelection = (colorName: string): string[] => {
+    let updatedColors;
+  
+    if (favoriteColors.includes(colorName)) {
+      updatedColors = favoriteColors.filter((color) => color !== colorName);
+    } else {
+      updatedColors = [...favoriteColors, colorName];
+    }
+  
+    setFavoriteColors(updatedColors);
+  
+    console.log(updatedColors); // Log the updated array
+    return updatedColors; // Return the updated array
   };
 
-  const toggleColorSelection = (colorName: string) => {
-    if (selectedColors.includes(colorName)) {
-      setSelectedColors(selectedColors.filter((color) => color !== colorName));
+  const toggleBrandSelection = (brandName: string): string[] => {
+    let updatedBrands;
+  
+    if (brands.includes(brandName)) {
+      updatedBrands = brands.filter((brand) => brand !== brandName);
     } else {
-      setSelectedColors([...selectedColors, colorName]);
+      updatedBrands = [...brands, brandName];
     }
+  
+    setBrands(updatedBrands);
+  
+    console.log(updatedBrands); // Log the updated array
+    return updatedBrands; // Return the updated array
   };
 
-  const toggleBrandSelection = (brandName: string) => {
-    if (selectedBrands.includes(brandName)) {
-      setSelectedBrands(selectedBrands.filter((brand) => brand !== brandName));
-    } else {
-      setSelectedBrands([...selectedBrands, brandName]);
-    }
+  const handleBudgetRangeChange = (range: { min: number; max: number }) => {
+    setMinValue(range.min);
+    setMaxValue(range.max);
+    console.log("Selected Budget Range:", range);
   };
 
   const visibleStyles = showAllStyles ? STYLE_LIST : STYLE_LIST.slice(0, 8);
   const visibleColors = showAllColors ? COLOR_LIST : COLOR_LIST.slice(0, 8);
   const visibleBrands = showAllBrands ? brandsList : brandsList.slice(0, 4);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const preferences = {
+        budgetRange: {
+          min: minValue,
+          max: maxValue,
+        },
+        styles: styles,
+        favoriteColors: favoriteColors,
+        brands: brands,
+      };
+  
+      console.log("Preferences to save:", preferences);
+
+      await new Promise((resolve) => setTimeout(resolve, 1000)); 
+  
+      Toast.show({
+        type: "success",
+        text1: "Preferences Saved",
+        text2: "Your preferences have been updated successfully.",
+        position: "top",
+      });
+      router.push("/(tabs)/profile");
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save preferences. Please try again.",
+        position: "top",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -95,7 +164,7 @@ const PreferencesAndBudget = () => {
       </View>
       <ScrollView className="flex-1">
         <View className="mx-5">
-          <Text className="text-[16px] font-bold mt-8 mb-2">
+          <Text className="font-bold mt-8 mb-1">
             Choose your preferred styles
           </Text>
 
@@ -105,7 +174,7 @@ const PreferencesAndBudget = () => {
                 <View key={index} className="flex-row items-center mb-1">
                   <TouchableOpacity
                     className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                      selectedStyles.includes(style.name)
+                      styles.includes(style.name)
                         ? "bg-[#7AB2B2] border-[#7AB2B2]"
                         : "bg-white border-[#7AB2B2]"
                     }`}
@@ -113,7 +182,7 @@ const PreferencesAndBudget = () => {
                   >
                     <Text
                       className={`text-base ${
-                        selectedStyles.includes(style.name)
+                        styles.includes(style.name)
                           ? "text-white"
                           : "text-[#7AB2B2]"
                       }`}
@@ -139,9 +208,9 @@ const PreferencesAndBudget = () => {
               ))}
             </View>
 
-            {selectedStyles.length > 0 && (
+            {styles.length > 0 && (
               <View className="">
-                {selectedStyles.map((styleName) => {
+                {styles.map((styleName) => {
                   const style = STYLE_LIST.find((s) => s.name === styleName);
                   return (
                     style && (
@@ -163,7 +232,7 @@ const PreferencesAndBudget = () => {
             )}
           </View>
 
-          <Text className="text-[16px] font-bold mt-8 mb-2">
+          <Text className="font-bold mt-8 mb-1">
             Choose your preferred colors
           </Text>
 
@@ -173,7 +242,7 @@ const PreferencesAndBudget = () => {
                 <View key={index} className="flex-row items-center mb-1">
                   <TouchableOpacity
                     className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                      selectedColors.includes(color.name)
+                      favoriteColors.includes(color.name)
                         ? "bg-[#7AB2B2] border-[#7AB2B2]"
                         : "bg-white border-[#7AB2B2]"
                     }`}
@@ -185,7 +254,7 @@ const PreferencesAndBudget = () => {
                     />
                     <Text
                       className={`text-base ${
-                        selectedColors.includes(color.name)
+                        favoriteColors.includes(color.name)
                           ? "text-white"
                           : "text-[#7AB2B2]"
                       }`}
@@ -211,8 +280,8 @@ const PreferencesAndBudget = () => {
               ))}
             </View>
           </View>
-          <Text className="text-[16px] font-bold mt-8 mb-2">
-            Choose yout preffered brands
+          <Text className="font-bold mt-8 mb-1">
+            Choose your preferred brands
           </Text>
 
           <View>
@@ -221,7 +290,7 @@ const PreferencesAndBudget = () => {
                 <View key={index} className="flex-row items-center mb-1">
                   <TouchableOpacity
                     className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                      selectedBrands.includes(brandName.name)
+                      brands.includes(brandName.name)
                         ? "bg-[#7AB2B2] border-[#7AB2B2]"
                         : "bg-white border-[#7AB2B2]"
                     }`}
@@ -240,7 +309,7 @@ const PreferencesAndBudget = () => {
                     </View>
                     <Text
                       className={`text-base ${
-                        selectedBrands.includes(brandName.name)
+                        brands.includes(brandName.name)
                           ? "text-white"
                           : "text-[#7AB2B2]"
                       }`}
@@ -266,17 +335,46 @@ const PreferencesAndBudget = () => {
               ))}
             </View>
           </View>
-          <Text className="text-[16px] font-bold mt-8 mb-2">
+          <Text className="font-bold mt-8 mb-1">
             Choose your preferred budget range
           </Text>
-          <BudgetRange />
+
+          <GestureHandlerRootView className="mt-1">
+            <View className="justify-center items-center">
+              <View className="z-10">
+                <View className="flex-row justify-between mx-2 ">
+                  <View className="mb-5">
+                    <Text className="text-black text-[14px]">Min Price</Text>
+                    <Text className="text-black font-bold text-[14px]">
+                      ₱{minValue}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text className="text-black text-[14px]">Max Price</Text>
+                    <Text className="text-black font-bold text-[14px]">
+                      ₱{maxValue}
+                    </Text>
+                  </View>
+                </View>
+                <View className="px-2 py-2  mb-4 flex justify-center items-center">
+                  <RangeSlider
+                    sliderWidth={330}
+                    min={MIN_DEFAULT}
+                    max={MAX_DEFAULT}
+                    step={10}
+                    onValueChange={handleBudgetRangeChange}
+                  />
+                </View>
+              </View>
+            </View>
+          </GestureHandlerRootView>
         </View>
 
-        <View className="mt-auto py-2 w-full px-6">
+        <View className="mt-5 pb-2 px-6">
           <TouchableOpacity
             className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
-            // onPress={}
-            disabled={loading}
+            onPress={handleSave}
+            // disabled={!isFormChanged}
           >
             {loading ? (
               <Spinner type="primary" />

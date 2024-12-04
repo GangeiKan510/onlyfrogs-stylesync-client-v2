@@ -33,7 +33,7 @@ const BudgetRange = () => {
               min={MIN_DEFAULT}
               max={MAX_DEFAULT}
               step={10}
-              onValueChange={(range) => {
+              onValueChange={(range: { min: number; max: number }) => {
                 setMinValue(range.min);
                 setMaxValue(range.max);
               }}

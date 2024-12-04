@@ -10,6 +10,7 @@ export const routes = {
   // profile: "/profile",
   noConnection: "/no-connection",
   closet: "closet",
+  analyzeSkinTonesIntructions: "/analyzeSkinToneIntructions",
 
   // profileSettings: "profile/profile-settings",
   // resetPassword: "profile/reset-password",

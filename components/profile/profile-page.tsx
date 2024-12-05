@@ -170,7 +170,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push("/(tabs)/profile/skin-tone-analysis")
+                  router.push("/(tabs)/profile/result")
                 }
               >
                 <View className="flex-row items-center">

@@ -59,18 +59,19 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const searchFieldMatch = (field: string | string[] | null | never) => {
+  const searchFieldMatch = (field: string | string[] | null | undefined) => {
     if (typeof field === "string") {
       return field.toLowerCase().includes(search.toLowerCase());
     } else if (Array.isArray(field)) {
       return field.some(
-        (f) =>
-          typeof f === "string" &&
-          f.toLowerCase().includes(search.toLowerCase())
+        (searchField) =>
+          typeof searchField === "string" &&
+          searchField.toLowerCase().includes(search.toLowerCase())
       );
     }
     return false;
   };
+
 
   const filterOptions = () => {
     const filterOptions = {
@@ -120,35 +121,28 @@ const PiecesTab = () => {
 
   const filteredClothes =
     user?.clothes.filter((item) => {
-      const hasDetails =
-        item.name &&
-        item.category &&
-        item.brand &&
-        item.color &&
-        item.material &&
-        item.season &&
-        item.pattern;
-
-      const isSearchActive = search.length > 0;
-
+      
       const matchesSearch =
-        !isSearchActive ||
+        search.length === 0 ||
         [
           item.name,
           item.color,
           item.brand,
           item.season,
+          item.occasion,
+          item.category?.name,
           item.pattern,
           item.material,
-        ].some((field) => searchFieldMatch(field));
+        ]
+        .some((field) => searchFieldMatch(field));
 
       // Season
       const itemSeason = Array.isArray(item.season)
-        ? item.season.map((s) => (s as string).toLowerCase())
+        ? item.season.map((season) => (season as string).toLowerCase())
         : [];
       // Occasion
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((o) => (o as string).toLowerCase())
+        ? item.occasion.map((occasion) => (occasion as string).toLowerCase())
         : [];
       // Category
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
@@ -174,7 +168,7 @@ const PiecesTab = () => {
             itemPattern.includes(filter.toLowerCase())
         );
 
-      return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
+      return  matchesSearch && matchesFilters;
     }) ?? [];
 
   return (

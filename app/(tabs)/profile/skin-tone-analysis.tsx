@@ -4,7 +4,7 @@ import {
   View,
   Text,
   Alert,
-  Pressable,
+
   BackHandler,
   TouchableOpacity,
 } from "react-native";
@@ -19,6 +19,7 @@ import Result from "../../../components/survey/result";
 import Back from "../../../assets/icons/back-icon.svg";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SkinToneAnalysis = () => {
   const router = useRouter();
@@ -151,11 +152,13 @@ const SkinToneAnalysis = () => {
   const handleCancel = () => {
     setSelectedImage(null);
     setAnalysisResult(null);
+    router.push("/(tabs)/profile/result");
   };
 
   const handleSave = () => {
     // Save the skin tone analysis result
     console.log("Saving skin tone analysis result:", skinToneAnalysisResult);
+    router.push("/(tabs)/profile");
   };
 
   return (
@@ -168,39 +171,41 @@ const SkinToneAnalysis = () => {
             subSeason={analysisResult.sub_season}
             complements={analysisResult.complements}
           />
-          <View className="flex-row justify-between  mt-[-40px] px-4">
-            <Pressable
+          <View className="flex-row justify-between px-8 bottom-4">
+            <TouchableOpacity
               onPress={handleCancel}
-              className="flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[#7AB2B2] text-[16px] py-2">
                 Cancel
               </Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable
+            <TouchableOpacity
               onPress={handleSave}
-              className="bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[16px] text-white py-2">
                 Save
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <View>
-          <TouchableOpacity
-            onPress={() =>  router.push("/(tabs)/profile")}
-            className="absolute left-8 z-40 top-16"
-          >
-            <Back width={20} height={20} />
-          </TouchableOpacity>
+        <SafeAreaView className="flex-1 bg-white">
+          <View className="w-full flex-row items-center top-2 px-6 z-30">
+            <TouchableOpacity
+              onPress={() => router.push("/(tabs)/profile/result")}
+              className="absolute left-6 z-40"
+            >
+              <Back width={20} height={20} />
+            </TouchableOpacity>
+            <Text className="flex-1 text-center text-[20px] font-bold">
+              Skint Tone Analysis
+            </Text>
+          </View>
           <View className="h-[85vh] flex justify-center items-center mt-10">
             <View className="mb-14">
-              <Text className="text-[20px] font-bold text-center">
-                Skin Tone Analysis
-              </Text>
               <Text className="text-[16px] text-center mb-5">
                 Let&apos;s find your perfect shades.
               </Text>
@@ -219,7 +224,7 @@ const SkinToneAnalysis = () => {
               />
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       )}
     </>
   );

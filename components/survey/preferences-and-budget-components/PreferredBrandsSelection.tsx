@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 
-import SheinLogo from '../../../assets/images/shein.jpeg';
-import PenshoppeLogo from '../../../assets/images/penshoppe.png';
-import UniqloLogo from '../../../assets/images/uniqlo.jpg';
-import BenchLogo from '../../../assets/images/bench.jpg';
+import SheinLogo from "../../../assets/images/shein.svg";
+import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
+import UniqloLogo from "../../../assets/images/uniqlo.svg";
+import BenchLogo from "../../../assets/images/bench.svg";
 
 const brandsList = [
   { name: "Shein", logo: SheinLogo },
@@ -40,25 +40,39 @@ const PreferredBrandSelection = () => {
               }`}
               onPress={() => toggleBrandSelection(brandName.name)}
             >
-              <Image
-                source={brandName.logo}
-                style={{ width: 22, height: 22, marginRight: 8, borderRadius: 12 }}
-                resizeMode="contain"
-              />
-              <Text className={`text-base ${
-                selectedBrands.includes(brandName.name) ? 'text-white' : 'text-[#7AB2B2]'
-              }`}>
+              <View
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: 5,
+                  overflow: "hidden",
+                  marginRight: 8,
+                }}
+              >
+                <brandName.logo width="100%" height="100%" />
+              </View>
+              <Text
+                className={`text-base ${
+                  selectedBrands.includes(brandName.name)
+                    ? "text-white"
+                    : "text-[#7AB2B2]"
+                }`}
+              >
                 {brandName.name}
               </Text>
             </TouchableOpacity>
             {!showAll && brandsList.length > 4 && index === 3 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show more...</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                  Show more...
+                </Text>
               </TouchableOpacity>
             )}
             {showAll && index === brandsList.length - 1 && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show less</Text>
+                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+                  Show less
+                </Text>
               </TouchableOpacity>
             )}
           </View>

@@ -52,6 +52,8 @@ type PromptSettings = {
 type UserDetails = {
   birth_date: string | null;
   budget_preferences: object;
+  preferred_styles: string | null;
+  preferred_brands: string | null;
   email: string;
   favorite_color: string | null;
   first_name: string;
@@ -61,6 +63,8 @@ type UserDetails = {
   last_name: string;
   serial: number;
   skin_tone_classification: string | null;
+  sub_season: string | null;
+  skin_tone_complements?: string[];
   style_preferences: string[];
   tokens: number;
   closets: Closet[];

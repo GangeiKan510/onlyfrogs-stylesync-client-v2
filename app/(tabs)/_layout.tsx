@@ -26,6 +26,7 @@ export default function TabLayout() {
       "personal-information",
       "preferences-and-budget",
       "skin-tone-analysis",
+      "result",
       "body-type",
       "subscription",
       "success",

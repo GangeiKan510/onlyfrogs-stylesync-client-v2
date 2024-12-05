@@ -10,7 +10,10 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
@@ -290,36 +293,36 @@ const DesignPage = () => {
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          {activeTab === "Closet" && (
-            <View className="h-[80%]">
-              <FlatList
-                key={activeTab}
-                className="mt-5 z-20 flex-grow px-2"
-                scrollEnabled={true}
-                data={closets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderCloset}
-                numColumns={3}
-                contentContainerStyle={{ paddingBottom: 16 }}
-              />
-            </View>
-          )}
+          <ScrollView className="h-[80%]">
+            {activeTab === "Closet" && (
+              <View className="h-[80%]">
+                <FlatList
+                  key={activeTab}
+                  className="mt-5 z-20 flex-grow px-2"
+                  scrollEnabled={true}
+                  data={closets}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={renderCloset}
+                  numColumns={3}
+                />
+              </View>
+            )}
 
           {/* Pieces Tab */}
-          {activeTab === "Pieces" && (
-            <View className="h-[80%]">
-              <FlatList
-                key={activeTab}
-                className="mt-5 z-20 flex-grow px-2"
-                scrollEnabled={true}
-                data={clothes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderClothing}
-                numColumns={3}
-                contentContainerStyle={{ paddingBottom: 16 }}
-              />
-            </View>
-          )}
+            {activeTab === "Pieces" && (
+              <View className="">
+                <FlatList
+                  key={activeTab}
+                  className="mt-5 z-20 flex-grow px-2"
+                  scrollEnabled={true}
+                  data={clothes}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={renderClothing}
+                  numColumns={3}
+                />
+              </View>
+            )}
+          </ScrollView>
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

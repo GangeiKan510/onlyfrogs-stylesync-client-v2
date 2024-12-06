@@ -182,10 +182,10 @@ const PiecesTab = () => {
         wornCount === 0
           ? "Never Worn"
           : wornCount >= 1 && wornCount <= 5
-            ? "1-5 times"
+            ? "Less Often Worn"
             : wornCount >= 6 && wornCount <= 10
-              ? "6-10 times"
-              : "More than 10 times";
+              ? "Frequently Worn"
+              : "Very Frequently Worn";
 
       const matchesFilters =
         selectedFilters.length === 0 ||

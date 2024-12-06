@@ -107,6 +107,12 @@ const Page = () => {
           refetchMe();
         } catch (error) {
           console.error("Error while uploading clothing:", error);
+          Toast.show({
+            type: "error",
+            text1: "Please upload a clothing item!",
+            position: "top",
+            swipeable: true,
+          });
         } finally {
           setLoading(false); // Re-enable the floating action menu
         }
@@ -149,6 +155,12 @@ const Page = () => {
           });
           refetchMe();
         } catch (error) {
+          Toast.show({
+            type: "error",
+            text1: "Please upload a clothing item!",
+            position: "top",
+            swipeable: true,
+          });
           console.error("Error while uploading clothing:", error);
         } finally {
           setLoading(false); // Re-enable the floating action menu

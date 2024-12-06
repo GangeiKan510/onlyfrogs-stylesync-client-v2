@@ -23,7 +23,11 @@ import ChatSettingsIcon from "../../assets/icons/chat/chat-settings-icon.svg";
 import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
+import RecommendedProductsIcon from "../../assets/icons/recommended-products-icon.svg";
 import { getSuggesteddPrompt } from "@/network/web/chat";
+import { scrapeMissingPieces } from "@/network/web/scraping";
+import SuggestedProductCard from "@/components/cards/SuggestedProductCard";
+import { removeLineBreaks } from "@/utils/helpers/remove-line-breaks";
 
 interface MessageProps {
   id: string;
@@ -41,6 +45,8 @@ export default function HomeScreen() {
   const [showScrollDown, setShowScrollDown] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [scrapedPieces, setScrapedPieces] = useState([]);
+  const [isScraping, setIsScraping] = useState(false);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -82,15 +88,16 @@ export default function HomeScreen() {
         content,
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-
       setMessage("");
 
       setIsReplying(true);
       setIsSending(true);
+      setSuggestedPrompts([]);
+      setScrapedPieces([]);
 
       try {
+        // Send message to assistant and receive response
         const assistantResponse = await sendMessage(user.id, content);
-
         const assistantMessage = {
           id: assistantResponse.id,
           role: "assistant",
@@ -98,6 +105,27 @@ export default function HomeScreen() {
         };
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+
+        console.log("Assistant Response:", assistantMessage.content);
+
+        try {
+          const formattedResponse = removeLineBreaks(assistantMessage.content);
+          setIsScraping(true);
+          const scrapedData = await scrapeMissingPieces(
+            user.id,
+            formattedResponse
+          );
+
+          const allProducts = scrapedData.searchResults.flatMap(
+            (result: any) => result.products || []
+          );
+          setScrapedPieces(allProducts);
+          setIsScraping(false);
+        } catch (scrapeError) {
+          console.error("Error during scraping:", scrapeError);
+        } finally {
+          setIsScraping(false);
+        }
 
         const response = await getSuggesteddPrompt(content);
         if (response.suggestions) {
@@ -190,7 +218,33 @@ export default function HomeScreen() {
                   className="flex-row justify-start items-center mb-4"
                 >
                   <BotIcon width={45} height={45} className="mr-2" />
+                  {isScraping && (
+                    <Text className="mr-1">Completing your outfit</Text>
+                  )}
                   <ReplyLoading />
+                </View>
+              )}
+              {scrapedPieces?.length > 0 && (
+                <View className="mt-4">
+                  <View className="flex flex-row items-center mb-2">
+                    <RecommendedProductsIcon width={22} height={22} />
+                    <Text className="text-tertiary ml-1">
+                      Outift Recommendation from Shops...
+                    </Text>
+                  </View>
+
+                  {scrapedPieces.map((product: any, index) => (
+                    <SuggestedProductCard
+                      key={`product-${index}`}
+                      name={product.name}
+                      price={product.price}
+                      originalPrice={product.originalPrice}
+                      discount={product.discount}
+                      image={product.image}
+                      productUrl={product.productUrl}
+                      brand={product.brand}
+                    />
+                  ))}
                 </View>
               )}
               {suggestedPrompts.length > 0 && (

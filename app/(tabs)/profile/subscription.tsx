@@ -74,7 +74,7 @@ const Subscription = () => {
         </Text>
 
         {/* Subscription Options */}
-        <View className="flex-col mt-10 space-y-3">
+        <View className="flex-col mt-14 space-y-3">
           <View className="flex-row space-x-4 items-center">
             <Check className="flex-row" />
             <Text className="text-base text-[#484848]">

@@ -4,6 +4,7 @@ import {
   UpdateUserBodyType,
   UpdateUserData,
   UpdateUserName,
+  UpdateUserSkinToneDetailsData,
 } from "@/utils/types/UpdateUser";
 import {
   postWithFirebaseJwt,
@@ -223,6 +224,29 @@ export const updatePrioritizePreferences = async ({
     return updatedSettings;
   } catch (error) {
     console.error("Failed to update prioritize preferences", error);
+    throw error;
+  }
+};
+
+export const updateUserSkinToneDetails = async (
+  userData: UpdateUserSkinToneDetailsData
+) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-skin-tone-analysis",
+      userData
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error updating skin tone details: ${response.statusText}`
+      );
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to update skin tone details", error);
     throw error;
   }
 };

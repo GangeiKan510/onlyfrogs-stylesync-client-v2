@@ -76,3 +76,14 @@ export interface UpdateUserSkinToneDetailsData {
   season: string;
   sub_season: string;
 }
+
+export interface UpdateUserPreferencesAndBudgetData {
+  id: string;
+  brands: string[];
+  budgetRange: {
+    min: number;
+    max: number;
+  };
+  favoriteColors: string[];
+  styles: string[];
+}

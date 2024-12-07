@@ -4,6 +4,7 @@ import {
   UpdateUserBodyType,
   UpdateUserData,
   UpdateUserName,
+  UpdateUserPreferencesAndBudgetData,
   UpdateUserSkinToneDetailsData,
 } from "@/utils/types/UpdateUser";
 import {
@@ -247,6 +248,29 @@ export const updateUserSkinToneDetails = async (
     return updatedUser;
   } catch (error) {
     console.error("Failed to update skin tone details", error);
+    throw error;
+  }
+};
+
+export const updateUserPreferences = async (
+  userData: UpdateUserPreferencesAndBudgetData
+) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/users/update-preferences",
+      userData
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Error updating preferences and budget: ${response.statusText}`
+      );
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+  } catch (error) {
+    console.error("Failed to update preferences and budget", error);
     throw error;
   }
 };

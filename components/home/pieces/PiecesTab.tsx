@@ -109,10 +109,10 @@ const PiecesTab = () => {
       const wornCount = item.worn?.[0]?.count ?? 0;
       if (wornCount === 0) filterOptions.worn.add("Never Worn");
       else if (wornCount >= 1 && wornCount <= 5)
-        filterOptions.worn.add("1-5 times");
+        filterOptions.worn.add("Less Often Worn");
       else if (wornCount >= 6 && wornCount <= 10)
-        filterOptions.worn.add("6-10 times");
-      else if (wornCount > 10) filterOptions.worn.add("More than 10 times");
+        filterOptions.worn.add("Frequently Worn");
+      else if (wornCount > 10) filterOptions.worn.add("Very Frequently Worn");
 
       console.log("Worn count:", item.worn);
     });

@@ -289,12 +289,7 @@ const ProfileSettings = () => {
           text2: "Your profile changes have been saved successfully.",
         });
 
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "profile" }],
-          })
-        );
+        router.push("/(tabs)/profile");
 
         refetchMe();
       } catch (error) {

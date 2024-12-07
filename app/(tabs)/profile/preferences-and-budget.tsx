@@ -46,48 +46,46 @@ const PreferencesAndBudget = () => {
 
   const toggleStyleSelection = (styleName: string): string[] => {
     let updatedStyles;
-  
+
     if (styles.includes(styleName)) {
       updatedStyles = styles.filter((style) => style !== styleName);
     } else {
       updatedStyles = [...styles, styleName];
     }
-  
+
     setStyles(updatedStyles);
-  
-    console.log(updatedStyles); // Log the updated array
-    return updatedStyles; // Return the updated array
+
+    return updatedStyles;
   };
-  
 
   const toggleColorSelection = (colorName: string): string[] => {
     let updatedColors;
-  
+
     if (favoriteColors.includes(colorName)) {
       updatedColors = favoriteColors.filter((color) => color !== colorName);
     } else {
       updatedColors = [...favoriteColors, colorName];
     }
-  
+
     setFavoriteColors(updatedColors);
-  
-    console.log(updatedColors); // Log the updated array
-    return updatedColors; // Return the updated array
+
+    console.log(updatedColors);
+    return updatedColors;
   };
 
   const toggleBrandSelection = (brandName: string): string[] => {
     let updatedBrands;
-  
+
     if (brands.includes(brandName)) {
       updatedBrands = brands.filter((brand) => brand !== brandName);
     } else {
       updatedBrands = [...brands, brandName];
     }
-  
+
     setBrands(updatedBrands);
-  
-    console.log(updatedBrands); // Log the updated array
-    return updatedBrands; // Return the updated array
+
+    console.log(updatedBrands);
+    return updatedBrands;
   };
 
   const handleBudgetRangeChange = (range: { min: number; max: number }) => {
@@ -112,11 +110,11 @@ const PreferencesAndBudget = () => {
         favoriteColors: favoriteColors,
         brands: brands,
       };
-  
+
       console.log("Preferences to save:", preferences);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); 
-  
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       Toast.show({
         type: "success",
         text1: "Preferences Saved",

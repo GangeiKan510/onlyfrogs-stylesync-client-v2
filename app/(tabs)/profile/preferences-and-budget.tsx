@@ -28,11 +28,20 @@ const PreferencesAndBudget = () => {
   const { user, refetchMe } = useUser();
   const MIN_DEFAULT = 100;
   const MAX_DEFAULT = 5000;
-  const [minValue, setMinValue] = useState<number>(MIN_DEFAULT);
-  const [maxValue, setMaxValue] = useState<number>(MAX_DEFAULT);
-  const [styles, setStyles] = useState<string[]>([]);
-  const [favoriteColors, setFavoriteColors] = useState<string[]>([]);
-  const [brands, setBrands] = useState<string[]>([]);
+
+  const [minValue, setMinValue] = useState<number>(
+    user?.budget_min || MIN_DEFAULT
+  );
+  const [maxValue, setMaxValue] = useState<number>(
+    user?.budget_max || MAX_DEFAULT
+  );
+  const [styles, setStyles] = useState<string[]>(user?.style_preferences || []);
+  const [favoriteColors, setFavoriteColors] = useState<string[]>(
+    user?.favorite_colors || []
+  );
+  const [brands, setBrands] = useState<string[] | null>(
+    user?.preferred_brands as any
+  );
 
   const [showAllStyles, setShowAllStyles] = useState<boolean>(false);
   const [showAllColors, setShowAllColors] = useState<boolean>(false);
@@ -78,10 +87,10 @@ const PreferencesAndBudget = () => {
   const toggleBrandSelection = (brandName: string): string[] => {
     let updatedBrands;
 
-    if (brands.includes(brandName)) {
+    if (brands?.includes(brandName)) {
       updatedBrands = brands.filter((brand) => brand !== brandName);
     } else {
-      updatedBrands = [...brands, brandName];
+      updatedBrands = [...(brands || []), brandName];
     }
 
     setBrands(updatedBrands);
@@ -295,7 +304,7 @@ const PreferencesAndBudget = () => {
                 <View key={index} className="flex-row items-center mb-1">
                   <TouchableOpacity
                     className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                      brands.includes(brandName.name)
+                      brands?.includes(brandName.name)
                         ? "bg-[#7AB2B2] border-[#7AB2B2]"
                         : "bg-white border-[#7AB2B2]"
                     }`}
@@ -314,7 +323,7 @@ const PreferencesAndBudget = () => {
                     </View>
                     <Text
                       className={`text-base ${
-                        brands.includes(brandName.name)
+                        brands?.includes(brandName.name)
                           ? "text-white"
                           : "text-[#7AB2B2]"
                       }`}

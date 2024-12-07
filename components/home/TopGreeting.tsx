@@ -7,9 +7,10 @@ import useSignOut from "@/network/firebase/sign-out";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
-import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
+// import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import EmailVerifiedIcon from "../../assets/icons/top-greeting/email-verified-icon.svg";
 import VerifyEmailIcon from "../../assets/icons/verify-email.svg";
+import TokenInfoModal from "../dialogs/TokenInfoModal";
 
 const TopGreeting = () => {
   const { user } = useUser();
@@ -79,7 +80,7 @@ const TopGreeting = () => {
 
       <View className="flex items-end">
         <View className="flex-row items-center mt-2">
-          <MoreInfoIcon width={20} height={20} />
+          <TokenInfoModal/>
           <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
         </View>
         {/* <Pressable onPress={() => router.push("/(tabs)/survey" as Href<string | object>)}>

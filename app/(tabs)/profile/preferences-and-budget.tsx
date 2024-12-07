@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -20,6 +21,7 @@ import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
 import UniqloLogo from "../../../assets/images/uniqlo.svg";
 import BenchLogo from "../../../assets/images/bench.svg";
 import Toast from "react-native-toast-message";
+import { updateUserPreferences } from "@/network/web/user";
 
 const PreferencesAndBudget = () => {
   const router = useRouter();
@@ -102,6 +104,7 @@ const PreferencesAndBudget = () => {
     setLoading(true);
     try {
       const preferences = {
+        id: user?.id,
         budgetRange: {
           min: minValue,
           max: maxValue,
@@ -113,7 +116,7 @@ const PreferencesAndBudget = () => {
 
       console.log("Preferences to save:", preferences);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await updateUserPreferences(preferences as any);
 
       Toast.show({
         type: "success",
@@ -121,9 +124,13 @@ const PreferencesAndBudget = () => {
         text2: "Your preferences have been updated successfully.",
         position: "top",
       });
+
+      refetchMe();
+
       router.push("/(tabs)/profile");
     } catch (error) {
       console.error("Error saving preferences:", error);
+
       Toast.show({
         type: "error",
         text1: "Error",

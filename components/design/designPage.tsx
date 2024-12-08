@@ -6,6 +6,7 @@ import {
   Image,
   PanResponder,
   Pressable,
+  StyleSheet,
   Animated,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
@@ -14,6 +15,7 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
+import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
@@ -26,8 +28,10 @@ const DesignPage = () => {
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
-  const snapPoints = useMemo(() => ["45%", "80%"], []);
+  const snapPoints = useMemo(() => ["9%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
+  const viewToSnapshotRef = useRef<View | null>(null);
+  const [snapshotImg, setSnapshotImg] = useState<string | undefined>();
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [dragPositions, setDragPositions] = useState<{
@@ -38,6 +42,12 @@ const DesignPage = () => {
     [key: string]: { width: number; height: number };
   }>({});
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
+
+  const snapshot = async () => {
+    const result = await captureRef(viewToSnapshotRef);
+    console.log(result);
+    setSnapshotImg(result);
+  };
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
@@ -185,8 +195,10 @@ const DesignPage = () => {
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
-
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
+      <View
+        ref={viewToSnapshotRef}
+        className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative"
+      >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
             const isSelected = selectedImage === image;
@@ -252,7 +264,19 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
+      <TouchableOpacity onPress={snapshot} className="relative bottom-20">
+        <Text>Save</Text>
+      </TouchableOpacity>
 
+      {snapshotImg && <Text>Preview</Text>}
+      {snapshotImg && (
+        <Image
+          resizeMode="contain"
+          style={styles.snapshotImg}
+          source={{ uri: snapshotImg }}
+          className="relative bottom-20"
+        />
+      )}
       <BottomSheet
         ref={bottomSheet}
         index={0}
@@ -308,7 +332,7 @@ const DesignPage = () => {
               </View>
             )}
 
-          {/* Pieces Tab */}
+            {/* Pieces Tab */}
             {activeTab === "Pieces" && (
               <View className="">
                 <FlatList
@@ -330,3 +354,23 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
+
+const styles = StyleSheet.create({
+  // snapshot: {
+  //   borderColor: '#000000',
+  //   borderWidth: 2,
+  //   backgroundColor: '#00FFFF',
+  //   margin: 16,
+  //   padding: 16,
+  // },
+  snapshotImg: {
+    flex: 1,
+    backgroundColor: '#00ffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 16,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: '#000000',
+  }
+});

@@ -21,6 +21,7 @@ import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
 import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
 import DeleteIcon from "../../../assets/icons/delete-icon.svg";
+import EditIcon from "../../../assets/icons/edit-icon.svg";
 import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
 
 const Page = () => {
@@ -239,7 +240,10 @@ const Page = () => {
             className="absolute right-1 top-[59px] z-10"
             onPress={() => setIsConfirmationVisible(true)}
           >
-            <DeleteIcon width={24} height={24} color={"red"} />
+            <DeleteIcon width={23} height={23} color={"red"} />
+          </TouchableOpacity>
+          <TouchableOpacity className="absolute right-8 top-[59px] z-10">
+            <EditIcon width={24} height={24} color={"black"} />
           </TouchableOpacity>
         </View>
         {includeBack.includes(routeName) && (

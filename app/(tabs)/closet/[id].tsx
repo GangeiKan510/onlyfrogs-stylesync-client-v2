@@ -16,7 +16,7 @@ import BackButton from "../../../components/buttons/BackButton";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
-import { deleteCloset } from "@/network/web/closet";
+import { deleteCloset, updateCloset } from "@/network/web/closet";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
@@ -25,6 +25,7 @@ import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import EditIcon from "../../../assets/icons/edit-icon.svg";
 import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
 import { routes } from "@/utils/routes";
+import EditClosetModal from "@/components/dialogs/EditClosetModal";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -46,6 +47,8 @@ const Page = () => {
   const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
   const [isDeletingCloset, setIsDeletingCloset] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -185,6 +188,29 @@ const Page = () => {
     }
   };
 
+  const handleEditCloset = async (name: string, description: string) => {
+    setIsSaving(true);
+    try {
+      await updateCloset({ closetId, name, description });
+      Toast.show({
+        type: "success",
+        text1: "Closet updated successfully!",
+        position: "top",
+      });
+      setIsEditModalVisible(false);
+      refetchMe();
+    } catch (error) {
+      console.error("Failed to update closet:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to update closet!",
+        position: "top",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDeleteCloset = async () => {
     setIsDeletingCloset(true);
     try {
@@ -236,7 +262,7 @@ const Page = () => {
     },
   ];
 
-  console.log("FILTERED CLOTHES", filteredClothes);
+  console.log(currentCloset);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -249,7 +275,10 @@ const Page = () => {
           >
             <DeleteIcon width={23} height={23} color={"red"} />
           </TouchableOpacity>
-          <TouchableOpacity className="absolute right-8 top-[59px] z-10">
+          <TouchableOpacity
+            className="absolute right-8 top-[59px] z-10"
+            onPress={() => setIsEditModalVisible(true)}
+          >
             <EditIcon width={24} height={24} color={"black"} />
           </TouchableOpacity>
         </View>
@@ -314,6 +343,14 @@ const Page = () => {
         isLoading={isDeletingCloset}
         type="primary"
         confirmMessage="Delete"
+      />
+      <EditClosetModal
+        visible={isEditModalVisible}
+        onConfirm={handleEditCloset}
+        onCancel={() => setIsEditModalVisible(false)}
+        initialName={currentCloset?.name || ""}
+        initialDescription={currentCloset?.description || ""}
+        isLoading={isSaving}
       />
     </SafeAreaView>
   );

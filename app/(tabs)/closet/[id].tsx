@@ -21,6 +21,7 @@ import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
 import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
 import DeleteIcon from "../../../assets/icons/delete-icon.svg";
+import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -39,6 +40,8 @@ const Page = () => {
   );
   const [loading, setLoading] = useState(false); // This controls the spinner and menu
   const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+  const [isDeletingCloset, setIsDeletingCloset] = useState(false);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -178,6 +181,30 @@ const Page = () => {
     }
   };
 
+  const handleDeleteCloset = async () => {
+    setIsDeletingCloset(true);
+    try {
+      Toast.show({
+        type: "success",
+        text1: "Closet deleted successfully!",
+        position: "top",
+        swipeable: true,
+      });
+      setIsConfirmationVisible(false);
+      refetchMe();
+    } catch (error) {
+      console.error("Failed to delete closet:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to delete closet!",
+        position: "top",
+        swipeable: true,
+      });
+    } finally {
+      setIsDeletingCloset(false);
+    }
+  };
+
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
 
   const filteredClothes =
@@ -209,8 +236,8 @@ const Page = () => {
         <View className="relative">
           <Header />
           <TouchableOpacity
-            className="absolute right-5 top-14 z-10"
-            onPress={() => console.log("Delete action triggered")}
+            className="absolute right-1 top-[59px] z-10"
+            onPress={() => setIsConfirmationVisible(true)}
           >
             <DeleteIcon width={24} height={24} color={"red"} />
           </TouchableOpacity>
@@ -266,6 +293,16 @@ const Page = () => {
         onUpload={() => refetchMe()}
         userId={user?.id}
         setLoading={setLoading} // Pass setLoading to LinkUploadModal
+      />
+      <ConfirmationModal
+        visible={isConfirmationVisible}
+        onConfirm={handleDeleteCloset}
+        onCancel={() => setIsConfirmationVisible(false)}
+        message="Delete Closet"
+        description="Are you sure you want to delete this closet? All clothes inside will also be deleted."
+        isLoading={isDeletingCloset}
+        type="primary"
+        confirmMessage="Delete"
       />
     </SafeAreaView>
   );

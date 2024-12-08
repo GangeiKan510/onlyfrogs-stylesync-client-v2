@@ -59,3 +59,23 @@ export const updateCloset = async (data: UpdateCloset) => {
     throw error;
   }
 };
+
+export const deleteCloset = async (closetId: string) => {
+  try {
+    const response = await postWithFirebaseJwt(
+      "/web/closet/delete-closet",
+      closetId
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error deleting closet: ${errorText}`);
+    }
+
+    const closets = await response.json();
+    return closets;
+  } catch (error) {
+    console.error("Failed to delete closet", error);
+    throw error;
+  }
+};

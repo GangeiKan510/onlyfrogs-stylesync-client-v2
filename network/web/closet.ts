@@ -62,10 +62,9 @@ export const updateCloset = async (data: UpdateCloset) => {
 
 export const deleteCloset = async (closetId: string) => {
   try {
-    const response = await postWithFirebaseJwt(
-      "/web/closet/delete-closet",
-      closetId
-    );
+    const response = await postWithFirebaseJwt("/web/closet/delete-closet", {
+      closetId,
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

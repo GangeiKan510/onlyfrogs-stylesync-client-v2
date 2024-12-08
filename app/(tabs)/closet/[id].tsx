@@ -9,13 +9,14 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
-import { usePathname } from "expo-router";
+import { Href, usePathname, useRouter } from "expo-router";
 import Header from "../../../components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
+import { deleteCloset } from "@/network/web/closet";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
@@ -23,9 +24,11 @@ import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
 import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import EditIcon from "../../../assets/icons/edit-icon.svg";
 import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
+import { routes } from "@/utils/routes";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
+  const router = useRouter();
   const path = usePathname();
   const closetId = getIdFromUrl(path);
   const routeName = path.split("/")[1];
@@ -185,6 +188,8 @@ const Page = () => {
   const handleDeleteCloset = async () => {
     setIsDeletingCloset(true);
     try {
+      await deleteCloset(closetId as string);
+
       Toast.show({
         type: "success",
         text1: "Closet deleted successfully!",
@@ -192,12 +197,14 @@ const Page = () => {
         swipeable: true,
       });
       setIsConfirmationVisible(false);
+      router.push(routes.closet as Href<string>);
       refetchMe();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to delete closet:", error);
       Toast.show({
         type: "error",
         text1: "Failed to delete closet!",
+        text2: error.message,
         position: "top",
         swipeable: true,
       });

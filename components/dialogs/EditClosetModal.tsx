@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -28,6 +28,11 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
   const [name, setName] = useState(initialName);
   const [description, setDescription] = useState(initialDescription);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setName(initialName);
+    setDescription(initialDescription);
+  }, [initialName, initialDescription]);
 
   const handleConfirm = async () => {
     if (!name.trim()) {

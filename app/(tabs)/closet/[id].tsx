@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-import { Text, View, FlatList, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { usePathname } from "expo-router";
@@ -14,6 +20,7 @@ import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
 import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
+import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -199,8 +206,14 @@ const Page = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5 flex-1">
-        <View>
+        <View className="relative">
           <Header />
+          <TouchableOpacity
+            className="absolute right-5 top-14 z-10"
+            onPress={() => console.log("Delete action triggered")}
+          >
+            <DeleteIcon width={24} height={24} color={"red"} />
+          </TouchableOpacity>
         </View>
         {includeBack.includes(routeName) && (
           <View className="relative z-0 bottom-14">

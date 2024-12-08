@@ -291,9 +291,7 @@ const Page = () => {
           <Text className="text-xl font-bold text-center">
             {currentCloset?.name || "Closet Title"}
           </Text>
-          <Text className="text-base">
-            {currentCloset?.description || "Closet Description"}
-          </Text>
+          <Text className="text-base">{currentCloset?.description || ""}</Text>
         </View>
         {filteredClothes.length === 0 ? (
           <View className="items-center">

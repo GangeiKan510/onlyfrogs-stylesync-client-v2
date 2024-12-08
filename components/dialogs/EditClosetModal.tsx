@@ -58,15 +58,20 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
           <Text className="text-[18px] mb-3 font-bold text-center">
             Edit Closet
           </Text>
-
-          <Text className="text-[16px] mb-1">Name</Text>
+          <View className="flex-row">
+            <Text className="text-[16px] mb-1">Name</Text>
+            {error && (
+              <Text className="text-red text-sm mb-3 mt-[1px] ml-1">
+                *{error}
+              </Text>
+            )}
+          </View>
           <TextInput
             className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 mb-3"
             value={name}
             onChangeText={setName}
             placeholder="Enter closet name"
           />
-          {error && <Text className="text-red-500 text-sm mb-3">{error}</Text>}
 
           <Text className="text-[16px] mb-1">Description</Text>
           <TextInput

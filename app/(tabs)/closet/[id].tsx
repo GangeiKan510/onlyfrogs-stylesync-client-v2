@@ -257,7 +257,7 @@ const Page = () => {
         </View>
         {filteredClothes.length === 0 ? (
           <View className="items-center">
-            <Text className="text-[#B7B7B7]">
+            <Text className="text-[#B7B7B7] mt-10">
               This closet has no clothes yet.
             </Text>
           </View>

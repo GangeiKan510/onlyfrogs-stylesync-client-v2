@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  BackHandler,
 } from "react-native";
 import RangeSlider from "@/components/survey/preferences-and-budget-components/RangeSlider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -136,18 +135,6 @@ const PreferencesAndBudget = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        return true;
-      }
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-white">

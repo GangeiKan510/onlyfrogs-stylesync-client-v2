@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -20,17 +21,27 @@ import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
 import UniqloLogo from "../../../assets/images/uniqlo.svg";
 import BenchLogo from "../../../assets/images/bench.svg";
 import Toast from "react-native-toast-message";
+import { updateUserPreferences } from "@/network/web/user";
 
 const PreferencesAndBudget = () => {
   const router = useRouter();
   const { user, refetchMe } = useUser();
   const MIN_DEFAULT = 100;
   const MAX_DEFAULT = 5000;
-  const [minValue, setMinValue] = useState<number>(MIN_DEFAULT);
-  const [maxValue, setMaxValue] = useState<number>(MAX_DEFAULT);
-  const [styles, setStyles] = useState<string[]>([]);
-  const [favoriteColors, setFavoriteColors] = useState<string[]>([]);
-  const [brands, setBrands] = useState<string[]>([]);
+
+  const [minValue, setMinValue] = useState<number>(
+    user?.budget_min || MIN_DEFAULT
+  );
+  const [maxValue, setMaxValue] = useState<number>(
+    user?.budget_max || MAX_DEFAULT
+  );
+  const [styles, setStyles] = useState<string[]>(user?.style_preferences || []);
+  const [favoriteColors, setFavoriteColors] = useState<string[]>(
+    user?.favorite_colors || []
+  );
+  const [brands, setBrands] = useState<string[] | null>(
+    user?.preferred_brands as any
+  );
 
   const [showAllStyles, setShowAllStyles] = useState<boolean>(false);
   const [showAllColors, setShowAllColors] = useState<boolean>(false);
@@ -46,48 +57,46 @@ const PreferencesAndBudget = () => {
 
   const toggleStyleSelection = (styleName: string): string[] => {
     let updatedStyles;
-  
+
     if (styles.includes(styleName)) {
       updatedStyles = styles.filter((style) => style !== styleName);
     } else {
       updatedStyles = [...styles, styleName];
     }
-  
+
     setStyles(updatedStyles);
-  
-    console.log(updatedStyles); // Log the updated array
-    return updatedStyles; // Return the updated array
+
+    return updatedStyles;
   };
-  
 
   const toggleColorSelection = (colorName: string): string[] => {
     let updatedColors;
-  
+
     if (favoriteColors.includes(colorName)) {
       updatedColors = favoriteColors.filter((color) => color !== colorName);
     } else {
       updatedColors = [...favoriteColors, colorName];
     }
-  
+
     setFavoriteColors(updatedColors);
-  
-    console.log(updatedColors); // Log the updated array
-    return updatedColors; // Return the updated array
+
+    console.log(updatedColors);
+    return updatedColors;
   };
 
   const toggleBrandSelection = (brandName: string): string[] => {
     let updatedBrands;
-  
-    if (brands.includes(brandName)) {
+
+    if (brands?.includes(brandName)) {
       updatedBrands = brands.filter((brand) => brand !== brandName);
     } else {
-      updatedBrands = [...brands, brandName];
+      updatedBrands = [...(brands || []), brandName];
     }
-  
+
     setBrands(updatedBrands);
-  
-    console.log(updatedBrands); // Log the updated array
-    return updatedBrands; // Return the updated array
+
+    console.log(updatedBrands);
+    return updatedBrands;
   };
 
   const handleBudgetRangeChange = (range: { min: number; max: number }) => {
@@ -104,6 +113,7 @@ const PreferencesAndBudget = () => {
     setLoading(true);
     try {
       const preferences = {
+        id: user?.id,
         budgetRange: {
           min: minValue,
           max: maxValue,
@@ -112,20 +122,24 @@ const PreferencesAndBudget = () => {
         favoriteColors: favoriteColors,
         brands: brands,
       };
-  
+
       console.log("Preferences to save:", preferences);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); 
-  
+      await updateUserPreferences(preferences as any);
+
       Toast.show({
         type: "success",
         text1: "Preferences Saved",
         text2: "Your preferences have been updated successfully.",
         position: "top",
       });
+
+      refetchMe();
+
       router.push("/(tabs)/profile");
     } catch (error) {
       console.error("Error saving preferences:", error);
+
       Toast.show({
         type: "error",
         text1: "Error",
@@ -290,7 +304,7 @@ const PreferencesAndBudget = () => {
                 <View key={index} className="flex-row items-center mb-1">
                   <TouchableOpacity
                     className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                      brands.includes(brandName.name)
+                      brands?.includes(brandName.name)
                         ? "bg-[#7AB2B2] border-[#7AB2B2]"
                         : "bg-white border-[#7AB2B2]"
                     }`}
@@ -309,7 +323,7 @@ const PreferencesAndBudget = () => {
                     </View>
                     <Text
                       className={`text-base ${
-                        brands.includes(brandName.name)
+                        brands?.includes(brandName.name)
                           ? "text-white"
                           : "text-[#7AB2B2]"
                       }`}

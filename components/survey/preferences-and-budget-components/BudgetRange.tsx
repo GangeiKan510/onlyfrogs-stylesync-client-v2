@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Text, View } from "react-native";
 import React, { useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import RangeSlider from "./RangeSlider";
 
-const BudgetRange = () => {
+const BudgetRange = ({ setBudget }: any) => {
   const MIN_DEFAULT = 100;
   const MAX_DEFAULT = 5000;
   const [minValue, setMinValue] = useState(MIN_DEFAULT);
   const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
+
+  const handleValueChange = (range: { min: number; max: number }) => {
+    setMinValue(range.min);
+    setMaxValue(range.max);
+    setBudget({ min: range.min, max: range.max });
+  };
 
   return (
     <GestureHandlerRootView className="mt-1">
@@ -33,10 +40,7 @@ const BudgetRange = () => {
               min={MIN_DEFAULT}
               max={MAX_DEFAULT}
               step={10}
-              onValueChange={(range: { min: number; max: number }) => {
-                setMinValue(range.min);
-                setMaxValue(range.max);
-              }}
+              onValueChange={handleValueChange}
             />
           </View>
         </View>

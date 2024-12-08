@@ -64,9 +64,7 @@ const TopGreeting = () => {
           ) : (
             <Pressable
               className="flex-row items-center"
-              onPress={() =>
-                router.push("/(tabs)/profile/profile-settings")
-              }
+              onPress={() => router.push("/(tabs)/profile/profile-settings")}
             >
               <Text className="text-[14px] text-text-tertiary">
                 Verify Email{" "}

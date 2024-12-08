@@ -51,7 +51,8 @@ type PromptSettings = {
 
 type UserDetails = {
   birth_date: string | null;
-  budget_preferences: object;
+  budget_min: number;
+  budget_max: number;
   preferred_styles: string | null;
   preferred_brands: string | null;
   email: string;
@@ -73,6 +74,7 @@ type UserDetails = {
   body_type: string;
   profile_url: string;
   promptSettings: PromptSettings;
+  favorite_colors: string[];
 };
 
 interface UserContextProps {

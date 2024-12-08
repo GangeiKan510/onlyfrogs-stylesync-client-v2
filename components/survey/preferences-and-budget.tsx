@@ -32,28 +32,22 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
       </View>
       <ScrollView>
         <View className="flex justify-start items-start mx-5">
-          <Text className="font-bold mb-1">
-            Choose your preferred styles
-          </Text>
+          <Text className="font-bold mb-1">Choose your preferred styles</Text>
           <StyleSelection />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
-          <Text className="font-bold mb-1">
-            Choose your favorite colors
-          </Text>
+          <Text className="font-bold mb-1">Choose your favorite colors</Text>
           <FavColorSelection />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
-          <Text className="font-bold mb-1">
-            Choose your preferred brands
-          </Text>
+          <Text className="font-bold mb-1">Choose your preferred brands</Text>
           <PreferredBrandsSelection />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
           <Text className="font-bold mb-1">
             Choose your preferred budget range
           </Text>
-          <BudgetRange />
+          <BudgetRange setBudget={setBudget} />
         </View>
       </ScrollView>
     </>

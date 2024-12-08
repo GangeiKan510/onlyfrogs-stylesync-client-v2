@@ -114,7 +114,7 @@ const Survey = () => {
       });
       return; // Prevent submission if fields are incomplete
     }
-  
+
     const surveyData: UpdateUserData = {
       id: user?.id as string,
       birth_date: personalInfo.birthday,
@@ -133,9 +133,10 @@ const Survey = () => {
       budget_min: preferences.budget_range?.min,
       budget_max: preferences.budget_range?.max,
     };
-  
+
     try {
       setLoading(true);
+      console.log(surveyData);
       await updateUser(surveyData);
       Toast.show({
         type: "success",
@@ -179,7 +180,7 @@ const Survey = () => {
     isWeightValid &&
     isLocationValid;
 
-  console.log(personalInfo.birthday)
+  console.log(personalInfo.birthday);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

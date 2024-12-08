@@ -3,9 +3,9 @@ import {
   View,
   Text,
   Modal,
-  Pressable,
   GestureResponderEvent,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 
 interface ConfirmationModalProps {
@@ -44,16 +44,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <Text className="text-[18px] mb-1 font-bold">{message}</Text>
           <Text className="text-base mb-4">{description}</Text>
           <View className="flex-row justify-between w-full">
-            <Pressable
-              className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+            <TouchableOpacity
+              className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               onPress={onCancel}
             >
               <Text className="text-base text-center text-text-tertiary">
                 Cancel
               </Text>
-            </Pressable>
-            <Pressable
-              className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               onPress={onConfirm}
             >
               <Text className="text-base text-white text-center">
@@ -66,7 +66,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   confirmMessage
                 )}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

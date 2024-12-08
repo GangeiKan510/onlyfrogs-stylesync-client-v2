@@ -444,10 +444,10 @@ function PersonalInformation() {
         >
           <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
             <Text className="text-[18px] mb-1 font-bold">
-              Discard unsaved changes?
+              Discard changes?
             </Text>
             <Text className="mt-2 text-center">
-              You have unsaved changes. Do you want to discard them?
+              If you discard now, you&apos;ll lose any changes you&apos;ve made to this page.
             </Text>
             <View className="flex-row justify-between w-full mt-5">
               <TouchableOpacity

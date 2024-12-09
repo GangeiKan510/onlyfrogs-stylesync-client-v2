@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  View,
-  Text,
-  Alert,
-
-  BackHandler,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Alert, BackHandler, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../../../components/common/LoadingScreen";
-import { analyzeUserSkinTone } from "@/network/web/user";
+import {
+  analyzeUserSkinTone,
+  updateUser,
+  updateUserSkinToneDetails,
+} from "@/network/web/user";
 import Result from "../../../components/survey/result";
 import Back from "../../../assets/icons/back-icon.svg";
 import { Href, useRouter } from "expo-router";
 import { routes } from "@/utils/routes";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "@/components/config/user-context";
+import Toast from "react-native-toast-message";
 
 const SkinToneAnalysis = () => {
+  const { user, refetchMe } = useUser();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -137,7 +137,7 @@ const SkinToneAnalysis = () => {
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
           setAnalysisResult(result.skinToneAnalysis);
-          setSkinToneAnalysisResult(JSON.stringify(result.skinToneAnalysis));
+          setSkinToneAnalysisResult(result.skinToneAnalysis);
           onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
@@ -155,10 +155,57 @@ const SkinToneAnalysis = () => {
     router.push("/(tabs)/profile/result");
   };
 
-  const handleSave = () => {
-    // Save the skin tone analysis result
-    console.log("Saving skin tone analysis result:", skinToneAnalysisResult);
-    router.push("/(tabs)/profile");
+  const handleSave = async () => {
+    if (!skinToneAnalysisResult) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "No skin tone analysis result to save.",
+        position: "top",
+        swipeable: true,
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const userData = {
+        id: user?.id,
+        skin_tone_classification: skinToneAnalysisResult.skin_tone,
+        skin_tone_complements: skinToneAnalysisResult.complements,
+        season: skinToneAnalysisResult.season,
+        sub_season: skinToneAnalysisResult.sub_season,
+      };
+
+      console.log("Sending user data for update:", userData);
+
+      const updatedUser = await updateUserSkinToneDetails(userData as any);
+
+      console.log("User updated successfully:", updatedUser);
+      refetchMe();
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Your skin tone analysis has been saved.",
+        position: "top",
+        swipeable: true,
+      });
+
+      router.push("/(tabs)/profile");
+    } catch (error) {
+      console.error("Failed to save skin tone analysis result:", error);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save skin tone analysis result.",
+        position: "top",
+        swipeable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

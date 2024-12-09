@@ -9,7 +9,7 @@ import Toast from "react-native-toast-message";
 interface NotificationModalProps {
   visible: boolean;
   onClose: () => void;
-  onNotificationsCleared: () => void; 
+  onNotificationsCleared: () => void;
 }
 
 const NotificationModal = ({
@@ -33,12 +33,12 @@ const NotificationModal = ({
     setLoading(true);
 
     try {
-      const result = await deleteAllNotifications(user.id);
+      await deleteAllNotifications(user.id);
 
       Toast.show({
         type: "success",
         text1: "Notifications Cleared",
-        text2: `${result.count || 0} notifications deleted successfully!`,
+        text2: `Notifications deleted successfully!`,
       });
 
       onNotificationsCleared();
@@ -75,7 +75,7 @@ const NotificationModal = ({
           <View className="mb-4">
             <Text className="font-semibold mb-2">Actions</Text>
             <View className="flex-row justify-between items-center">
-              <Text>Delete all notifications</Text>xwx``
+              <Text>Delete all notifications</Text>
               <Pressable
                 className="bg-red bg-opacity-25 rounded-lg px-3 py-2"
                 onPress={handleDeleteAllNotifications}

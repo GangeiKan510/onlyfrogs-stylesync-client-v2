@@ -6,7 +6,7 @@ import BellIcon from "../../assets/icons/bell-icon.svg";
 import NotificationActions from "../../assets/icons/chat/chat-settings-icon.svg";
 import { useUser } from "@/components/config/user-context";
 
-type Notification = {
+export type Notification = {
   id: string;
   user_id: string;
   type: string;
@@ -17,70 +17,30 @@ type Notification = {
 };
 
 const Notifications = () => {
-  const { user } = useUser();
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      user_id: "user123",
-      type: "INFO",
-      content: "Your order has been shipped.",
-      isRead: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      user_id: "user123",
-      type: "SUCCESS",
-      content: "Your profile update was successful.",
-      isRead: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "3",
-      user_id: "user123",
-      type: "WELCOME",
-      content: "Welcome to the app! Explore your dashboard.",
-      isRead: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ]);
-
+  const { user, refetchMe } = useUser();
+  const [notifications, setNotifications] = useState<Notification[]>(
+    user?.notifications || []
+  );
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-
-    setTimeout(() => {
-      setNotifications((prevNotifications) => [
-        {
-          id: String(prevNotifications.length + 1),
-          user_id: "user123",
-          type: "INFO",
-          content: "New notification received!",
-          isRead: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        ...prevNotifications,
-      ]);
-      setRefreshing(false);
-    }, 1500);
-  }, []);
+    refetchMe();
+    setRefreshing(false);
+  }, [user]);
 
   const renderNotification = ({ item }: { item: Notification }) => (
     <View
-      className={`p-4 my-1 rounded-md ${!item.isRead ? "bg-[#c6e1e1]" : "bg-[#ececec]"}`}
+      className={`p-4 my-1 rounded-md ${
+        !item.isRead ? "bg-[#c6e1e1]" : "bg-[#ececec]"
+      }`}
     >
       <Text
         className={`text-base ${!item.isRead ? "font-semibold" : "font-normal"}`}
       >
         {item.content}
       </Text>
-      <Text className="text-sm text-gray-500">{item.type}</Text>
-      <Text className="text-xs text-gray-400">
+      <Text className="text-xs text-tertiary">
         {new Date(item.createdAt).toLocaleString()}
       </Text>
     </View>
@@ -120,7 +80,7 @@ const Notifications = () => {
         }
       />
 
-      {/* Coming Soon Placeholder */}
+      {/* Placeholder */}
       {notifications.length === 0 && (
         <View className="justify-center items-center px-8 mt-52">
           <Text className="text-4xl font-bold font-logo text-gray-800 mb-4">

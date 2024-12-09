@@ -10,6 +10,7 @@ import React, {
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { getMe } from "@/network/web/user";
+import { Notification } from "@/app/(tabs)/notifications";
 
 type Closet = {
   id: string;
@@ -75,11 +76,7 @@ type UserDetails = {
   profile_url: string;
   promptSettings: PromptSettings;
   favorite_colors: string[];
-  notifications: {
-    user_id: string;
-    type: string;
-    content: string;
-  }[];
+  notifications: Notification[];
 };
 
 interface UserContextProps {

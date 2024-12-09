@@ -58,6 +58,10 @@ const Notifications = () => {
     }
   }, [refetchMe, user]);
 
+  const handleNotificationsCleared = () => {
+    setNotifications([]);
+  };
+
   const renderNotification = ({ item }: { item: Notification }) => (
     <View
       className={`p-4 my-1 rounded-md ${
@@ -125,6 +129,7 @@ const Notifications = () => {
       <NotificationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        onNotificationsCleared={handleNotificationsCleared}
       />
     </View>
   );

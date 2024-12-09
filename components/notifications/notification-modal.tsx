@@ -9,10 +9,15 @@ import Toast from "react-native-toast-message";
 interface NotificationModalProps {
   visible: boolean;
   onClose: () => void;
+  onNotificationsCleared: () => void; 
 }
 
-const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
-  const { user, refetchMe } = useUser();
+const NotificationModal = ({
+  visible,
+  onClose,
+  onNotificationsCleared,
+}: NotificationModalProps) => {
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
 
   const handleDeleteAllNotifications = async () => {
@@ -36,6 +41,8 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
         text2: `${result.count || 0} notifications deleted successfully!`,
       });
 
+      onNotificationsCleared();
+
       onClose();
     } catch (error) {
       console.error("Error deleting notifications:", error);
@@ -46,7 +53,6 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
       });
     } finally {
       setLoading(false);
-      refetchMe();
     }
   };
 
@@ -69,7 +75,7 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
           <View className="mb-4">
             <Text className="font-semibold mb-2">Actions</Text>
             <View className="flex-row justify-between items-center">
-              <Text>Delete all notifs</Text>
+              <Text>Delete all notifications</Text>xwx``
               <Pressable
                 className="bg-red bg-opacity-25 rounded-lg px-3 py-2"
                 onPress={handleDeleteAllNotifications}

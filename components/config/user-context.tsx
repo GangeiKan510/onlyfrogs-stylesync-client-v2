@@ -123,9 +123,14 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const refetchMe = useCallback(async () => {
     if (auth.currentUser?.email) {
       try {
-        await retryFetchUser(auth.currentUser.email);
+        await auth.currentUser.reload();
+
+        const firebaseUser = auth.currentUser;
+        console.log("Updated Firebase User:", firebaseUser);
+
+        await retryFetchUser(firebaseUser.email as string);
       } catch (error) {
-        console.error("Error fetching user info after retries:", error);
+        console.error("Error refreshing user details:", error);
       }
     }
   }, [updateUser]);

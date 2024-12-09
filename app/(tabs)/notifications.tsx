@@ -48,7 +48,11 @@ const Notifications = () => {
           </Text>
         }
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#7ab2b2"]}
+          />
         }
       />
 

@@ -375,7 +375,11 @@ const ProfileSettings = () => {
           className="flex-1"
           keyboardShouldPersistTaps="handled"
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#7ab2b2"]}
+            />
           }
         >
           <View className="flex-1 px-6">

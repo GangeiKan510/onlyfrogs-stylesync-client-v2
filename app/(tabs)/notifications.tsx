@@ -105,19 +105,17 @@ const Notifications = () => {
             colors={["#7ab2b2"]}
           />
         }
+        ListEmptyComponent={
+          <View className="justify-center items-center px-8 mt-52">
+            <Text className="text-xl font-bold text-gray-800">
+              No Notifications
+            </Text>
+            <Text className="text-center text-gray leading-6">
+              We&apos;ll notify you when something arrives.
+            </Text>
+          </View>
+        }
       />
-
-      {/* Placeholder */}
-      {notifications.length === 0 && (
-        <View className="justify-center items-center px-8 mt-52">
-          <Text className="text-4xl font-bold font-logo text-gray-800 mb-4">
-            Coming Soon!
-          </Text>
-          <Text className="text-lg text-center text-gray-600 leading-6">
-            We&apos;re working hard to bring you something amazing. Stay tuned!
-          </Text>
-        </View>
-      )}
     </View>
   );
 };

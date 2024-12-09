@@ -25,9 +25,13 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
           </View>
 
           <View className="mb-4">
-            <Text>
-              Here you can manage your notification preferences or clear them.
-            </Text>
+            <Text className="font-semibold">Actions</Text>
+            <View className="flex-row justify-between items-center">
+              <Text>Delete all notifs</Text>
+              <Pressable className="bg-red bg-opacity-25 rounded-lg">
+                <Text className="text-white p-2">Delete all</Text>
+              </Pressable>
+            </View>
           </View>
         </Pressable>
       </Pressable>

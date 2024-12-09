@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, Text, FlatList, RefreshControl, Pressable } from "react-native";
 import BellIcon from "../../assets/icons/bell-icon.svg";
 import NotificationActions from "../../assets/icons/chat/chat-settings-icon.svg";
 import { useUser } from "@/components/config/user-context";
 import { markNotificationAsRead } from "@/network/web/notification";
+import NotificationModal from "@/components/notifications/notification-modal";
 
 export type Notification = {
   id: string;
@@ -21,6 +22,7 @@ const Notifications = () => {
     user?.notifications || []
   );
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const markAllAsRead = async () => {
@@ -93,9 +95,11 @@ const Notifications = () => {
               />
             </View>
 
-            <View className="flex-row items-center">
-              <NotificationActions />
-            </View>
+            <Pressable onPress={() => setModalVisible(true)}>
+              <View className="flex-row items-center">
+                <NotificationActions />
+              </View>
+            </Pressable>
           </View>
         }
         refreshControl={
@@ -115,6 +119,12 @@ const Notifications = () => {
             </Text>
           </View>
         }
+      />
+
+      {/* Notification Modal */}
+      <NotificationModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
       />
     </View>
   );

@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, FlatList, RefreshControl } from "react-native";
 import BellIcon from "../../assets/icons/bell-icon.svg";
 import NotificationActions from "../../assets/icons/chat/chat-settings-icon.svg";
 import { useUser } from "@/components/config/user-context";
+import { markNotificationAsRead } from "@/network/web/notification";
 
 export type Notification = {
   id: string;
@@ -23,11 +22,39 @@ const Notifications = () => {
   );
   const [refreshing, setRefreshing] = useState(false);
 
+  useEffect(() => {
+    const markAllAsRead = async () => {
+      try {
+        const unreadNotifications = notifications.filter(
+          (notification) => !notification.isRead
+        );
+
+        if (unreadNotifications.length > 0) {
+          await Promise.all(
+            unreadNotifications.map((notification) =>
+              markNotificationAsRead({ notificationId: notification.id })
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Failed to mark notifications as read", error);
+      }
+    };
+
+    markAllAsRead();
+  }, [notifications]);
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetchMe();
-    setRefreshing(false);
-  }, [user]);
+    try {
+      refetchMe();
+      setNotifications(user?.notifications || []);
+    } catch (error) {
+      console.error("Error refreshing notifications:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchMe, user]);
 
   const renderNotification = ({ item }: { item: Notification }) => (
     <View

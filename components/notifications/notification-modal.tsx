@@ -1,6 +1,8 @@
 import React from "react";
 import { Modal, View, Text, Pressable, StyleSheet } from "react-native";
 import CloseModal from "../../assets/icons/modal/close.svg";
+import Spinner from "../common/Spinner";
+import { deleteAllNotifications } from "@/network/web/notification";
 
 interface NotificationModalProps {
   visible: boolean;

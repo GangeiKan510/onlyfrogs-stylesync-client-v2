@@ -15,8 +15,8 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.backdrop}>
-        <View className="w-72 bg-white rounded-lg shadow-lg p-5">
+      <Pressable style={styles.backdrop} onPress={onClose}>
+        <Pressable style={styles.modalContent} onPress={() => {}}>
           <View className="flex-row justify-between items-center border-b border-[#E8E8E8] pb-2 mb-2">
             <Text className="text-base font-bold">Notification Settings</Text>
             <Pressable onPress={onClose} className="p-2">
@@ -29,8 +29,8 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
               Here you can manage your notification preferences or clear them.
             </Text>
           </View>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 };
@@ -41,6 +41,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

@@ -4,6 +4,7 @@ import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, RefreshControl } from "react-native";
 import BellIcon from "../../assets/icons/bell-icon.svg";
 import NotificationActions from "../../assets/icons/chat/chat-settings-icon.svg";
+import { useUser } from "@/components/config/user-context";
 
 type Notification = {
   id: string;
@@ -16,6 +17,7 @@ type Notification = {
 };
 
 const Notifications = () => {
+  const { user } = useUser();
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: "1",
@@ -70,7 +72,7 @@ const Notifications = () => {
 
   const renderNotification = ({ item }: { item: Notification }) => (
     <View
-      className={`p-4 my-2 rounded-md ${!item.isRead ? "bg-[#c6e1e1]" : "bg-[#ececec]"}`}
+      className={`p-4 my-1 rounded-md ${!item.isRead ? "bg-[#c6e1e1]" : "bg-[#ececec]"}`}
     >
       <Text
         className={`text-base ${!item.isRead ? "font-semibold" : "font-normal"}`}

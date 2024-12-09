@@ -75,6 +75,11 @@ type UserDetails = {
   profile_url: string;
   promptSettings: PromptSettings;
   favorite_colors: string[];
+  notifications: {
+    user_id: string;
+    type: string;
+    content: string;
+  }[];
 };
 
 interface UserContextProps {

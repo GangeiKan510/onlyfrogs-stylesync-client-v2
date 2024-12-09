@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, View, Text, Pressable, StyleSheet } from "react-native";
 import CloseModal from "../../assets/icons/modal/close.svg";
 import Spinner from "../common/Spinner";
 import { deleteAllNotifications } from "@/network/web/notification";
+import { useUser } from "../config/user-context";
+import Toast from "react-native-toast-message";
 
 interface NotificationModalProps {
   visible: boolean;
@@ -10,6 +12,44 @@ interface NotificationModalProps {
 }
 
 const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
+  const { user, refetchMe } = useUser();
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteAllNotifications = async () => {
+    if (!user?.id) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "User not found!",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await deleteAllNotifications(user.id);
+
+      Toast.show({
+        type: "success",
+        text1: "Notifications Cleared",
+        text2: `${result.count || 0} notifications deleted successfully!`,
+      });
+
+      onClose();
+    } catch (error) {
+      console.error("Error deleting notifications:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to delete notifications.",
+      });
+    } finally {
+      setLoading(false);
+      refetchMe();
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -27,11 +67,19 @@ const NotificationModal = ({ visible, onClose }: NotificationModalProps) => {
           </View>
 
           <View className="mb-4">
-            <Text className="font-semibold">Actions</Text>
+            <Text className="font-semibold mb-2">Actions</Text>
             <View className="flex-row justify-between items-center">
               <Text>Delete all notifs</Text>
-              <Pressable className="bg-red bg-opacity-25 rounded-lg">
-                <Text className="text-white p-2">Delete all</Text>
+              <Pressable
+                className="bg-red bg-opacity-25 rounded-lg px-3 py-2"
+                onPress={handleDeleteAllNotifications}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Spinner type="primary" />
+                ) : (
+                  <Text className="text-white">Delete all</Text>
+                )}
               </Pressable>
             </View>
           </View>

@@ -81,8 +81,15 @@ const ProfileSettings = () => {
     setRefreshing(true);
     try {
       await refetchMe();
+
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        const updatedUser = auth.currentUser;
+
+        console.log("Updated Firebase User:", updatedUser);
+      }
     } catch (error) {
-      console.error("Error refreshing:", error);
+      console.error("Error refreshing data:", error);
     } finally {
       setRefreshing(false);
     }

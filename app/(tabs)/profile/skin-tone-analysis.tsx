@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { View, Text, Alert, BackHandler, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Alert,
+  BackHandler,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
-import { Camera } from "expo-camera";
+import { Camera, CameraView, CameraMode } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../../../components/common/LoadingScreen";
@@ -19,6 +26,8 @@ import { routes } from "@/utils/routes";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@/components/config/user-context";
 import Toast from "react-native-toast-message";
+import CheckMark from "@/assets/icons/check-mark.svg";
+import SkinToneCamera from "@/app/skinToneCamera";
 
 const SkinToneAnalysis = () => {
   const { user, refetchMe } = useUser();
@@ -28,11 +37,12 @@ const SkinToneAnalysis = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
-
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<any>(null);
-
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
+  const [isCameraActive, setIsCameraActive] = useState(false);
 
   const onAnalyzeComplete = () => {
     setIsAnalyzing(false);
@@ -64,12 +74,50 @@ const SkinToneAnalysis = () => {
     setIsModalVisible(false);
   };
 
+  const handleOpenCamera = () => {
+    setIsCameraActive(true);
+  };
+
+  const handleCloseCamera = () => {
+    setIsCameraActive(false);
+  };
+
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
   };
 
-  
+  const handleSwitchCamera = () => {
+    setCameraFacing(cameraFacing === "back" ? "front" : "front");
+  };
+
+  const handleTakePicture = async (uri: string) => {
+    setSelectedImage(uri);
+
+    const formData = new FormData();
+    formData.append("file", {
+      uri: uri,
+      name: uri.split("/").pop(),
+      type: "image/jpeg",
+    } as any);
+
+    setIsLoading(true);
+    setIsAnalyzing(true);
+    try {
+      console.log("Sending image for analysis:", formData);
+      const result = await analyzeUserSkinTone(formData);
+      console.log("Analysis result:", result);
+      setAnalysisResult(result.skinToneAnalysis);
+      setSkinToneAnalysisResult(result.skinToneAnalysis);
+      onAnalyzeComplete();
+    } catch (error) {
+      console.error("Failed to analyze skin tone:", error);
+      Alert.alert("Error", "Failed to analyze skin tone.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleUploadFromGallery = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -199,6 +247,16 @@ const SkinToneAnalysis = () => {
             </TouchableOpacity>
           </View>
         </View>
+      ) : isCameraActive ? (
+        <View className="flex-1 bg-white">
+          <SkinToneCamera
+            onTakePicture={handleTakePicture}
+            onCancel={handleCloseCamera}
+            onSwitchCamera={handleSwitchCamera}
+            cameraFacing={cameraFacing}
+            isVisible={isCameraActive}
+          />
+        </View>
       ) : (
         <SafeAreaView className="flex-1 bg-white">
           <View className="w-full flex-row items-center top-2 px-6 z-30">
@@ -208,9 +266,6 @@ const SkinToneAnalysis = () => {
             >
               <Back width={20} height={20} />
             </TouchableOpacity>
-            <Text className="flex-1 text-center text-[20px] font-bold">
-              Skint Tone Analysis
-            </Text>
           </View>
           <View className="h-[85vh] flex justify-center items-center mt-10">
             <View className="mb-14">
@@ -218,19 +273,39 @@ const SkinToneAnalysis = () => {
                 Let&apos;s find your perfect shades.
               </Text>
               <SkinToneAnalysisImage />
-              <View className="w-[272px]">
-                <Text className="text-[12px] text-center">
-                  We&apos;ll use your camera to analyze your skin tone and
-                  recommend the best colors for you.
-                </Text>
+            </View>
+            <View className="w-[85%]">
+              <Text className=" text-sm font-bold text-center">
+                To Achieve Accurate Skin Tone Analysis Result:
+              </Text>
+              <View className="flex-col ml-8 w-[80%] ">
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Ensure even lighting to avoid shadows or overexposure.
+                  </Text>
+                </View>
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Remove any accessories like hats or glasses.
+                  </Text>
+                </View>
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Move your face closer to the screen so it fills the frame
+                    completely.
+                  </Text>
+                </View>
               </View>
             </View>
-            <View className="absolute z-10 bottom-8 right-10">
-              <SkinToneImageOptions
-                onCameraPress={() => router.push("/analyzeSkinToneInstructions")}
-                onGalleryPress={handleUploadFromGallery}
-              />
-            </View>
+          </View>
+          <View className="absolute z-10 bottom-8 right-10">
+            <SkinToneImageOptions
+              onCameraPress={handleOpenCamera}
+              onGalleryPress={handleUploadFromGallery}
+            />
           </View>
         </SafeAreaView>
       )}

@@ -10,7 +10,6 @@ export const routes = {
   // profile: "/profile",
   noConnection: "/no-connection",
   closet: "(tabs)/home/",
-
   // profileSettings: "profile/profile-settings",
   // resetPassword: "profile/reset-password",
   // personalInformation: "profile/personal-information",

@@ -6,11 +6,10 @@ import {
   Alert,
   BackHandler,
   TouchableOpacity,
-  Pressable,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
-import { Camera, CameraView, CameraMode } from "expo-camera";
+import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../../../components/common/LoadingScreen";
@@ -311,9 +310,7 @@ const SkinToneAnalysis = () => {
           </View>
           <View className="absolute z-10 bottom-8 right-10">
             <SkinToneImageOptions
-              // onCameraPress={handleOpenCamera}
-              onCameraPress={() => router.push("/(tabs)/survey")}
-
+              onCameraPress={handleOpenCamera}
               onGalleryPress={handleUploadFromGallery}
             />
           </View>

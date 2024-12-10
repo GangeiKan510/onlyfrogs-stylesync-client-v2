@@ -59,7 +59,8 @@ const DesignPage = () => {
     setShowModal(false);
   };
   const saveSnapshot = () => {
-    console.log("Snapshot saved:", snapshotImg);
+    console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
+    console.log("Selected Images:", selectedImages)
     // Add your save logic here
     setSnapshotName("");
     setSelectedImages([]);

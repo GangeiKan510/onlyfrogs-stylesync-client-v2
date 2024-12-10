@@ -21,6 +21,7 @@ import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
+import Save from "../../assets/icons/save.svg";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -198,7 +199,7 @@ const DesignPage = () => {
       <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View
         ref={viewToSnapshotRef}
-        className="w-full h-96 items-center justify-center bg-[#ecebeb] relative"
+        className="w-full h-96 items-center justify-center relative"
       >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
@@ -266,8 +267,11 @@ const DesignPage = () => {
         )}
       </View>
       {selectedImages.length > 0 && (
-        <TouchableOpacity onPress={snapshot} className="relative bottom-20">
-          <Text>Save</Text>
+        <TouchableOpacity
+          onPress={snapshot}
+          className="absolute left-[90%] bottom-[77%]"
+        >
+          <Save />
         </TouchableOpacity>
       )}
 

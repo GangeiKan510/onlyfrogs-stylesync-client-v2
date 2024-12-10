@@ -27,15 +27,12 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isRequestLoading, setIsRequestLoading] = useState(false);
 
-  const NAME_CHAR_LIMIT = 10;
-  const DESCRIPTION_CHAR_LIMIT = 15;
+  const NAME_CHAR_MINUMUM = 0;
 
-  const isNameLimitExceeded = closetName.length > NAME_CHAR_LIMIT;
-  const isDescriptionLimitExceeded =
-    description.length > DESCRIPTION_CHAR_LIMIT;
+  const minimunChar = closetName.length < NAME_CHAR_MINUMUM;
 
   const isAddDisabled =
-    !closetName.trim() || isNameLimitExceeded || isDescriptionLimitExceeded;
+    !closetName.trim() || minimunChar;
 
   const handleModalVisibility = () => {
     setModalVisible(true);
@@ -121,14 +118,10 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
               <View className="mb-3 mt-4">
                 <Text className="text-[16px] mb-1 self-start">
                   Name{" "}
-                  {isNameLimitExceeded && (
-                    <Text className="text-[#EE4E4E] text-[12px]">
-                      *Max {NAME_CHAR_LIMIT} characters reached
-                    </Text>
-                  )}
                 </Text>
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 w-full"
+                  maxLength={20}
                   value={closetName}
                   onChangeText={(input) => setClosetName(input)}
                 />
@@ -136,14 +129,10 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
               <View className="mb-3">
                 <Text className="text-[16px] mb-1 self-start">
                   Description{" "}
-                  {isDescriptionLimitExceeded && (
-                    <Text className="text-[#EE4E4E] text-[12px]">
-                      *Max {DESCRIPTION_CHAR_LIMIT} characters reached
-                    </Text>
-                  )}
                 </Text>
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 w-full"
+                  maxLength={30}
                   value={description}
                   onChangeText={(input) => setDescription(input)}
                 />

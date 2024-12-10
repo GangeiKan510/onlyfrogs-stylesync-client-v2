@@ -29,6 +29,11 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
   const [description, setDescription] = useState(initialDescription);
   const [error, setError] = useState("");
 
+  const isSaveDisabled =
+    isLoading ||
+    !name.trim() ||
+    (name === initialName && description === initialDescription);
+
   useEffect(() => {
     setName(initialName);
     setDescription(initialDescription);
@@ -71,6 +76,7 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
             value={name}
             onChangeText={setName}
             placeholder="Enter closet name"
+            maxLength={20}
           />
 
           <Text className="text-[16px] mb-1">Description</Text>
@@ -78,6 +84,7 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
             className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 mb-4"
             value={description}
             onChangeText={setDescription}
+            maxLength={30}
             placeholder="Enter closet description"
             multiline
           />
@@ -93,9 +100,11 @@ const EditClosetModal: React.FC<EditClosetModalProps> = ({
               </Text>
             </Pressable>
             <Pressable
-              className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              className={`h-[42px] flex-1 ${
+                isSaveDisabled ? "bg-[#b3d9d9]" : "bg-[#7ab3b3]"
+              } rounded-lg mx-2 justify-center items-center`}
               onPress={handleConfirm}
-              disabled={isLoading}
+              disabled={isSaveDisabled}
             >
               <Text className="text-base text-white text-center">
                 {isLoading ? (

@@ -24,18 +24,6 @@ const ResetPassword = () => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        return true;
-      }
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
-
   // Updated validatePassword function
   const validatePassword = (value: string) => {
     if (value === "") {

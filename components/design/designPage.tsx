@@ -28,7 +28,7 @@ const DesignPage = () => {
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
-  const snapPoints = useMemo(() => ["9%", "80%"], []);
+  const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const viewToSnapshotRef = useRef<View | null>(null);
   const [snapshotImg, setSnapshotImg] = useState<string | undefined>();
@@ -142,7 +142,7 @@ const DesignPage = () => {
           };
 
           const containerWidth = 400;
-          const containerHeight = 280;
+          const containerHeight = 390;
 
           const maxX = containerWidth / 2 - width / 2;
           const maxY = containerHeight / 2 - height / 2;
@@ -195,9 +195,10 @@ const DesignPage = () => {
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
+      <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View
         ref={viewToSnapshotRef}
-        className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative"
+        className="w-full h-96 items-center justify-center bg-[#ecebeb] relative"
       >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
@@ -264,9 +265,11 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
-      <TouchableOpacity onPress={snapshot} className="relative bottom-20">
-        <Text>Save</Text>
-      </TouchableOpacity>
+      {selectedImages.length > 0 && (
+        <TouchableOpacity onPress={snapshot} className="relative bottom-20">
+          <Text>Save</Text>
+        </TouchableOpacity>
+      )}
 
       {snapshotImg && <Text>Preview</Text>}
       {snapshotImg && (
@@ -356,21 +359,14 @@ const DesignPage = () => {
 export default DesignPage;
 
 const styles = StyleSheet.create({
-  // snapshot: {
-  //   borderColor: '#000000',
-  //   borderWidth: 2,
-  //   backgroundColor: '#00FFFF',
-  //   margin: 16,
-  //   padding: 16,
-  // },
   snapshotImg: {
     flex: 1,
-    backgroundColor: '#00ffff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#00ffff",
+    alignItems: "center",
+    justifyContent: "center",
     margin: 16,
     padding: 16,
     borderWidth: 2,
-    borderColor: '#000000',
-  }
+    borderColor: "#000000",
+  },
 });

@@ -59,7 +59,8 @@ const DesignPage = () => {
     setShowModal(false);
   };
   const saveSnapshot = () => {
-    console.log("Snapshot saved with name:", snapshotName);
+    console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
+    console.log("Selected Images:", selectedImages)
     // Add your save logic here
     setSnapshotName("");
     setSelectedImages([]);
@@ -160,7 +161,7 @@ const DesignPage = () => {
             height: 96,
           };
 
-          const containerWidth = 400;
+          const containerWidth = 380;
           const containerHeight = 390;
 
           const maxX = containerWidth / 2 - width / 2;
@@ -216,6 +217,7 @@ const DesignPage = () => {
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View
+        collapsable={false}
         ref={viewToSnapshotRef}
         className="w-full h-96 items-center justify-center relative"
       >
@@ -292,67 +294,60 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-      
-      {/* {snapshotImg && <Text>Preview</Text>}
-      {snapshotImg && (
-        <Image
-          resizeMode="contain"
-          style={styles.snapshotImg}
-          source={{ uri: snapshotImg }}
-          className="relative bottom-20"
-        />
-      )} */}
-      {snapshotImg && 
-      <Modal animationType="fade" transparent={true} visible={showModal}>
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        >
-          <View className="bg-white w-4/5 p-5 rounded-[10px]">
-            <Text className="text-[16px] text-center font-bold mb-2">
-              Preview
-            </Text>
-            <TextInput
-              placeholder="Name this outfit"
-              value={snapshotName}
-              onChangeText={setSnapshotName}
-              className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
-            />
-            <View className="items-center justify-center ">
-              {snapshotImg ? (
-                <Image
-                  resizeMode="contain"
-                  source={{ uri: snapshotImg }}
-                  className="w-full h-52 m-2"
-                />
-              ) : (
-                <Text>No snapshot available</Text>
-              )}
-            </View>
 
-            <View className="flex-row justify-between w-full mt-2">
-              <TouchableOpacity
-                onPress={closeModal}
-                className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
-              >
-                <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={saveSnapshot}
-                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
-              >
-                <Text className="text-white text-[16px]">Save</Text>
-              </TouchableOpacity>
+      {snapshotImg && (
+        <Modal animationType="fade" transparent={true} visible={showModal}>
+          <View
+            className="flex-1 justify-center items-center"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <View className="bg-white w-4/5 p-5 rounded-[10px]">
+              <Text className="text-[16px] text-center font-bold mb-2">
+                Preview
+              </Text>
+              <TextInput
+                placeholder="Name this outfit"
+                value={snapshotName}
+                onChangeText={setSnapshotName}
+                className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
+              />
+              <View className="items-center justify-center ">
+                {snapshotImg ? (
+                  <Image
+                    resizeMode="contain"
+                    source={{ uri: snapshotImg }}
+                    className="w-full h-52 m-2"
+                  />
+                ) : (
+                  <Text>No snapshot available</Text>
+                )}
+              </View>
+
+              <View className="flex-row justify-between w-full mt-2">
+                <TouchableOpacity
+                  onPress={closeModal}
+                  className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                >
+                  <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={saveSnapshot}
+                  className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                >
+                  <Text className="text-white text-[16px]">Save</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>}
+        </Modal>
+      )}
 
       <BottomSheet
         ref={bottomSheet}
         index={0}
         snapPoints={snapPoints}
         backgroundStyle={{ backgroundColor: "#DFDFDF" }}
+        enableDynamicSizing={true}
         handleIndicatorStyle={{
           backgroundColor: "#7AB2B2",
           width: 40,
@@ -388,7 +383,7 @@ const DesignPage = () => {
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          <ScrollView className="h-[80%]">
+          {/* <ScrollView className="h-[80%]"> */}
             {activeTab === "Closet" && (
               <View className="h-[80%]">
                 <FlatList
@@ -405,7 +400,7 @@ const DesignPage = () => {
 
             {/* Pieces Tab */}
             {activeTab === "Pieces" && (
-              <View className="">
+              <View className="h-[80%]">
                 <FlatList
                   key={activeTab}
                   className="mt-5 z-20 flex-grow px-2"
@@ -417,7 +412,7 @@ const DesignPage = () => {
                 />
               </View>
             )}
-          </ScrollView>
+          {/* </ScrollView> */}
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>
@@ -425,4 +420,3 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
-

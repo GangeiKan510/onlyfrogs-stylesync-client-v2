@@ -59,7 +59,7 @@ const DesignPage = () => {
     setShowModal(false);
   };
   const saveSnapshot = () => {
-    console.log("Snapshot saved with name:", snapshotName);
+    console.log("Snapshot saved:", snapshotImg);
     // Add your save logic here
     setSnapshotName("");
     setSelectedImages([]);
@@ -216,6 +216,7 @@ const DesignPage = () => {
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View
+        collapsable={false}
         ref={viewToSnapshotRef}
         className="w-full h-96 items-center justify-center relative"
       >
@@ -292,7 +293,7 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-      
+
       {/* {snapshotImg && <Text>Preview</Text>}
       {snapshotImg && (
         <Image
@@ -302,51 +303,52 @@ const DesignPage = () => {
           className="relative bottom-20"
         />
       )} */}
-      {snapshotImg && 
-      <Modal animationType="fade" transparent={true} visible={showModal}>
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        >
-          <View className="bg-white w-4/5 p-5 rounded-[10px]">
-            <Text className="text-[16px] text-center font-bold mb-2">
-              Preview
-            </Text>
-            <TextInput
-              placeholder="Name this outfit"
-              value={snapshotName}
-              onChangeText={setSnapshotName}
-              className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
-            />
-            <View className="items-center justify-center ">
-              {snapshotImg ? (
-                <Image
-                  resizeMode="contain"
-                  source={{ uri: snapshotImg }}
-                  className="w-full h-52 m-2"
-                />
-              ) : (
-                <Text>No snapshot available</Text>
-              )}
-            </View>
+      {snapshotImg && (
+        <Modal animationType="fade" transparent={true} visible={showModal}>
+          <View
+            className="flex-1 justify-center items-center"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <View className="bg-white w-4/5 p-5 rounded-[10px]">
+              <Text className="text-[16px] text-center font-bold mb-2">
+                Preview
+              </Text>
+              <TextInput
+                placeholder="Name this outfit"
+                value={snapshotName}
+                onChangeText={setSnapshotName}
+                className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
+              />
+              <View className="items-center justify-center ">
+                {snapshotImg ? (
+                  <Image
+                    resizeMode="contain"
+                    source={{ uri: snapshotImg }}
+                    className="w-full h-52 m-2"
+                  />
+                ) : (
+                  <Text>No snapshot available</Text>
+                )}
+              </View>
 
-            <View className="flex-row justify-between w-full mt-2">
-              <TouchableOpacity
-                onPress={closeModal}
-                className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
-              >
-                <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={saveSnapshot}
-                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
-              >
-                <Text className="text-white text-[16px]">Save</Text>
-              </TouchableOpacity>
+              <View className="flex-row justify-between w-full mt-2">
+                <TouchableOpacity
+                  onPress={closeModal}
+                  className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                >
+                  <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={saveSnapshot}
+                  className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                >
+                  <Text className="text-white text-[16px]">Save</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>}
+        </Modal>
+      )}
 
       <BottomSheet
         ref={bottomSheet}
@@ -425,4 +427,3 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
-

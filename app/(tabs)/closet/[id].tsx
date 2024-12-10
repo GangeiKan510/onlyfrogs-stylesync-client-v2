@@ -273,13 +273,7 @@ const Page = () => {
             className="absolute right-1 top-[59px] z-10"
             onPress={() => setIsConfirmationVisible(true)}
           >
-            <DeleteIcon width={23} height={23} color={"red"} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="absolute right-8 top-[59px] z-10"
-            onPress={() => setIsEditModalVisible(true)}
-          >
-            <EditIcon width={24} height={24} color={"black"} />
+            <DeleteIcon width={23} height={23} color={"black"} />
           </TouchableOpacity>
         </View>
         {includeBack.includes(routeName) && (
@@ -288,9 +282,17 @@ const Page = () => {
           </View>
         )}
         <View className="items-center border-b pb-5 border-[#F3F3F3]">
-          <Text className="text-xl font-bold text-center">
+          <View className="flex-row items-center">
+          <Text className="text-xl font-bold text-center mr-2 ml-6">
             {currentCloset?.name || "Closet Title"}
           </Text>
+          <TouchableOpacity
+            className="z-10"
+            onPress={() => setIsEditModalVisible(true)}
+          >
+            <EditIcon width={16} height={16} color={"#939393"} />
+          </TouchableOpacity>
+          </View>
           <Text className="text-base">{currentCloset?.description || ""}</Text>
         </View>
         {filteredClothes.length === 0 ? (

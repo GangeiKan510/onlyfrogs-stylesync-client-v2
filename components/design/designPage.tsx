@@ -292,8 +292,8 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-      {/* 
-      {snapshotImg && <Text>Preview</Text>}
+      
+      {/* {snapshotImg && <Text>Preview</Text>}
       {snapshotImg && (
         <Image
           resizeMode="contain"
@@ -302,6 +302,7 @@ const DesignPage = () => {
           className="relative bottom-20"
         />
       )} */}
+      {snapshotImg && 
       <Modal animationType="fade" transparent={true} visible={showModal}>
         <View
           className="flex-1 justify-center items-center"
@@ -332,20 +333,20 @@ const DesignPage = () => {
             <View className="flex-row justify-between w-full mt-2">
               <TouchableOpacity
                 onPress={closeModal}
-                className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               >
                 <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={saveSnapshot}
-                className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               >
                 <Text className="text-white text-[16px]">Save</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal>}
 
       <BottomSheet
         ref={bottomSheet}
@@ -424,3 +425,4 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
+

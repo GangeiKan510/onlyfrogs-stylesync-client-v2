@@ -69,6 +69,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="no-connection" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="skinToneCamera" options={{headerShown: false}} />
       </Stack>
 
       <Toast />

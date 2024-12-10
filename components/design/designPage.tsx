@@ -6,7 +6,6 @@ import {
   Image,
   PanResponder,
   Pressable,
-  StyleSheet,
   Animated,
   Modal,
   TextInput,
@@ -54,17 +53,24 @@ const DesignPage = () => {
     setSnapshotImg(result);
     setShowModal(true);
   };
-  useEffect(() => {
-    bottomSheet.current?.snapToIndex(0);
-  }, [activeTab, closets, clothes]);
 
-  // const openModal = () => setModalVisible(true);
-  const closeModal = () => setShowModal(false);
+  const closeModal = () => {
+    setSnapshotName("");
+    setShowModal(false);
+  };
   const saveSnapshot = () => {
     console.log("Snapshot saved with name:", snapshotName);
     // Add your save logic here
+    setSnapshotName("");
+    setSelectedImages([]);
+    setDragPositions({});
+    setImageSizes({});
     closeModal();
   };
+
+  useEffect(() => {
+    bottomSheet.current?.snapToIndex(0);
+  }, [activeTab, closets, clothes]);
 
   const renderCloset = ({
     item: closet,
@@ -206,12 +212,12 @@ const DesignPage = () => {
     });
 
   return (
-    <GestureHandlerRootView className="flex-1">
+    <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
-      {/* <View className="border-t border-[#D9D9D9] mt-6"></View> */}
+      <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View
         ref={viewToSnapshotRef}
-        className="w-full h-96 mt-6 items-center justify-center relative"
+        className="w-full h-96 items-center justify-center relative"
       >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
@@ -256,8 +262,8 @@ const DesignPage = () => {
                         position: "absolute",
                         bottom: -6,
                         right: -6,
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                         backgroundColor: "rgba(147, 147, 147, 0.7)",
                         borderRadius: 7,
                         alignItems: "center",
@@ -286,13 +292,17 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={showModal}
-        // onRequestClose={() => setShowModal(false)}
-      >
+      {/* 
+      {snapshotImg && <Text>Preview</Text>}
+      {snapshotImg && (
+        <Image
+          resizeMode="contain"
+          style={styles.snapshotImg}
+          source={{ uri: snapshotImg }}
+          className="relative bottom-20"
+        />
+      )} */}
+      <Modal animationType="fade" transparent={true} visible={showModal}>
         <View
           className="flex-1 justify-center items-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
@@ -308,18 +318,20 @@ const DesignPage = () => {
               className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
             />
             <View className="items-center justify-center ">
-            {snapshotImg && (
-              <Image
-                resizeMode="contain"
-                source={{ uri: snapshotImg }}
-                className="w-full h-52 m-2"
-              />
-            )}
+              {snapshotImg ? (
+                <Image
+                  resizeMode="contain"
+                  source={{ uri: snapshotImg }}
+                  className="w-full h-52 m-2"
+                />
+              ) : (
+                <Text>No snapshot available</Text>
+              )}
             </View>
 
             <View className="flex-row justify-between w-full mt-2">
               <TouchableOpacity
-                onPress={() => setShowModal(false)}
+                onPress={closeModal}
                 className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               >
                 <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
@@ -358,7 +370,7 @@ const DesignPage = () => {
                   className="flex-1 items-center py-3 z-10"
                 >
                   <View
-                    className={`${isActive ? "border-b-[2px] border-black" : ""}`}
+                    className={`${isActive ? "border-b-[2px] border-black" : ""} `}
                   >
                     <Text
                       className={`text-sm ${
@@ -412,16 +424,3 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
-
-const styles = StyleSheet.create({
-  snapshotImg: {
-    flex: 1,
-    backgroundColor: "#00ffff",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 16,
-    padding: 16,
-    borderWidth: 0.5,
-    borderColor: "#000000",
-  },
-});

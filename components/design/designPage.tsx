@@ -161,7 +161,7 @@ const DesignPage = () => {
             height: 96,
           };
 
-          const containerWidth = 400;
+          const containerWidth = 380;
           const containerHeight = 390;
 
           const maxX = containerWidth / 2 - width / 2;
@@ -294,7 +294,7 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-      
+
       {snapshotImg && (
         <Modal animationType="fade" transparent={true} visible={showModal}>
           <View
@@ -347,6 +347,7 @@ const DesignPage = () => {
         index={0}
         snapPoints={snapPoints}
         backgroundStyle={{ backgroundColor: "#DFDFDF" }}
+        enableDynamicSizing={true}
         handleIndicatorStyle={{
           backgroundColor: "#7AB2B2",
           width: 40,
@@ -382,7 +383,7 @@ const DesignPage = () => {
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          <ScrollView className="h-[80%]">
+          {/* <ScrollView className="h-[80%]"> */}
             {activeTab === "Closet" && (
               <View className="h-[80%]">
                 <FlatList
@@ -399,7 +400,7 @@ const DesignPage = () => {
 
             {/* Pieces Tab */}
             {activeTab === "Pieces" && (
-              <View className="">
+              <View className="h-[80%]">
                 <FlatList
                   key={activeTab}
                   className="mt-5 z-20 flex-grow px-2"
@@ -411,7 +412,7 @@ const DesignPage = () => {
                 />
               </View>
             )}
-          </ScrollView>
+          {/* </ScrollView> */}
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

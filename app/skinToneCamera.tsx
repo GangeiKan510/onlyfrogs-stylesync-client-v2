@@ -41,6 +41,8 @@ const SkinToneCamera = ({
   }, []);
 
   const handleTakePicture = async () => {
+    await requestCameraPermissions();
+
     if (hasPermission) {
       const result = await cameraRef.current?.takePictureAsync({});
       if (result && result.uri) {

@@ -41,7 +41,7 @@ const SkinToneAnalysis = () => {
     useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
+  const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
   const [isCameraActive, setIsCameraActive] = useState(false);
 
   const onAnalyzeComplete = () => {
@@ -92,9 +92,13 @@ const SkinToneAnalysis = () => {
   };
 
   const handleTakePicture = async (uri: string) => {
-    setSelectedImage(uri);
+    await requestCameraPermissions()
 
-    const formData = new FormData();
+    if (hasPermission) {
+
+
+      
+      const formData = new FormData();
     formData.append("file", {
       uri: uri,
       name: uri.split("/").pop(),
@@ -116,6 +120,10 @@ const SkinToneAnalysis = () => {
     } finally {
       setIsLoading(false);
     }
+    }
+    setSelectedImage(uri);
+
+    
   };
 
   const handleUploadFromGallery = async () => {
@@ -303,7 +311,9 @@ const SkinToneAnalysis = () => {
           </View>
           <View className="absolute z-10 bottom-8 right-10">
             <SkinToneImageOptions
-              onCameraPress={handleOpenCamera}
+              // onCameraPress={handleOpenCamera}
+              onCameraPress={() => router.push("/(tabs)/survey")}
+
               onGalleryPress={handleUploadFromGallery}
             />
           </View>

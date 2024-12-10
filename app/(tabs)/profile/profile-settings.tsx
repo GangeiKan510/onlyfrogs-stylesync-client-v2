@@ -13,7 +13,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  BackHandler
+  BackHandler,
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
@@ -48,7 +49,26 @@ const ProfileSettings = () => {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetchMe();
+
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        const updatedUser = auth.currentUser;
+
+        console.log("Updated Firebase User:", updatedUser);
+      }
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const sendVerificationEmail = async () => {
     try {
@@ -288,7 +308,7 @@ const ProfileSettings = () => {
     ) {
       setShowModal(true);
     } else {
-      router.push("/(tabs)/profile")
+      router.push("/(tabs)/profile");
     }
   };
 
@@ -347,7 +367,17 @@ const ProfileSettings = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+        <ScrollView
+          className="flex-1"
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#7ab2b2"]}
+            />
+          }
+        >
           <View className="flex-1 px-6">
             <View className="items-center my-16">
               <TouchableOpacity
@@ -401,7 +431,9 @@ const ProfileSettings = () => {
                   autoCapitalize="words"
                 />
                 {lastNameError ? (
-                  <Text className="text-[#EE4E4E] italic text-xs">{lastNameError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">
+                    {lastNameError}
+                  </Text>
                 ) : null}
               </View>
               <View className="mb-3">

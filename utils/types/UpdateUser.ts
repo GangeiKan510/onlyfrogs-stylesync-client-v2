@@ -68,3 +68,22 @@ export interface UpdateUserBodyType {
   id: string;
   body_type: string;
 }
+
+export interface UpdateUserSkinToneDetailsData {
+  id: string;
+  skin_tone_classification: string;
+  skin_tone_complements: string[];
+  season: string;
+  sub_season: string;
+}
+
+export interface UpdateUserPreferencesAndBudgetData {
+  id: string;
+  brands: string[];
+  budgetRange: {
+    min: number;
+    max: number;
+  };
+  favoriteColors: string[];
+  styles: string[];
+}

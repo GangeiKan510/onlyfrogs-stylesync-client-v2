@@ -244,8 +244,8 @@ const DesignPage = () => {
                         position: "absolute",
                         bottom: -6,
                         right: -6,
-                        width: 14,
-                        height: 14,
+                        width: 16,
+                        height: 16,
                         backgroundColor: "rgba(147, 147, 147, 0.7)",
                         borderRadius: 7,
                         alignItems: "center",
@@ -284,6 +284,7 @@ const DesignPage = () => {
           className="relative bottom-20"
         />
       )}
+
       <BottomSheet
         ref={bottomSheet}
         index={0}

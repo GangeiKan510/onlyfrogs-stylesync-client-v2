@@ -64,9 +64,7 @@ const TopGreeting = () => {
           ) : (
             <Pressable
               className="flex-row items-center"
-              onPress={() =>
-                router.push("/(tabs)/profile/profile-settings")
-              }
+              onPress={() => router.push("/(tabs)/profile/profile-settings")}
             >
               <Text className="text-[14px] text-text-tertiary">
                 Verify Email{" "}
@@ -82,9 +80,9 @@ const TopGreeting = () => {
           <MoreInfoIcon width={20} height={20} />
           <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
         </View>
-        <Pressable onPress={() => router.push("/(tabs)/survey" as Href<string | object>)}>
+        {/* <Pressable onPress={() => router.push("/(tabs)/survey" as Href<string | object>)}>
           <Text className="text-[8px]">to survey</Text>
-        </Pressable>
+        </Pressable> */}
         <View className="flex-row items-center mt-1">
           <Text className="text-base ml-1"></Text>
         </View>

@@ -39,6 +39,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   const { user, refetchMe } = useUser();
   const router = useRouter();
   const [selectedBodyType, setSelectedBodyType] = useState<string>("");
+  const [initialBodyType, setInitialBodyType] = useState<string>("");
   const navigation = useNavigation();
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   useEffect(() => {
     if (user?.body_type) {
       setSelectedBodyType(user.body_type);
+      setInitialBodyType(user.body_type);
       setLoading(false);
     }
   }, [user?.body_type]);
@@ -73,7 +75,7 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         text1: "Body Type Saved",
         text2: "Your body type has been saved successfully.",
       });
-      router.push("/(tabs)/profile")
+      router.push("/(tabs)/profile");
     } catch (error) {
       console.error("Error saving body type:", error);
       Toast.show({
@@ -94,11 +96,13 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
     );
   }
 
+  const isSaveDisabled = selectedBodyType === initialBodyType || isSaving;
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
-          onPress={() =>  router.push("/(tabs)/profile")}
+          onPress={() => router.push("/(tabs)/profile")}
           className="absolute left-6 z-40"
         >
           <Back width={20} height={20} />
@@ -144,14 +148,22 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
         </ScrollView>
         <View className="mt-auto py-2 w-full px-6">
           <TouchableOpacity
-            className="flex items-center justify-center h-[42px] bg-[#7AB2B2] rounded-lg"
+            className={`flex items-center justify-center h-[42px] rounded-lg ${
+              isSaveDisabled ? "bg-[#9fcccc]" : "bg-bg-tertiary"
+            }`}
             onPress={handleSave}
-            disabled={isSaving}
+            disabled={isSaveDisabled}
           >
             {isSaving ? (
               <Spinner type="primary" />
             ) : (
-              <Text className="text-white">Save</Text>
+              <Text
+                className={`text-white ${
+                  isSaveDisabled ? "text-gray-500" : "text-white"
+                }`}
+              >
+                Save
+              </Text>
             )}
           </TouchableOpacity>
         </View>

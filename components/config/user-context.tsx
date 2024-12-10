@@ -10,6 +10,7 @@ import React, {
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { getMe } from "@/network/web/user";
+import { Notification } from "@/app/(tabs)/notifications";
 
 type Closet = {
   id: string;
@@ -51,7 +52,10 @@ type PromptSettings = {
 
 type UserDetails = {
   birth_date: string | null;
-  budget_preferences: object;
+  budget_min: number;
+  budget_max: number;
+  preferred_styles: string | null;
+  preferred_brands: string | null;
   email: string;
   favorite_color: string | null;
   first_name: string;
@@ -61,6 +65,8 @@ type UserDetails = {
   last_name: string;
   serial: number;
   skin_tone_classification: string | null;
+  sub_season: string | null;
+  skin_tone_complements?: string[];
   style_preferences: string[];
   tokens: number;
   closets: Closet[];
@@ -69,6 +75,8 @@ type UserDetails = {
   body_type: string;
   profile_url: string;
   promptSettings: PromptSettings;
+  favorite_colors: string[];
+  notifications: Notification[];
 };
 
 interface UserContextProps {
@@ -117,9 +125,14 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const refetchMe = useCallback(async () => {
     if (auth.currentUser?.email) {
       try {
-        await retryFetchUser(auth.currentUser.email);
+        await auth.currentUser.reload();
+
+        const firebaseUser = auth.currentUser;
+        console.log("Updated Firebase User:", firebaseUser);
+
+        await retryFetchUser(firebaseUser.email as string);
       } catch (error) {
-        console.error("Error fetching user info after retries:", error);
+        console.error("Error refreshing user details:", error);
       }
     }
   }, [updateUser]);

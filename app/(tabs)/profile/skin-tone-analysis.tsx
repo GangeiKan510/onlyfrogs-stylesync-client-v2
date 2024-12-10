@@ -1,25 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  View,
-  Text,
-  Alert,
-  Pressable,
-  BackHandler,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Alert, BackHandler, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../../../components/common/LoadingScreen";
-import { analyzeUserSkinTone } from "@/network/web/user";
+import {
+  analyzeUserSkinTone,
+  updateUser,
+  updateUserSkinToneDetails,
+} from "@/network/web/user";
 import Result from "../../../components/survey/result";
 import Back from "../../../assets/icons/back-icon.svg";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
+import { routes } from "@/utils/routes";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "@/components/config/user-context";
+import Toast from "react-native-toast-message";
 
 const SkinToneAnalysis = () => {
+  const { user, refetchMe } = useUser();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -96,7 +98,7 @@ const SkinToneAnalysis = () => {
           const result = await analyzeUserSkinTone(formData);
           console.log("Analysis result:", result);
           setAnalysisResult(result.skinToneAnalysis);
-          setSkinToneAnalysisResult(JSON.stringify(result.skinToneAnalysis));
+          setSkinToneAnalysisResult(result.skinToneAnalysis);
           onAnalyzeComplete();
         } catch (error) {
           console.error("Failed to analyze skin tone:", error);
@@ -111,11 +113,60 @@ const SkinToneAnalysis = () => {
   const handleCancel = () => {
     setSelectedImage(null);
     setAnalysisResult(null);
+    router.push("/(tabs)/profile/result");
   };
 
-  const handleSave = () => {
-    // Save the skin tone analysis result
-    console.log("Saving skin tone analysis result:", skinToneAnalysisResult);
+  const handleSave = async () => {
+    if (!skinToneAnalysisResult) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "No skin tone analysis result to save.",
+        position: "top",
+        swipeable: true,
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const userData = {
+        id: user?.id,
+        skin_tone_classification: skinToneAnalysisResult.skin_tone,
+        skin_tone_complements: skinToneAnalysisResult.complements,
+        season: skinToneAnalysisResult.season,
+        sub_season: skinToneAnalysisResult.sub_season,
+      };
+
+      console.log("Sending user data for update:", userData);
+
+      const updatedUser = await updateUserSkinToneDetails(userData as any);
+
+      console.log("User updated successfully:", updatedUser);
+      refetchMe();
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Your skin tone analysis has been saved.",
+        position: "top",
+        swipeable: true,
+      });
+
+      router.push("/(tabs)/profile");
+    } catch (error) {
+      console.error("Failed to save skin tone analysis result:", error);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save skin tone analysis result.",
+        position: "top",
+        swipeable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -128,39 +179,41 @@ const SkinToneAnalysis = () => {
             subSeason={analysisResult.sub_season}
             complements={analysisResult.complements}
           />
-          <View className="flex-row justify-between  mt-[-40px] px-4">
-            <Pressable
+          <View className="flex-row justify-between px-8 bottom-4">
+            <TouchableOpacity
               onPress={handleCancel}
-              className="flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center flex bg-[#F9F9F9] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[#7AB2B2] text-[16px] py-2">
                 Cancel
               </Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable
+            <TouchableOpacity
               onPress={handleSave}
-              className="bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              className="items-center justify-center bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
             >
               <Text className="text-center text-[16px] text-white py-2">
                 Save
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <View>
-          <TouchableOpacity
-            onPress={() =>  router.push("/(tabs)/profile")}
-            className="absolute left-8 z-40 top-16"
-          >
-            <Back width={20} height={20} />
-          </TouchableOpacity>
+        <SafeAreaView className="flex-1 bg-white">
+          <View className="w-full flex-row items-center top-2 px-6 z-30">
+            <TouchableOpacity
+              onPress={() => router.push("/(tabs)/profile/result")}
+              className="absolute left-6 z-40"
+            >
+              <Back width={20} height={20} />
+            </TouchableOpacity>
+            <Text className="flex-1 text-center text-[20px] font-bold">
+              Skint Tone Analysis
+            </Text>
+          </View>
           <View className="h-[85vh] flex justify-center items-center mt-10">
             <View className="mb-14">
-              <Text className="text-[20px] font-bold text-center">
-                Skin Tone Analysis
-              </Text>
               <Text className="text-[16px] text-center mb-5">
                 Let&apos;s find your perfect shades.
               </Text>
@@ -179,7 +232,7 @@ const SkinToneAnalysis = () => {
               />
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       )}
     </>
   );

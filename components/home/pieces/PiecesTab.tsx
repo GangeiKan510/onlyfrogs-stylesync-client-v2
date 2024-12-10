@@ -16,7 +16,6 @@ import { useUser } from "@/components/config/user-context";
 import getColorHexCode from "@/utils/clothingUtils/colorUtils";
 import getMaterialSvg from "@/utils/clothingUtils/materialUtils";
 import getPatternSvg from "@/utils/clothingUtils/patternUtils";
-
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import { COLOR_LIST } from "@/components/constants/color-list";
 
@@ -32,15 +31,20 @@ const PiecesTab = () => {
   const [selectedClothingId, setSelectedClothingId] = useState<string | null>(
     null
   );
+  const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
 
   const handleItemPress = (id: string, imageUrl: string) => {
+    const selectedClothing = filteredClothes.find((item) => item.id === id);
+    const wornCount = selectedClothing?.worn?.[0]?.count ?? 0;
+
     setSelectedClothingImage(imageUrl);
     setSelectedClothingId(id);
     setIsModalVisible(true);
+    setSelectedClothingCount(wornCount);
   };
 
   const toggleDropdownVisibility = () => {
@@ -59,18 +63,19 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const searchFieldMatch = (field: string | string[] | null | never) => {
+  const searchFieldMatch = (field: string | string[] | null | undefined) => {
     if (typeof field === "string") {
       return field.toLowerCase().includes(search.toLowerCase());
     } else if (Array.isArray(field)) {
       return field.some(
-        (f) =>
-          typeof f === "string" &&
-          f.toLowerCase().includes(search.toLowerCase())
+        (searchField) =>
+          typeof searchField === "string" &&
+          searchField.toLowerCase().includes(search.toLowerCase())
       );
     }
     return false;
   };
+
 
   const filterOptions = () => {
     const filterOptions = {
@@ -80,6 +85,7 @@ const PiecesTab = () => {
       color: new Set<{ name: string; colorCode: string }>(),
       material: new Set<string>(),
       pattern: new Set<string>(),
+      worn: new Set<string>(),
     };
 
     user?.clothes.forEach((item) => {
@@ -100,6 +106,15 @@ const PiecesTab = () => {
       }
       if (item.material) filterOptions.material.add(item.material);
       if (item.pattern) filterOptions.pattern.add(item.pattern);
+      const wornCount = item.worn?.[0]?.count ?? 0;
+      if (wornCount === 0) filterOptions.worn.add("Never Worn");
+      else if (wornCount >= 1 && wornCount <= 5)
+        filterOptions.worn.add("Less Often Worn");
+      else if (wornCount >= 6 && wornCount <= 10)
+        filterOptions.worn.add("Frequently Worn");
+      else if (wornCount > 10) filterOptions.worn.add("Very Frequently Worn");
+
+      console.log("Worn count:", item.worn);
     });
 
     return {
@@ -109,6 +124,7 @@ const PiecesTab = () => {
       category: Array.from(filterOptions.category),
       material: Array.from(filterOptions.material),
       pattern: Array.from(filterOptions.pattern),
+      worn: Array.from(filterOptions.worn),
     };
   };
 
@@ -120,35 +136,28 @@ const PiecesTab = () => {
 
   const filteredClothes =
     user?.clothes.filter((item) => {
-      const hasDetails =
-        item.name &&
-        item.category &&
-        item.brand &&
-        item.color &&
-        item.material &&
-        item.season &&
-        item.pattern;
-
-      const isSearchActive = search.length > 0;
-
+      
       const matchesSearch =
-        !isSearchActive ||
+        search.length === 0 ||
         [
           item.name,
           item.color,
           item.brand,
           item.season,
+          item.occasion,
+          item.category?.name,
           item.pattern,
           item.material,
-        ].some((field) => searchFieldMatch(field));
+        ]
+        .some((field) => searchFieldMatch(field));
 
       // Season
       const itemSeason = Array.isArray(item.season)
-        ? item.season.map((s) => (s as string).toLowerCase())
+        ? item.season.map((season) => (season as string).toLowerCase())
         : [];
       // Occasion
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((o) => (o as string).toLowerCase())
+        ? item.occasion.map((occasion) => (occasion as string).toLowerCase())
         : [];
       // Category
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
@@ -161,6 +170,16 @@ const PiecesTab = () => {
       // Pattern
       const itemPattern =
         (item.pattern as unknown as string)?.toLowerCase() || "";
+      // Worn
+      const wornCount = item.worn?.[0]?.count ?? 0;
+      const itemWorn =
+        wornCount === 0
+          ? "Never Worn"
+          : wornCount >= 1 && wornCount <= 5
+            ? "Less Often Worn"
+            : wornCount >= 6 && wornCount <= 10
+              ? "Frequently Worn"
+              : "Very Frequently Worn";
 
       const matchesFilters =
         selectedFilters.length === 0 ||
@@ -171,10 +190,11 @@ const PiecesTab = () => {
             itemSeason.includes(filter.toLowerCase()) ||
             itemColor.includes(filter.toLowerCase()) ||
             itemMaterial.includes(filter.toLowerCase()) ||
-            itemPattern.includes(filter.toLowerCase())
+            itemPattern.includes(filter.toLowerCase()) ||
+            itemWorn.toLowerCase().includes(filter.toLowerCase())
         );
 
-      return isSearchActive ? matchesSearch && hasDetails : matchesFilters;
+      return  matchesSearch && matchesFilters;
     }) ?? [];
 
   return (
@@ -241,7 +261,11 @@ const PiecesTab = () => {
                         }`}
                       >
                         <Text
-                          className={`${selectedFilters.includes(season) ? "text-white" : "text-[#7AB2B2]"}`}
+                          className={`${
+                            selectedFilters.includes(season)
+                              ? "text-white"
+                              : "text-[#7AB2B2]"
+                          }`}
                         >
                           {season.replace(/^\w/, (c) => c.toUpperCase())}
                         </Text>
@@ -295,7 +319,11 @@ const PiecesTab = () => {
                         }`}
                       >
                         <Text
-                          className={`${selectedFilters.includes(category) ? "text-white" : "text-[#7AB2B2]"}`}
+                          className={`${
+                            selectedFilters.includes(category)
+                              ? "text-white"
+                              : "text-[#7AB2B2]"
+                          }`}
                         >
                           {category.replace(/^\w/, (c) => c.toUpperCase())}
                         </Text>
@@ -410,6 +438,37 @@ const PiecesTab = () => {
                     })}
                   </View>
                 </View>
+
+                <Text className="text-[#484848] text-[14px] ">
+                  Wear Count
+                </Text>
+                <View className="flex-row flex-wrap">
+                  <View className="flex-row flex-wrap mb-6">
+                    {itemFilterOptions.worn.map((itemWorn) => {
+                      return (
+                        <Pressable
+                          key={itemWorn}
+                          onPress={() => toggleFilter(itemWorn.toLowerCase())}
+                          className={`m-1 px-2 py-1 border-[1px] border-[#7AB2B2] flex-row items-center rounded-[10px] ${
+                            selectedFilters.includes(itemWorn.toLowerCase())
+                              ? "bg-[#7AB2B2]"
+                              : "bg-white"
+                          }`}
+                        >
+                          <Text
+                            className={`${
+                              selectedFilters.includes(itemWorn.toLowerCase())
+                                ? "text-white"
+                                : "text-[#7AB2B2]"
+                            }`}
+                          >
+                            {itemWorn}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
               </>
             ) : (
               <View className="h-20 items-center justify-center">
@@ -458,7 +517,7 @@ const PiecesTab = () => {
         onClose={handleCloseModal}
         clothingImage={selectedClothingImage}
         clothingId={selectedClothingId}
-        wornCount={0}
+        wornCount={selectedClothingCount}
       />
     </SafeAreaView>
   );

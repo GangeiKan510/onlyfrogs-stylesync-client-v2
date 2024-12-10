@@ -45,6 +45,13 @@ const ProfileLayout = () => {
       />
 
       <Stack.Screen
+        name="result"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
         name="body-type"
         options={{
           headerShown: false,

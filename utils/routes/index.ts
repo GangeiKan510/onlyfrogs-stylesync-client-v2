@@ -9,9 +9,7 @@ export const routes = {
   welcome: "/welcome",
   // profile: "/profile",
   noConnection: "/no-connection",
-  closet: "closet",
-  analyzeSkinTonesIntructions: "/analyzeSkinToneIntructions",
-
+  closet: "(tabs)/home/",
   // profileSettings: "profile/profile-settings",
   // resetPassword: "profile/reset-password",
   // personalInformation: "profile/personal-information",

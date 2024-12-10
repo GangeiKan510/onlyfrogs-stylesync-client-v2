@@ -294,16 +294,7 @@ const DesignPage = () => {
           <Save />
         </TouchableOpacity>
       )}
-
-      {/* {snapshotImg && <Text>Preview</Text>}
-      {snapshotImg && (
-        <Image
-          resizeMode="contain"
-          style={styles.snapshotImg}
-          source={{ uri: snapshotImg }}
-          className="relative bottom-20"
-        />
-      )} */}
+      
       {snapshotImg && (
         <Modal animationType="fade" transparent={true} visible={showModal}>
           <View

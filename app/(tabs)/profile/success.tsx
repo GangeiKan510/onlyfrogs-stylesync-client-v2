@@ -3,8 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WelcomeHero from "../../../assets/images/svg/welcome-hero.svg";
 import Success from "../../../assets/images/svg/success.svg";
-import { routes } from "@/utils/routes";
-import { Href, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 function SuccessScreen() {
     const router = useRouter();

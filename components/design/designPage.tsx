@@ -7,6 +7,8 @@ import {
   PanResponder,
   Pressable,
   Animated,
+  Modal,
+  TextInput,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -14,11 +16,13 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
+import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
+import Save from "../../assets/icons/save.svg";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -26,8 +30,10 @@ const DesignPage = () => {
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
-  const snapPoints = useMemo(() => ["45%", "80%"], []);
+  const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
+  const viewToSnapshotRef = useRef<View | null>(null);
+  const [snapshotImg, setSnapshotImg] = useState<string | undefined>();
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [dragPositions, setDragPositions] = useState<{
@@ -38,6 +44,29 @@ const DesignPage = () => {
     [key: string]: { width: number; height: number };
   }>({});
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [snapshotName, setSnapshotName] = useState("");
+
+  const snapshot = async () => {
+    const result = await captureRef(viewToSnapshotRef);
+    console.log(result);
+    setSnapshotImg(result);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setSnapshotName("");
+    setShowModal(false);
+  };
+  const saveSnapshot = () => {
+    console.log("Snapshot saved with name:", snapshotName);
+    // Add your save logic here
+    setSnapshotName("");
+    setSelectedImages([]);
+    setDragPositions({});
+    setImageSizes({});
+    closeModal();
+  };
 
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
@@ -132,7 +161,7 @@ const DesignPage = () => {
           };
 
           const containerWidth = 400;
-          const containerHeight = 280;
+          const containerHeight = 390;
 
           const maxX = containerWidth / 2 - width / 2;
           const maxY = containerHeight / 2 - height / 2;
@@ -183,10 +212,13 @@ const DesignPage = () => {
     });
 
   return (
-    <GestureHandlerRootView className="flex-1">
+    <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
-
-      <View className="w-full border-t border-[#D9D9D9] h-72 mt-6 items-center justify-center bg-gray-200 relative">
+      <View className="border-t border-[#D9D9D9] mt-6"></View>
+      <View
+        ref={viewToSnapshotRef}
+        className="w-full h-96 items-center justify-center relative"
+      >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
             const isSelected = selectedImage === image;
@@ -252,6 +284,69 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
+      {selectedImages.length > 0 && (
+        <TouchableOpacity
+          onPress={snapshot}
+          className="absolute left-[90%] bottom-[77%]"
+        >
+          <Save />
+        </TouchableOpacity>
+      )}
+      
+      {/* {snapshotImg && <Text>Preview</Text>}
+      {snapshotImg && (
+        <Image
+          resizeMode="contain"
+          style={styles.snapshotImg}
+          source={{ uri: snapshotImg }}
+          className="relative bottom-20"
+        />
+      )} */}
+      {snapshotImg && 
+      <Modal animationType="fade" transparent={true} visible={showModal}>
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <View className="bg-white w-4/5 p-5 rounded-[10px]">
+            <Text className="text-[16px] text-center font-bold mb-2">
+              Preview
+            </Text>
+            <TextInput
+              placeholder="Name this outfit"
+              value={snapshotName}
+              onChangeText={setSnapshotName}
+              className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
+            />
+            <View className="items-center justify-center ">
+              {snapshotImg ? (
+                <Image
+                  resizeMode="contain"
+                  source={{ uri: snapshotImg }}
+                  className="w-full h-52 m-2"
+                />
+              ) : (
+                <Text>No snapshot available</Text>
+              )}
+            </View>
+
+            <View className="flex-row justify-between w-full mt-2">
+              <TouchableOpacity
+                onPress={closeModal}
+                className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={saveSnapshot}
+                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-white text-[16px]">Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>}
 
       <BottomSheet
         ref={bottomSheet}
@@ -276,7 +371,7 @@ const DesignPage = () => {
                   className="flex-1 items-center py-3 z-10"
                 >
                   <View
-                    className={`${isActive ? "border-b-[2px] border-black" : ""}`}
+                    className={`${isActive ? "border-b-[2px] border-black" : ""} `}
                   >
                     <Text
                       className={`text-sm ${
@@ -308,7 +403,7 @@ const DesignPage = () => {
               </View>
             )}
 
-          {/* Pieces Tab */}
+            {/* Pieces Tab */}
             {activeTab === "Pieces" && (
               <View className="">
                 <FlatList
@@ -330,3 +425,4 @@ const DesignPage = () => {
 };
 
 export default DesignPage;
+

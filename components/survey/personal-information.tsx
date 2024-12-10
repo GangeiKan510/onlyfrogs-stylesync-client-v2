@@ -167,7 +167,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
       let locationServicesEnabled = await Location.hasServicesEnabledAsync();
       if (!locationServicesEnabled) {
         setErrorMsg(
-          "Location services are not enabled. Please turn on location services."
+          "Please turn on location services."
         );
         return;
       }

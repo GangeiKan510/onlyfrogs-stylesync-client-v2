@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   BackHandler,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -18,8 +19,10 @@ import Spinner from "@/components/common/Spinner";
 function PersonalInformation() {
   const router = useRouter();
   const { user, refetchMe } = useUser();
+  const [showModal, setShowModal] = useState(false);
   const [height, setHeight] = useState<number | string>(user?.height || "");
   const [weight, setWeight] = useState<number | string>(user?.weight || "");
+  // const [gender, setGender] = useState<string>(user?.gender || "");
   const [birthDate, setBirthDate] = useState<string>(
     user?.birth_date
       ? new Date(user.birth_date).toLocaleDateString("en-US")
@@ -32,25 +35,31 @@ function PersonalInformation() {
   const [selectedGender, setSelectedGender] = useState<
     "Female" | "Male" | "Non-Binary" | "Rather Not Say" | null
   >(user?.gender || null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const [isBirthDateEdited, setIsBirthDateEdited] = useState(false);
-
-  const [initialHeight] = useState<number | string>(user?.height || "");
-  const [initialWeight] = useState<number | string>(user?.weight || "");
-  const [initialBirthDate] = useState<string>(
+  const initialHeightRef = useRef(user?.height || "");
+  const initialWeightRef = useRef(user?.weight || "");
+  const initialGenderRef = useRef(user?.gender || null);
+  const initialBirthDateRef = useRef(
     user?.birth_date
       ? new Date(user.birth_date).toLocaleDateString("en-US")
       : ""
   );
-  const [initialGender] = useState<string | null>(user?.gender || null);
-
+  // const [initialWeight] = useState<number | string>(user?.weight || "");
+  // const [initialHeight] = useState<number | string>(user?.weight || "");
+  // const [initialBirthDate] = useState<string>(
+  //   user?.birth_date
+  //     ? new Date(user.birth_date).toLocaleDateString("en-US")
+  //     : ""
+  // );
+  // const [initialGender] = useState<string | null>(user?.gender || null);
   const genderOptions = ["Female", "Male", "Non-Binary", "Rather Not Say"];
 
   const isFormChanged =
-    height !== initialHeight ||
-    weight !== initialWeight ||
-    birthDate !== initialBirthDate ||
-    selectedGender !== initialGender;
+    height !== initialHeightRef.current ||
+    weight !== initialWeightRef.current ||
+    birthDate !== initialBirthDateRef.current ||
+    selectedGender !== initialGenderRef.current;
 
   const validateBirthDate = (dateString: string) => {
     const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/;
@@ -91,18 +100,6 @@ function PersonalInformation() {
     setParsedBirthDate(enteredDate);
     return true;
   };
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        return true;
-      }
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
 
   const handleBirthDateChange = (value: string) => {
     const formattedDate = formatDateInput(value);
@@ -239,11 +236,77 @@ function PersonalInformation() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
+  useEffect(() => {
+    resetToInitialState();
+  }, [user]);
+
+  const resetToInitialState = () => {
+    setBirthDate(user?.birth_date ? formatDate(user.birth_date) : "");
+    setHeight(user?.height || "");
+    setWeight(user?.weight || "");
+    setSelectedGender(user?.gender || null);
+    initialBirthDateRef.current = user?.birth_date
+      ? formatDate(user.birth_date)
+      : "";
+    initialHeightRef.current = user?.height || "";
+    initialWeightRef.current = user?.weight || "";
+    initialGenderRef.current = user?.gender || null;
+  };
+
+  const confirmDiscardChanges = () => {
+    resetToInitialState();
+    setShowModal(false);
+    router.push("/(tabs)/profile");
+  };
+
+  const handleCancel = () => {
+    if (
+      birthDate !== initialBirthDateRef.current ||
+      weight !== initialWeightRef.current ||
+      height !== initialHeightRef.current ||
+      selectedGender !== initialGenderRef.current
+    ) {
+      setShowModal(true);
+    } else {
+      router.push("/(tabs)/profile");
+    }
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (
+          birthDate !== initialBirthDateRef.current ||
+          height !== initialHeightRef.current ||
+          weight !== initialWeightRef.current ||
+          selectedGender !== initialGenderRef.current
+        ) {
+          setShowModal(true);
+          return true;
+        }
+        return false;
+      }
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [birthDate, height, weight]);
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="w-full flex-row items-center top-2 px-6 z-30">
         <TouchableOpacity
-          onPress={() => router.push("/(tabs)/profile")}
+          onPress={handleCancel}
           className="absolute left-6 z-40"
         >
           <Back width={20} height={20} />
@@ -373,6 +436,36 @@ function PersonalInformation() {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal animationType="fade" transparent={true} visible={showModal}>
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
+            <Text className="text-[18px] mb-1 font-bold">
+              Discard changes?
+            </Text>
+            <Text className="mt-2 text-center">
+              If you discard now, you&apos;ll lose any changes you&apos;ve made to this page.
+            </Text>
+            <View className="flex-row justify-between w-full mt-5">
+              <TouchableOpacity
+                onPress={() => setShowModal(false)}
+                className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-[#7AB2B2] text-[16px]">Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={confirmDiscardChanges}
+                className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-white text-[16px]">Discard</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

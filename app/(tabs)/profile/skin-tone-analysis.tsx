@@ -52,18 +52,6 @@ const SkinToneAnalysis = () => {
   }, []);
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        return true;
-      }
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     if (selectedImage) {
       console.log("Captured Image URI:", selectedImage);
     }

@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
             <View className="mt-12 items-center">
               <View className="flex-row gap-1 items-center">
-                <Text className="text-black font-bold text-[16px]">
+                <Text className="text-[#484848] font-bold text-[16px]">
                   {user?.first_name && user?.last_name
                     ? `${user.first_name} ${user.last_name}`
                     : "Guest"}
@@ -199,12 +199,12 @@ const ProfilePage = () => {
                 onPress={() => setModalVisible(true)}
               >
                 <View className="flex-row items-center">
-                  <LogOutIcon width={24} height={24} color="red" />
-                  <Text className="font-medium text-[16px] ml-2 text-red">
+                  <LogOutIcon width={24} height={24} color="black" />
+                  <Text className="font-medium text-[16px] ml-2">
                     Log Out
                   </Text>
                 </View>
-                <ArrowRightIcon width={15} height={15} color="red" />
+                <ArrowRightIcon width={15} height={15} color="black" />
               </TouchableOpacity>
             </View>
           </View>

@@ -69,7 +69,7 @@ const TopGreeting = () => {
               <Text className="text-[14px] text-text-tertiary">
                 Verify Email{" "}
               </Text>
-              <VerifyEmailIcon />
+              <VerifyEmailIcon height={12} />
             </Pressable>
           )}
         </View>

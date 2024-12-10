@@ -8,6 +8,8 @@ import {
   Pressable,
   StyleSheet,
   Animated,
+  Modal,
+  TextInput,
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -43,16 +45,26 @@ const DesignPage = () => {
     [key: string]: { width: number; height: number };
   }>({});
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [snapshotName, setSnapshotName] = useState("");
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
     console.log(result);
     setSnapshotImg(result);
+    setShowModal(true);
   };
-
   useEffect(() => {
     bottomSheet.current?.snapToIndex(0);
   }, [activeTab, closets, clothes]);
+
+  // const openModal = () => setModalVisible(true);
+  const closeModal = () => setShowModal(false);
+  const saveSnapshot = () => {
+    console.log("Snapshot saved with name:", snapshotName);
+    // Add your save logic here
+    closeModal();
+  };
 
   const renderCloset = ({
     item: closet,
@@ -196,10 +208,10 @@ const DesignPage = () => {
   return (
     <GestureHandlerRootView className="flex-1">
       <Header />
-      <View className="border-t border-[#D9D9D9] mt-6"></View>
+      {/* <View className="border-t border-[#D9D9D9] mt-6"></View> */}
       <View
         ref={viewToSnapshotRef}
-        className="w-full h-96 items-center justify-center relative"
+        className="w-full h-96 mt-6 items-center justify-center relative"
       >
         {selectedImages.length > 0 ? (
           selectedImages.map((image, index) => {
@@ -275,15 +287,53 @@ const DesignPage = () => {
         </TouchableOpacity>
       )}
 
-      {snapshotImg && <Text>Preview</Text>}
-      {snapshotImg && (
-        <Image
-          resizeMode="contain"
-          style={styles.snapshotImg}
-          source={{ uri: snapshotImg }}
-          className="relative bottom-20"
-        />
-      )}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showModal}
+        // onRequestClose={() => setShowModal(false)}
+      >
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <View className="bg-white w-4/5 p-5 rounded-[10px]">
+            <Text className="text-[16px] text-center font-bold mb-2">
+              Preview
+            </Text>
+            <TextInput
+              placeholder="Name this outfit"
+              value={snapshotName}
+              onChangeText={setSnapshotName}
+              className="border-b-[0.8px] border-[#a7a7a7] text-[13px]"
+            />
+            <View className="items-center justify-center ">
+            {snapshotImg && (
+              <Image
+                resizeMode="contain"
+                source={{ uri: snapshotImg }}
+                className="w-full h-52 m-2"
+              />
+            )}
+            </View>
+
+            <View className="flex-row justify-between w-full mt-2">
+              <TouchableOpacity
+                onPress={() => setShowModal(false)}
+                className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={saveSnapshot}
+                className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+              >
+                <Text className="text-white text-[16px]">Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <BottomSheet
         ref={bottomSheet}
@@ -371,7 +421,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 16,
     padding: 16,
-    borderWidth: 2,
+    borderWidth: 0.5,
     borderColor: "#000000",
   },
 });

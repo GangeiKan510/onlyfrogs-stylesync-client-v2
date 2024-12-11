@@ -26,6 +26,26 @@ export const createFit = async (formData: FormData) => {
   }
 };
 
+export const updateFit = async (fitId: string, newName: string) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/fits/rename-fit", {
+      fitId,
+      newName,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error rename fit: ${errorText}`);
+    }
+
+    const renamedFitDetails = await response.json();
+    return renamedFitDetails;
+  } catch (error) {
+    console.error("Failed to rename fit", error);
+    throw error;
+  }
+};
+
 export const deleteFit = async (fitId: string) => {
   try {
     const response = await postWithFirebaseJwt("/web/fits/delete-fit", {
@@ -37,8 +57,8 @@ export const deleteFit = async (fitId: string) => {
       throw new Error(`Error deleting fit: ${errorText}`);
     }
 
-    const closets = await response.json();
-    return closets;
+    const deletedFit = await response.json();
+    return deletedFit;
   } catch (error) {
     console.error("Failed to delete fit", error);
     throw error;

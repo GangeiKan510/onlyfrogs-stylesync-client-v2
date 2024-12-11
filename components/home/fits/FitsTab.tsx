@@ -32,7 +32,7 @@ const FitsTab = () => {
   };
 
   return (
-    <View className="flex-1 bg-white p-3">
+    <View className="flex-1 bg-white px-3">
       <FlatList
         data={user?.fits}
         renderItem={({ item }) => (
@@ -40,6 +40,8 @@ const FitsTab = () => {
         )}
         keyExtractor={(item) => item.id}
         numColumns={3}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={styles.list}
       />
       {selectedFit && (
         <Modal
@@ -49,15 +51,15 @@ const FitsTab = () => {
           onRequestClose={handleCloseModal}
         >
           <View style={styles.modalOverlay}>
-            <View className="bg-white rounded-lg p-5 items-center">
+            <View className="bg-white rounded-lg p-4 items-center">
+              <Text className="font-semibold mb-2">{selectedFit.name}</Text>
               <Image
                 source={{ uri: selectedFit.thumbnail_url }}
                 className="w-72 h-72"
                 resizeMode="contain"
               />
-              <Text className="text-lg font-bold my-3">{selectedFit.name}</Text>
               <TouchableOpacity
-                className="bg-tertiary py-2 px-4 rounded-md"
+                className="bg-tertiary py-2 px-4 rounded-md mt-2"
                 onPress={handleCloseModal}
               >
                 <Text className="text-white text-base">Close</Text>
@@ -71,6 +73,14 @@ const FitsTab = () => {
 };
 
 const styles = StyleSheet.create({
+  row: {
+    justifyContent: "flex-start",
+    marginBottom: 10,
+    gap: 2,
+  },
+  list: {
+    paddingHorizontal: 5,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",

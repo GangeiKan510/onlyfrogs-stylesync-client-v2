@@ -1,4 +1,7 @@
-import { uploadWithFirebaseJwt } from "../firebase/requests-with-firebase";
+import {
+  postWithFirebaseJwt,
+  uploadWithFirebaseJwt,
+} from "../firebase/requests-with-firebase";
 
 export const createFit = async (formData: FormData) => {
   try {
@@ -19,6 +22,25 @@ export const createFit = async (formData: FormData) => {
     return newFit;
   } catch (error) {
     console.error("Failed to create fit", error);
+    throw error;
+  }
+};
+
+export const deleteFit = async (fitId: string) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/fits/delete-fit", {
+      fitId,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error deleting fit: ${errorText}`);
+    }
+
+    const closets = await response.json();
+    return closets;
+  } catch (error) {
+    console.error("Failed to delete fit", error);
     throw error;
   }
 };

@@ -35,8 +35,19 @@ const FitsTab = () => {
     setEditedName(fit.name);
   };
 
-  const handleEditToggle = () => {
-    setIsEditing((prev) => !prev);
+  const handleSaveEdit = () => {
+    if (selectedFit && editedName.trim() !== selectedFit.name) {
+      console.log(
+        `Saving edited name: ${editedName} for Fit ID: ${selectedFit.id}`
+      );
+      setSelectedFit({ ...selectedFit, name: editedName });
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedName(selectedFit?.name || "");
   };
 
   const handleCloseModal = () => {
@@ -71,7 +82,7 @@ const FitsTab = () => {
                   <TextInput
                     value={editedName}
                     onChangeText={setEditedName}
-                    className="border-b border-gray-300 text-lg flex-1 mr-2"
+                    className="border-b border-light-gray text-lg flex-1 mr-2"
                     placeholder="Edit name"
                   />
                 ) : (
@@ -79,15 +90,22 @@ const FitsTab = () => {
                     {selectedFit.name}
                   </Text>
                 )}
-                <View className="flex-row gap-2">
-                  <TouchableOpacity onPress={handleEditToggle}>
-                    <EditIcon
-                      width={16}
-                      height={16}
-                      color={isEditing ? "green" : "#000"}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
+                <View className="flex-row">
+                  {isEditing ? (
+                    <View className="flex-row mt-[2px]">
+                      <TouchableOpacity onPress={handleCancelEdit}>
+                        <CloseIcon width={16} height={16} color={"red"} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleSaveEdit}>
+                        <CheckIcon width={16} height={16} color={"green"} />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <TouchableOpacity onPress={() => setIsEditing(true)}>
+                      <EditIcon width={16} height={16} color={"#000000"} />
+                    </TouchableOpacity>
+                  )}
+                  <TouchableOpacity className="ml-1">
                     <DeleteIcon width={16} height={16} color={"red"} />
                   </TouchableOpacity>
                 </View>

@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { useUser } from "@/components/config/user-context";
 import FitsCard from "@/components/cards/FitsCard";
+import DeleteIcon from "../../../assets/icons/delete-icon.svg";
+import EditIcon from "../../../assets/icons/edit-icon.svg";
 
 const FitsTab = () => {
   const { user } = useUser();
@@ -52,7 +54,13 @@ const FitsTab = () => {
         >
           <View style={styles.modalOverlay}>
             <View className="bg-white rounded-lg p-4 items-center">
-              <Text className="font-semibold mb-2">{selectedFit.name}</Text>
+              <View className="w-[75%] flex-row justify-between">
+                <Text className="font-semibold mb-2">{selectedFit.name}</Text>
+                <View className="flex-row gap-2">
+                  <EditIcon width={16} height={16} color={"#000000"} />
+                  <DeleteIcon width={16} height={16} color={"red"} />
+                </View>
+              </View>
               <Image
                 source={{ uri: selectedFit.thumbnail_url }}
                 className="w-72 h-72"

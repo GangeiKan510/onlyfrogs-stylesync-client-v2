@@ -1,22 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-import { Text, View, FlatList, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
-import { usePathname } from "expo-router";
+import { Href, usePathname, useRouter } from "expo-router";
 import Header from "../../../components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import BackButton from "../../../components/buttons/BackButton";
 import { getIdFromUrl } from "@/utils/helpers/get-closet-id";
 import ClothingCard from "@/components/cards/ClothingCard";
 import { uploadClothing } from "@/network/web/clothes";
+import { deleteCloset, updateCloset } from "@/network/web/closet";
 import ClothingDetailsModal from "@/components/dialogs/ClothingDetailsModal";
 import LinkUploadModal from "@/components/dialogs/LinkUploadModal";
 import Toast from "react-native-toast-message";
 import FloatingActionMenu from "@/components/buttons/FloatingActionMenu";
+import DeleteIcon from "../../../assets/icons/delete-icon.svg";
+import EditIcon from "../../../assets/icons/edit-icon.svg";
+import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
+import { routes } from "@/utils/routes";
+import EditClosetModal from "@/components/dialogs/EditClosetModal";
 
 const Page = () => {
   const { user, refetchMe } = useUser();
+  const router = useRouter();
   const path = usePathname();
   const closetId = getIdFromUrl(path);
   const routeName = path.split("/")[1];
@@ -32,6 +45,10 @@ const Page = () => {
   );
   const [loading, setLoading] = useState(false); // This controls the spinner and menu
   const [selectedClothingCount, setSelectedClothingCount] = useState<number>(0);
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+  const [isDeletingCloset, setIsDeletingCloset] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const requestCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -171,6 +188,57 @@ const Page = () => {
     }
   };
 
+  const handleEditCloset = async (name: string, description: string) => {
+    setIsSaving(true);
+    try {
+      await updateCloset({ closetId, name, description });
+      Toast.show({
+        type: "success",
+        text1: "Closet updated successfully!",
+        position: "top",
+      });
+      setIsEditModalVisible(false);
+      refetchMe();
+    } catch (error) {
+      console.error("Failed to update closet:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to update closet!",
+        position: "top",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteCloset = async () => {
+    setIsDeletingCloset(true);
+    try {
+      await deleteCloset(closetId as string);
+
+      Toast.show({
+        type: "success",
+        text1: "Closet deleted successfully!",
+        position: "top",
+        swipeable: true,
+      });
+      setIsConfirmationVisible(false);
+      router.push(routes.closet as Href<string>);
+      refetchMe();
+    } catch (error: any) {
+      console.error("Failed to delete closet:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to delete closet!",
+        text2: error.message,
+        position: "top",
+        swipeable: true,
+      });
+    } finally {
+      setIsDeletingCloset(false);
+    }
+  };
+
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
 
   const filteredClothes =
@@ -194,13 +262,19 @@ const Page = () => {
     },
   ];
 
-  console.log("FILTERED CLOTHES", filteredClothes);
+  console.log(currentCloset);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-5 flex-1">
-        <View>
+        <View className="relative">
           <Header />
+          <TouchableOpacity
+            className="absolute right-1 top-[59px] z-10"
+            onPress={() => setIsConfirmationVisible(true)}
+          >
+            <DeleteIcon width={23} height={23} color={"black"} />
+          </TouchableOpacity>
         </View>
         {includeBack.includes(routeName) && (
           <View className="relative z-0 bottom-14">
@@ -208,16 +282,22 @@ const Page = () => {
           </View>
         )}
         <View className="items-center border-b pb-5 border-[#F3F3F3]">
-          <Text className="text-xl font-bold text-center">
+          <View className="flex-row items-center">
+          <Text className="text-xl font-bold text-center mr-2 ml-6">
             {currentCloset?.name || "Closet Title"}
           </Text>
-          <Text className="text-base">
-            {currentCloset?.description || "Closet Description"}
-          </Text>
+          <TouchableOpacity
+            className="z-10"
+            onPress={() => setIsEditModalVisible(true)}
+          >
+            <EditIcon width={16} height={16} color={"#939393"} />
+          </TouchableOpacity>
+          </View>
+          <Text className="text-base">{currentCloset?.description || ""}</Text>
         </View>
         {filteredClothes.length === 0 ? (
           <View className="items-center">
-            <Text className="text-[#B7B7B7]">
+            <Text className="text-[#B7B7B7] mt-10">
               This closet has no clothes yet.
             </Text>
           </View>
@@ -253,6 +333,24 @@ const Page = () => {
         onUpload={() => refetchMe()}
         userId={user?.id}
         setLoading={setLoading} // Pass setLoading to LinkUploadModal
+      />
+      <ConfirmationModal
+        visible={isConfirmationVisible}
+        onConfirm={handleDeleteCloset}
+        onCancel={() => setIsConfirmationVisible(false)}
+        message="Delete Closet"
+        description="Are you sure you want to delete this closet? All clothes inside will also be deleted."
+        isLoading={isDeletingCloset}
+        type="primary"
+        confirmMessage="Delete"
+      />
+      <EditClosetModal
+        visible={isEditModalVisible}
+        onConfirm={handleEditCloset}
+        onCancel={() => setIsEditModalVisible(false)}
+        initialName={currentCloset?.name || ""}
+        initialDescription={currentCloset?.description || ""}
+        isLoading={isSaving}
       />
     </SafeAreaView>
   );

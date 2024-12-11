@@ -10,6 +10,8 @@ import { analyzeUserSkinTone } from "@/network/web/user";
 import FloatingActionMenu from "../buttons/FloatingActionMenu";
 import Toast from "react-native-toast-message";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CheckMark from "@/assets/icons/check-mark.svg";
+import SkinToneCamera from "@/app/skinToneCamera";
 
 const SkinToneAnalysis = ({
   onAnalyzeComplete,
@@ -20,6 +22,9 @@ const SkinToneAnalysis = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+
+  const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
+  const [isCameraActive, setIsCameraActive] = useState(false);
 
   useEffect(() => {
     requestCameraPermissions();
@@ -36,20 +41,24 @@ const SkinToneAnalysis = ({
     setHasPermission(status === "granted");
   };
 
-  const handleTakePicture = async () => {
+  const handleOpenCamera = () => {
+    setIsCameraActive(true);
+  };
+
+  const handleCloseCamera = () => {
+    setIsCameraActive(false);
+  };
+
+  const handleSwitchCamera = () => {
+    setCameraFacing(cameraFacing === "back" ? "front" : "front");
+  };
+
+  const handleTakePicture = async (uri: string) => {
     await requestCameraPermissions();
 
     if (hasPermission) {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1,
-      });
-
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        setSelectedImage(uri);
-        await analyzeSkinToneImage(uri);
-      }
+      setSelectedImage(uri);
+      await analyzeSkinToneImage(uri);
     }
   };
 
@@ -125,7 +134,7 @@ const SkinToneAnalysis = ({
   const actions = [
     {
       iconName: "camera",
-      onPress: handleTakePicture,
+      onPress: handleOpenCamera,
       label: "",
     },
     {
@@ -144,6 +153,16 @@ const SkinToneAnalysis = ({
           subSeason={analysisResult.sub_season}
           complements={analysisResult.complements}
         />
+      ) : isCameraActive ? (
+        <View className="flex-1 bg-white">
+          <SkinToneCamera
+            onTakePicture={handleTakePicture}
+            onCancel={handleCloseCamera}
+            onSwitchCamera={handleSwitchCamera}
+            cameraFacing={cameraFacing}
+            isVisible={isCameraActive}
+          />
+        </View>
       ) : (
         <SafeAreaView className="flex-1 bg-white">
           <View className="w-full flex-row items-center top-2 px-6 z-30">
@@ -157,18 +176,38 @@ const SkinToneAnalysis = ({
                 Let&apos;s find your perfect shades.
               </Text>
               <SkinToneAnalysisImage />
-              <View className="w-[272px]">
-                <Text className="text-[12px] text-center">
-                  We&apos;ll use your camera to analyze your skin tone and
-                  recommend the best colors for you.
+              <View className="w-[85%]">
+                <Text className=" text-sm font-bold text-center">
+                  To Achieve Accurate Skin Tone Analysis Result:
                 </Text>
+                <View className="flex-col ml-8 w-[80%] ">
+                  <View className="mt-2 flex-row items-start">
+                    <CheckMark width={16} height={16} className="mt-1" />
+                    <Text className="text-xs ml-3">
+                      Ensure even lighting to avoid shadows or overexposure.
+                    </Text>
+                  </View>
+                  <View className="mt-2 flex-row items-start">
+                    <CheckMark width={16} height={16} className="mt-1" />
+                    <Text className="text-xs ml-3">
+                      Remove any accessories like hats or glasses.
+                    </Text>
+                  </View>
+                  <View className="mt-2 flex-row items-start">
+                    <CheckMark width={16} height={16} className="mt-1" />
+                    <Text className="text-xs ml-3">
+                      Move your face closer to the screen so it fills the frame
+                      completely.
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           </View>
+          {!isLoading && !analysisResult && (
+            <FloatingActionMenu actions={actions as any} loading={isLoading} />
+          )}
         </SafeAreaView>
-      )}
-      {!isLoading && !analysisResult && (
-        <FloatingActionMenu actions={actions as any} loading={isLoading} />
       )}
     </>
   );

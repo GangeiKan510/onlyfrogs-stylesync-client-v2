@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  BackHandler
+  BackHandler,
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
@@ -48,31 +49,25 @@ const ProfileSettings = () => {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    resetToInitialState();
-  }, [user]);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetchMe();
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        return true;
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
+        const updatedUser = auth.currentUser;
+
+        console.log("Updated Firebase User:", updatedUser);
       }
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
-
-  const resetToInitialState = () => {
-    setFirstName(user?.first_name || "");
-    setLastName(user?.last_name || "");
-    setProfileImage(user?.profile_url || null);
-    initialFirstName.current = user?.first_name || "";
-    initialLastName.current = user?.last_name || "";
-    initialProfileImage.current = user?.profile_url || null;
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const sendVerificationEmail = async () => {
@@ -289,12 +284,7 @@ const ProfileSettings = () => {
           text2: "Your profile changes have been saved successfully.",
         });
 
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "profile" }],
-          })
-        );
+        router.push("/(tabs)/profile");
 
         refetchMe();
       } catch (error) {
@@ -318,20 +308,46 @@ const ProfileSettings = () => {
     ) {
       setShowModal(true);
     } else {
-      router.push("/(tabs)/profile")
+      router.push("/(tabs)/profile");
     }
+  };
+
+  useEffect(() => {
+    resetToInitialState();
+  }, [user]);
+
+  const resetToInitialState = () => {
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
+    setProfileImage(user?.profile_url || null);
+    initialFirstName.current = user?.first_name || "";
+    initialLastName.current = user?.last_name || "";
+    initialProfileImage.current = user?.profile_url || null;
   };
 
   const confirmDiscardChanges = () => {
     resetToInitialState();
     setShowModal(false);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "profile" }],
-      })
-    );
+    router.push("/(tabs)/profile");
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (
+        firstName !== initialFirstName.current ||
+        lastName !== initialLastName.current ||
+        profileImage !== initialProfileImage.current
+      ) {
+        setShowModal(true);
+        return true;
+      }
+      return false;
+    });
+  
+    return () => {
+      backHandler.remove();
+    };
+  }, [firstName, lastName, profileImage]);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -351,7 +367,17 @@ const ProfileSettings = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+        <ScrollView
+          className="flex-1"
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#7ab2b2"]}
+            />
+          }
+        >
           <View className="flex-1 px-6">
             <View className="items-center my-16">
               <TouchableOpacity
@@ -405,7 +431,9 @@ const ProfileSettings = () => {
                   autoCapitalize="words"
                 />
                 {lastNameError ? (
-                  <Text className="text-[#EE4E4E] italic text-xs">{lastNameError}</Text>
+                  <Text className="text-[#EE4E4E] italic text-xs">
+                    {lastNameError}
+                  </Text>
                 ) : null}
               </View>
               <View className="mb-3">
@@ -471,20 +499,20 @@ const ProfileSettings = () => {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
           <View className="w-4/5 bg-white rounded-[10px] p-5 items-center">
-            <Text className="text-[18px] mb-1 font-bold">Discard Changes?</Text>
+            <Text className="text-[18px] mb-1 font-bold">Discard changes?</Text>
             <Text className="mt-2 text-center">
-              You have unsaved changes. Do you want to discard them?
+            If you discard now, you&apos;ll lose any changes you&apos;ve made to this page.
             </Text>
-            <View className="flex-row justify-between w-full">
+            <View className="flex-row justify-between w-full mt-5">
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
-                className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               >
                 <Text className="text-[#7AB2B2] text-[16px]">Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={confirmDiscardChanges}
-                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
               >
                 <Text className="text-white text-[16px]">Discard</Text>
               </TouchableOpacity>

@@ -47,7 +47,7 @@ function Result() {
           <Back width={20} height={20} />
         </TouchableOpacity>
         <Text className="flex-1 text-center text-[20px] font-bold">
-          Skint Tone Analysis
+          Skin Tone Analysis
         </Text>
       </View>
       <View className="flex-1 justify-center">

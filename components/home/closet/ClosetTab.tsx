@@ -26,24 +26,26 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
   const [description, setDescription] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
   const [isRequestLoading, setIsRequestLoading] = useState(false);
-  const [isClosetNameEmpty, setIsClosetNameEmpty] = useState(false);
-  // const [selectedCloset, setSelectedCloset] = useState<ClosetType | null>(null);
+
+  const NAME_CHAR_MINUMUM = 0;
+
+  const minimunChar = closetName.length < NAME_CHAR_MINUMUM;
+
+  const isAddDisabled =
+    !closetName.trim() || minimunChar;
 
   const handleModalVisibility = () => {
     setModalVisible(true);
   };
 
   const handleCreateCloset = async () => {
-    if (closetName === "") {
-      setIsClosetNameEmpty(true);
-      return;
-    }
-    setIsClosetNameEmpty(false);
+    if (isAddDisabled) return;
+
     setIsRequestLoading(true);
 
     const closetData = {
-      name: closetName,
-      description: description,
+      name: closetName.trim(),
+      description: description.trim(),
       user_id: user?.id as string,
     };
 
@@ -116,22 +118,21 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
               <View className="mb-3 mt-4">
                 <Text className="text-[16px] mb-1 self-start">
                   Name{" "}
-                  {isClosetNameEmpty && (
-                    <Text className="text-[#EE4E4E]">
-                      *Closet name is required
-                    </Text>
-                  )}
                 </Text>
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 w-full"
+                  maxLength={20}
                   value={closetName}
                   onChangeText={(input) => setClosetName(input)}
                 />
               </View>
               <View className="mb-3">
-                <Text className="text-[16px] mb-1 self-start">Description</Text>
+                <Text className="text-[16px] mb-1 self-start">
+                  Description{" "}
+                </Text>
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 w-full"
+                  maxLength={30}
                   value={description}
                   onChangeText={(input) => setDescription(input)}
                 />
@@ -154,8 +155,9 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
                 </Text>
               </Pressable>
               <Pressable
-                className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                className={`h-[42px] flex-1 border   rounded-lg mx-2 justify-center items-center ${isAddDisabled ? "bg-[#c2e0e0] border-[#c2e0e0]" : "bg-[#7ab3b3] border-[#7ab3b3]"}`}
                 onPress={handleCreateCloset}
+                disabled={isAddDisabled}
               >
                 <Text className="text-base text-white text-center">
                   {isRequestLoading ? (

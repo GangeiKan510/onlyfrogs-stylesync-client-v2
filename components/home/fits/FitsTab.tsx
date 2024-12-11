@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { useUser } from "@/components/config/user-context";
 import FitsCard from "@/components/cards/FitsCard";
@@ -15,9 +16,11 @@ import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import EditIcon from "../../../assets/icons/edit-icon.svg";
 import CloseIcon from "../../../assets/icons/close-icon.svg";
 import CheckIcon from "../../../assets/icons/check-icon.svg";
+import { deleteFit } from "@/network/web/fits";
+import Spinner from "@/components/common/Spinner";
 
 const FitsTab = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const [selectedFit, setSelectedFit] = useState<{
     id: string;
     name: string;
@@ -25,6 +28,7 @@ const FitsTab = () => {
   } | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleFitClick = (fit: {
     id: string;
@@ -50,10 +54,28 @@ const FitsTab = () => {
     setEditedName(selectedFit?.name || "");
   };
 
+  const handleDeleteFit = async () => {
+    if (!selectedFit) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteFit(selectedFit.id);
+      console.log(`Deleted Fit ID: ${selectedFit.id}`);
+      refetchMe();
+      handleCloseModal();
+    } catch (error) {
+      console.error("Failed to delete fit:", error);
+      Alert.alert("Error", "Failed to delete the fit.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleCloseModal = () => {
     setSelectedFit(null);
     setIsEditing(false);
     setEditedName("");
+    setIsDeleting(false);
   };
 
   return (
@@ -105,9 +127,17 @@ const FitsTab = () => {
                       <EditIcon width={16} height={16} color={"#000000"} />
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity className="ml-1">
-                    <DeleteIcon width={16} height={16} color={"red"} />
-                  </TouchableOpacity>
+                  {isDeleting ? (
+                    <Spinner type="secondary" />
+                  ) : (
+                    <TouchableOpacity
+                      className="ml-1"
+                      onPress={handleDeleteFit}
+                      disabled={isDeleting}
+                    >
+                      <DeleteIcon width={16} height={16} color={"red"} />
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
               <Image
@@ -119,6 +149,7 @@ const FitsTab = () => {
                 <TouchableOpacity
                   className="bg-tertiary py-2 px-4 rounded-md"
                   onPress={handleCloseModal}
+                  disabled={isDeleting}
                 >
                   <Text className="text-white text-base">Close</Text>
                 </TouchableOpacity>

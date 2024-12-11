@@ -18,6 +18,7 @@ import CloseIcon from "../../../assets/icons/close-icon.svg";
 import CheckIcon from "../../../assets/icons/check-icon.svg";
 import { deleteFit } from "@/network/web/fits";
 import Spinner from "@/components/common/Spinner";
+import Toast from "react-native-toast-message";
 
 const FitsTab = () => {
   const { user, refetchMe } = useUser();
@@ -58,14 +59,25 @@ const FitsTab = () => {
     if (!selectedFit) return;
 
     setIsDeleting(true);
+
     try {
       await deleteFit(selectedFit.id);
-      console.log(`Deleted Fit ID: ${selectedFit.id}`);
+      Toast.show({
+        type: "success",
+        text1: "Fit Deleted",
+        text2: `${selectedFit.name} has been successfully deleted.`,
+        position: "top",
+      });
       refetchMe();
       handleCloseModal();
     } catch (error) {
       console.error("Failed to delete fit:", error);
-      Alert.alert("Error", "Failed to delete the fit.");
+      Toast.show({
+        type: "error",
+        text1: "Delete Failed",
+        text2: "An error occurred while deleting the fit.",
+        position: "top",
+      });
     } finally {
       setIsDeleting(false);
     }

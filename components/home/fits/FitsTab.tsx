@@ -8,7 +8,6 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { useUser } from "@/components/config/user-context";
 import FitsCard from "@/components/cards/FitsCard";
@@ -16,7 +15,7 @@ import DeleteIcon from "../../../assets/icons/delete-icon.svg";
 import EditIcon from "../../../assets/icons/edit-icon.svg";
 import CloseIcon from "../../../assets/icons/close-icon.svg";
 import CheckIcon from "../../../assets/icons/check-icon.svg";
-import { deleteFit } from "@/network/web/fits";
+import { deleteFit, renameFit } from "@/network/web/fits";
 import Spinner from "@/components/common/Spinner";
 import Toast from "react-native-toast-message";
 
@@ -30,6 +29,7 @@ const FitsTab = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
 
   const handleFitClick = (fit: {
     id: string;
@@ -40,13 +40,32 @@ const FitsTab = () => {
     setEditedName(fit.name);
   };
 
-  const handleSaveEdit = () => {
-    if (selectedFit && editedName.trim() !== selectedFit.name) {
-      console.log(
-        `Saving edited name: ${editedName} for Fit ID: ${selectedFit.id}`
-      );
+  const handleSaveEdit = async () => {
+    if (!selectedFit || editedName.trim() === selectedFit.name) return;
+
+    setIsRenaming(true);
+
+    try {
+      await renameFit(selectedFit.id, editedName.trim());
+      Toast.show({
+        type: "success",
+        text1: "Rename Successful",
+        text2: `${selectedFit.name} renamed to "${editedName}".`,
+        position: "top",
+      });
+      refetchMe();
       setSelectedFit({ ...selectedFit, name: editedName });
       setIsEditing(false);
+    } catch (error) {
+      console.error("Rename failed:", error);
+      Toast.show({
+        type: "error",
+        text1: "Rename Failed",
+        text2: "An error occurred while renaming the fit.",
+        position: "top",
+      });
+    } finally {
+      setIsRenaming(false);
     }
   };
 
@@ -88,6 +107,7 @@ const FitsTab = () => {
     setIsEditing(false);
     setEditedName("");
     setIsDeleting(false);
+    setIsRenaming(false);
   };
 
   return (
@@ -127,11 +147,22 @@ const FitsTab = () => {
                 <View className="flex-row">
                   {isEditing ? (
                     <View className="flex-row mt-[2px]">
-                      <TouchableOpacity onPress={handleCancelEdit}>
+                      <TouchableOpacity
+                        onPress={handleCancelEdit}
+                        disabled={isRenaming}
+                      >
                         <CloseIcon width={16} height={16} color={"red"} />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={handleSaveEdit}>
-                        <CheckIcon width={16} height={16} color={"green"} />
+                      <TouchableOpacity
+                        onPress={handleSaveEdit}
+                        disabled={isRenaming}
+                        className="ml-2"
+                      >
+                        {isRenaming ? (
+                          <Spinner type="secondary" />
+                        ) : (
+                          <CheckIcon width={16} height={16} color={"green"} />
+                        )}
                       </TouchableOpacity>
                     </View>
                   ) : (

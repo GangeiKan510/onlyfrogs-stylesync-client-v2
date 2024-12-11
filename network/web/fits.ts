@@ -26,7 +26,7 @@ export const createFit = async (formData: FormData) => {
   }
 };
 
-export const updateFit = async (fitId: string, newName: string) => {
+export const renameFit = async (fitId: string, newName: string) => {
   try {
     const response = await postWithFirebaseJwt("/web/fits/rename-fit", {
       fitId,

@@ -12,10 +12,7 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import {
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
@@ -30,6 +27,7 @@ const DesignPage = () => {
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
+
   const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const viewToSnapshotRef = useRef<View | null>(null);
@@ -46,6 +44,12 @@ const DesignPage = () => {
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [snapshotName, setSnapshotName] = useState("");
+  const [selectedClosetId, setSelectedClosetId] = useState<string | null>(null);
+
+
+    const filteredClothes =
+  user?.clothes?.filter((clothing) => clothing.closet_id === selectedClosetId) || [];
+
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
@@ -60,7 +64,7 @@ const DesignPage = () => {
   };
   const saveSnapshot = () => {
     console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
-    console.log("Selected Images:", selectedImages)
+    console.log("Selected Images:", selectedImages);
     // Add your save logic here
     setSnapshotName("");
     setSelectedImages([]);
@@ -92,6 +96,7 @@ const DesignPage = () => {
         id={closet.id}
         name={closet.name}
         uri={imageUri}
+        onPress={() => setSelectedClosetId(closet.id)}
       />
     );
   };
@@ -383,20 +388,64 @@ const DesignPage = () => {
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          {/* <ScrollView className="h-[80%]"> */}
-            {activeTab === "Closet" && (
-              <View className="h-[80%]">
+          {activeTab === "Closet" && (
+              <View className="h-[90%] overflow-scroll">
+                
+              
+              {selectedClosetId === null ? (
                 <FlatList
                   key={activeTab}
                   className="mt-5 z-20 flex-grow px-2"
-                  scrollEnabled={true}
                   data={closets}
+                  scrollEnabled={true}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={renderCloset}
                   numColumns={3}
+                  contentContainerStyle={{ paddingBottom: 4 }}
                 />
+              ) : (
+                <View >
+                  {filteredClothes.length === 0 ? (
+                    <View className="items-center">
+                      <Text className="text-[#B7B7B7] mt-10">
+                        This closet has no clothes yet.
+                      </Text>
+                    </View>
+                  ) : (
+                    selectedClosetId && (
+                      <FlatList
+                        key="closetsList"
+                        className="mt-5 z-20 flex-grow px-2"
+                        scrollEnabled={true}
+                        data={filteredClothes}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                          <ClothingCard
+                            clothingId={item.id}
+                            uri={
+                              item.image_url 
+                            }
+                            onPress={handleItemPress}
+                            selected={selectedImages.includes(item.image_url)}
+                          />
+                        )}
+                        numColumns={3}
+                        contentContainerStyle={{ paddingBottom: 2 }}
+                      />
+                    )
+                  )}
+                  <View className="">
+                  <TouchableOpacity
+                    onPress={() => setSelectedClosetId(null)}
+                    className="mt-5 bg-[#7AB2B2] p-2 rounded items-center self-center rounded-full"
+                  >
+                    <Text className="text-white">Back to Closets</Text>
+                  </TouchableOpacity>
+                  </View>
+                </View>
+              )}
               </View>
-            )}
+          )}
 
             {/* Pieces Tab */}
             {activeTab === "Pieces" && (

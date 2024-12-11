@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   View,
   Text,
@@ -20,6 +22,7 @@ import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
 import Save from "../../assets/icons/save.svg";
+import { createFit } from "@/network/web/fits";
 
 const DesignPage = () => {
   const { user } = useUser();
@@ -44,6 +47,7 @@ const DesignPage = () => {
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [snapshotName, setSnapshotName] = useState("");
+  const [isSavingFit, setIsSavingFit] = useState(false);
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
@@ -57,17 +61,53 @@ const DesignPage = () => {
     setShowModal(false);
   };
 
-  const saveSnapshot = () => {
-    console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
-    console.log("Selected Images (URLs):", selectedImages);
-    console.log("Selected Pieces (IDs):", selectedPiecesIds);
-    // Add your save logic here
-    setSnapshotName("");
-    setSelectedImages([]);
-    setSelectedPiecesIds([]);
-    setDragPositions({});
-    setImageSizes({});
-    closeModal();
+  const saveSnapshot = async () => {
+    if (!snapshotName || !snapshotImg || selectedPiecesIds.length === 0) {
+      console.error(
+        "Missing required fields: snapshotName, snapshotImg, or selectedPiecesIds."
+      );
+      return;
+    }
+
+    console.log("Snapshot image path:", snapshotImg);
+
+    try {
+      const response = await fetch(snapshotImg);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+
+      const thumbnailFile = new File([blob], `${snapshotName}-thumbnail.png`, {
+        type: "image/png",
+      });
+
+      const formData = new FormData();
+      formData.append("name", snapshotName);
+      formData.append("user_id", user?.id || "");
+      selectedPiecesIds.forEach((id) => formData.append("piece_ids[]", id));
+      formData.append("thumbnail", {
+        uri: snapshotImg,
+        name: thumbnailFile.name || `${snapshotName}-thumbnail.png`,
+        type: "image/png",
+      } as any);
+
+      console.log("Form Data Contents:", formData);
+
+      const newFit = await createFit(formData);
+
+      console.log("Fit created successfully:", newFit);
+
+      setSnapshotName("");
+      setSnapshotImg(undefined);
+      setSelectedImages([]);
+      setSelectedPiecesIds([]);
+      setDragPositions({});
+      setImageSizes({});
+      closeModal();
+    } catch (error) {
+      console.error("Error saving snapshot and creating fit:", error);
+    }
   };
 
   useEffect(() => {

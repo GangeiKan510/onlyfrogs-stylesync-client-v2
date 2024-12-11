@@ -12,10 +12,7 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import {
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
@@ -36,6 +33,7 @@ const DesignPage = () => {
   const [snapshotImg, setSnapshotImg] = useState<string | undefined>();
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedPiecesIds, setSelectedPiecesIds] = useState<string[]>([]);
   const [dragPositions, setDragPositions] = useState<{
     [key: string]: { x: number; y: number };
   }>({});
@@ -58,12 +56,15 @@ const DesignPage = () => {
     setSnapshotName("");
     setShowModal(false);
   };
+
   const saveSnapshot = () => {
     console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
-    console.log("Selected Images:", selectedImages)
+    console.log("Selected Images (URLs):", selectedImages);
+    console.log("Selected Pieces (IDs):", selectedPiecesIds);
     // Add your save logic here
     setSnapshotName("");
     setSelectedImages([]);
+    setSelectedPiecesIds([]);
     setDragPositions({});
     setImageSizes({});
     closeModal();
@@ -107,7 +108,7 @@ const DesignPage = () => {
         item.image_url ||
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
-      onPress={handleItemPress}
+      onPress={() => handleItemPress(item.id, item.image_url)}
       selected={selectedImages.includes(item.image_url)}
     />
   );
@@ -131,6 +132,14 @@ const DesignPage = () => {
       return isSelected
         ? current.filter((url) => url !== image_url)
         : [...current, image_url];
+    });
+
+    setSelectedPiecesIds((current) => {
+      const isSelected = current.includes(clothingId);
+
+      return isSelected
+        ? current.filter((id) => id !== clothingId)
+        : [...current, clothingId];
     });
 
     if (!selectedImages.includes(image_url)) {
@@ -384,34 +393,34 @@ const DesignPage = () => {
 
           {/* Closet Tab */}
           {/* <ScrollView className="h-[80%]"> */}
-            {activeTab === "Closet" && (
-              <View className="h-[80%]">
-                <FlatList
-                  key={activeTab}
-                  className="mt-5 z-20 flex-grow px-2"
-                  scrollEnabled={true}
-                  data={closets}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderCloset}
-                  numColumns={3}
-                />
-              </View>
-            )}
+          {activeTab === "Closet" && (
+            <View className="h-[80%]">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow px-2"
+                scrollEnabled={true}
+                data={closets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderCloset}
+                numColumns={3}
+              />
+            </View>
+          )}
 
-            {/* Pieces Tab */}
-            {activeTab === "Pieces" && (
-              <View className="h-[80%]">
-                <FlatList
-                  key={activeTab}
-                  className="mt-5 z-20 flex-grow px-2"
-                  scrollEnabled={true}
-                  data={clothes}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderClothing}
-                  numColumns={3}
-                />
-              </View>
-            )}
+          {/* Pieces Tab */}
+          {activeTab === "Pieces" && (
+            <View className="h-[80%]">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow px-2"
+                scrollEnabled={true}
+                data={clothes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderClothing}
+                numColumns={3}
+              />
+            </View>
+          )}
           {/* </ScrollView> */}
         </BottomSheetView>
       </BottomSheet>

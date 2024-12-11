@@ -23,9 +23,11 @@ import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
 import Save from "../../assets/icons/save.svg";
 import { createFit } from "@/network/web/fits";
+import Spinner from "../common/Spinner";
+import Toast from "react-native-toast-message";
 
 const DesignPage = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
@@ -63,21 +65,23 @@ const DesignPage = () => {
 
   const saveSnapshot = async () => {
     if (!snapshotName || !snapshotImg || selectedPiecesIds.length === 0) {
-      console.error(
-        "Missing required fields: snapshotName, snapshotImg, or selectedPiecesIds."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "All fields are required to save the fit.",
+        position: "top",
+      });
       return;
     }
 
-    console.log("Snapshot image path:", snapshotImg);
-
+    setIsSavingFit(true);
     try {
       const response = await fetch(snapshotImg);
       if (!response.ok) {
         throw new Error(`Failed to fetch image: ${response.statusText}`);
       }
-      const blob = await response.blob();
 
+      const blob = await response.blob();
       const thumbnailFile = new File([blob], `${snapshotName}-thumbnail.png`, {
         type: "image/png",
       });
@@ -94,9 +98,16 @@ const DesignPage = () => {
 
       console.log("Form Data Contents:", formData);
 
-      const newFit = await createFit(formData);
+      await createFit(formData);
 
-      console.log("Fit created successfully:", newFit);
+      refetchMe();
+
+      Toast.show({
+        type: "success",
+        text1: "Fit Saved",
+        text2: "Your new outfit has been saved successfully!",
+        position: "top",
+      });
 
       setSnapshotName("");
       setSnapshotImg(undefined);
@@ -106,7 +117,15 @@ const DesignPage = () => {
       setImageSizes({});
       closeModal();
     } catch (error) {
-      console.error("Error saving snapshot and creating fit:", error);
+      Toast.show({
+        type: "error",
+        text1: "Save Failed",
+        text2: "An error occurred while saving the fit.",
+        position: "top",
+      });
+      console.error("Error saving fit:", error);
+    } finally {
+      setIsSavingFit(false);
     }
   };
 
@@ -375,6 +394,7 @@ const DesignPage = () => {
               <View className="flex-row justify-between w-full mt-2">
                 <TouchableOpacity
                   onPress={closeModal}
+                  disabled={isSavingFit}
                   className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                 >
                   <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
@@ -382,8 +402,13 @@ const DesignPage = () => {
                 <TouchableOpacity
                   onPress={saveSnapshot}
                   className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  disabled={isSavingFit}
                 >
-                  <Text className="text-white text-[16px]">Save</Text>
+                  {isSavingFit ? (
+                    <Spinner type="primary" />
+                  ) : (
+                    <Text className="text-white text-[16px]">Save</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

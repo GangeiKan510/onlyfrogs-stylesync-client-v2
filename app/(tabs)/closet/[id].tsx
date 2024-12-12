@@ -114,6 +114,8 @@ const Page = () => {
             return;
           }
 
+          console.log("Clothing Upload", formData);
+
           await uploadClothing(formData);
           Toast.show({
             type: "success",
@@ -283,15 +285,15 @@ const Page = () => {
         )}
         <View className="items-center border-b pb-5 border-[#F3F3F3]">
           <View className="flex-row items-center">
-          <Text className="text-xl font-bold text-center mr-2 ml-6">
-            {currentCloset?.name || "Closet Title"}
-          </Text>
-          <TouchableOpacity
-            className="z-10"
-            onPress={() => setIsEditModalVisible(true)}
-          >
-            <EditIcon width={16} height={16} color={"#939393"} />
-          </TouchableOpacity>
+            <Text className="text-xl font-bold text-center mr-2 ml-6">
+              {currentCloset?.name || "Closet Title"}
+            </Text>
+            <TouchableOpacity
+              className="z-10"
+              onPress={() => setIsEditModalVisible(true)}
+            >
+              <EditIcon width={16} height={16} color={"#939393"} />
+            </TouchableOpacity>
           </View>
           <Text className="text-base">{currentCloset?.description || ""}</Text>
         </View>

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   View,
   Text,
@@ -12,10 +14,7 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import {
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
@@ -23,9 +22,12 @@ import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
 import Save from "../../assets/icons/save.svg";
+import { createFit } from "@/network/web/fits";
+import Spinner from "../common/Spinner";
+import Toast from "react-native-toast-message";
 
 const DesignPage = () => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
@@ -36,6 +38,7 @@ const DesignPage = () => {
   const [snapshotImg, setSnapshotImg] = useState<string | undefined>();
   const [activeTab, setActiveTab] = useState("Pieces");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedPiecesIds, setSelectedPiecesIds] = useState<string[]>([]);
   const [dragPositions, setDragPositions] = useState<{
     [key: string]: { x: number; y: number };
   }>({});
@@ -46,6 +49,7 @@ const DesignPage = () => {
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [snapshotName, setSnapshotName] = useState("");
+  const [isSavingFit, setIsSavingFit] = useState(false);
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
@@ -58,15 +62,71 @@ const DesignPage = () => {
     setSnapshotName("");
     setShowModal(false);
   };
-  const saveSnapshot = () => {
-    console.log("Snapshot saved:", snapshotName, ":", snapshotImg);
-    console.log("Selected Images:", selectedImages)
-    // Add your save logic here
-    setSnapshotName("");
-    setSelectedImages([]);
-    setDragPositions({});
-    setImageSizes({});
-    closeModal();
+
+  const saveSnapshot = async () => {
+    if (!snapshotName || !snapshotImg || selectedPiecesIds.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "All fields are required to save the fit.",
+        position: "top",
+      });
+      return;
+    }
+
+    setIsSavingFit(true);
+    try {
+      const response = await fetch(snapshotImg);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const thumbnailFile = new File([blob], `${snapshotName}-thumbnail.png`, {
+        type: "image/png",
+      });
+
+      const formData = new FormData();
+      formData.append("name", snapshotName);
+      formData.append("user_id", user?.id || "");
+      selectedPiecesIds.forEach((id) => formData.append("piece_ids[]", id));
+      formData.append("thumbnail", {
+        uri: snapshotImg,
+        name: thumbnailFile.name || `${snapshotName}-thumbnail.png`,
+        type: "image/png",
+      } as any);
+
+      console.log("Form Data Contents:", formData);
+
+      await createFit(formData);
+
+      refetchMe();
+
+      Toast.show({
+        type: "success",
+        text1: "Fit Saved",
+        text2: "Your new outfit has been saved successfully!",
+        position: "top",
+      });
+
+      setSnapshotName("");
+      setSnapshotImg(undefined);
+      setSelectedImages([]);
+      setSelectedPiecesIds([]);
+      setDragPositions({});
+      setImageSizes({});
+      closeModal();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Save Failed",
+        text2: "An error occurred while saving the fit.",
+        position: "top",
+      });
+      console.error("Error saving fit:", error);
+    } finally {
+      setIsSavingFit(false);
+    }
   };
 
   useEffect(() => {
@@ -107,7 +167,7 @@ const DesignPage = () => {
         item.image_url ||
         "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
       }
-      onPress={handleItemPress}
+      onPress={() => handleItemPress(item.id, item.image_url)}
       selected={selectedImages.includes(item.image_url)}
     />
   );
@@ -131,6 +191,14 @@ const DesignPage = () => {
       return isSelected
         ? current.filter((url) => url !== image_url)
         : [...current, image_url];
+    });
+
+    setSelectedPiecesIds((current) => {
+      const isSelected = current.includes(clothingId);
+
+      return isSelected
+        ? current.filter((id) => id !== clothingId)
+        : [...current, clothingId];
     });
 
     if (!selectedImages.includes(image_url)) {
@@ -326,6 +394,7 @@ const DesignPage = () => {
               <View className="flex-row justify-between w-full mt-2">
                 <TouchableOpacity
                   onPress={closeModal}
+                  disabled={isSavingFit}
                   className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                 >
                   <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
@@ -333,8 +402,13 @@ const DesignPage = () => {
                 <TouchableOpacity
                   onPress={saveSnapshot}
                   className="h-[42px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  disabled={isSavingFit}
                 >
-                  <Text className="text-white text-[16px]">Save</Text>
+                  {isSavingFit ? (
+                    <Spinner type="primary" />
+                  ) : (
+                    <Text className="text-white text-[16px]">Save</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
@@ -384,34 +458,34 @@ const DesignPage = () => {
 
           {/* Closet Tab */}
           {/* <ScrollView className="h-[80%]"> */}
-            {activeTab === "Closet" && (
-              <View className="h-[80%]">
-                <FlatList
-                  key={activeTab}
-                  className="mt-5 z-20 flex-grow px-2"
-                  scrollEnabled={true}
-                  data={closets}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderCloset}
-                  numColumns={3}
-                />
-              </View>
-            )}
+          {activeTab === "Closet" && (
+            <View className="h-[80%]">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow px-2"
+                scrollEnabled={true}
+                data={closets}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderCloset}
+                numColumns={3}
+              />
+            </View>
+          )}
 
-            {/* Pieces Tab */}
-            {activeTab === "Pieces" && (
-              <View className="h-[80%]">
-                <FlatList
-                  key={activeTab}
-                  className="mt-5 z-20 flex-grow px-2"
-                  scrollEnabled={true}
-                  data={clothes}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderClothing}
-                  numColumns={3}
-                />
-              </View>
-            )}
+          {/* Pieces Tab */}
+          {activeTab === "Pieces" && (
+            <View className="h-[80%]">
+              <FlatList
+                key={activeTab}
+                className="mt-5 z-20 flex-grow px-2"
+                scrollEnabled={true}
+                data={clothes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderClothing}
+                numColumns={3}
+              />
+            </View>
+          )}
           {/* </ScrollView> */}
         </BottomSheetView>
       </BottomSheet>

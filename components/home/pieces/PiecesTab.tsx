@@ -484,7 +484,7 @@ const PiecesTab = () => {
         </Modal>
       </View>
 
-      <View className="h-[80%]">
+      <View className="h-[100%]">
         <FlatList
           className="mt-5 z-20 flex-grow"
           scrollEnabled={true}
@@ -501,10 +501,11 @@ const PiecesTab = () => {
             />
           )}
           numColumns={3}
-          contentContainerStyle={{
-            paddingBottom: 52,
-          }}
+          // contentContainerStyle={{
+          //   paddingBottom: 196,
+          // }}
           showsVerticalScrollIndicator={false}
+          ListFooterComponent={<View style={{ height: 1 }} />}
         />
       </View>
 

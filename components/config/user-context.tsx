@@ -11,6 +11,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { getMe } from "@/network/web/user";
 import { Notification } from "@/app/(tabs)/notifications";
+import { FitsType } from "@/utils/types/FitType";
 
 type Closet = {
   id: string;
@@ -77,6 +78,7 @@ type UserDetails = {
   promptSettings: PromptSettings;
   favorite_colors: string[];
   notifications: Notification[];
+  fits: FitsType[];
 };
 
 interface UserContextProps {

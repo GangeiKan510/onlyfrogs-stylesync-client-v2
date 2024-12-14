@@ -7,7 +7,7 @@ import useSignOut from "@/network/firebase/sign-out";
 import { auth } from "@/firebaseConfig";
 import { routes } from "@/utils/routes";
 import { Href, useRouter } from "expo-router";
-// import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
+import MoreInfoIcon from "../../assets/icons/more-info-icon.svg";
 import EmailVerifiedIcon from "../../assets/icons/top-greeting/email-verified-icon.svg";
 import VerifyEmailIcon from "../../assets/icons/verify-email.svg";
 import TokenInfoModal from "../dialogs/TokenInfoModal";
@@ -18,11 +18,16 @@ const TopGreeting = () => {
   const [signOut, loading] = useSignOut(auth);
   const [modalVisible, setModalVisible] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
 
   useEffect(() => {
     if (auth.currentUser) {
       setIsEmailVerified(auth.currentUser.emailVerified);
     }
+  }, []);
+
+  useEffect(() => {
+    return () => setTokenInfoVisible(false);
   }, []);
 
   const handleLogout = async () => {
@@ -78,7 +83,9 @@ const TopGreeting = () => {
 
       <View className="flex items-end">
         <View className="flex-row items-center mt-2">
-          <TokenInfoModal/>
+          <Pressable onPress={() => setTokenInfoVisible(true)}>
+            <MoreInfoIcon color="black" width={20} height={20} />
+          </Pressable>
           <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
         </View>
         {/* <Pressable onPress={() => router.push("/(tabs)/survey" as Href<string | object>)}>
@@ -98,6 +105,18 @@ const TopGreeting = () => {
         isLoading={loading}
         type={"primary"}
         confirmMessage={"Logout"}
+      />
+
+      <TokenInfoModal
+        visible={tokenInfoVisible}
+        onConfirm={() => {
+          setTokenInfoVisible(false); 
+          router.push("/(tabs)/profile/subscription");
+        }}
+        onCancel={() => setTokenInfoVisible(false)}
+        isLoading={false}
+        type="primary"
+        confirmMessage="Get more tokens"
       />
     </View>
   );

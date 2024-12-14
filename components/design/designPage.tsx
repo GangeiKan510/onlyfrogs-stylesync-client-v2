@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
@@ -457,9 +457,9 @@ const DesignPage = () => {
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          {/* <ScrollView className="h-[80%]"> */}
+          <ScrollView className="h-[90%]">
           {activeTab === "Closet" && (
-            <View className="h-[80%]">
+            <View className="h-[100%]">
               <FlatList
                 key={activeTab}
                 className="mt-5 z-20 flex-grow px-2"
@@ -474,7 +474,7 @@ const DesignPage = () => {
 
           {/* Pieces Tab */}
           {activeTab === "Pieces" && (
-            <View className="h-[80%]">
+            <View className="h-[100%]">
               <FlatList
                 key={activeTab}
                 className="mt-5 z-20 flex-grow px-2"
@@ -486,7 +486,7 @@ const DesignPage = () => {
               />
             </View>
           )}
-          {/* </ScrollView> */}
+          </ScrollView>
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

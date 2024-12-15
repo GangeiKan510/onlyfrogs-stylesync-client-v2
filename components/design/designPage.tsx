@@ -28,7 +28,6 @@ import { createFit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 import BackIcon from "@/assets/icons/return-icon.svg";
-
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
   const closets = user?.closets || [];

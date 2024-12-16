@@ -12,6 +12,7 @@ const HomeTabs = () => {
   // Directly use closets from user object
   const closets = user?.closets || [];
   const clothesLength = user?.clothes.length;
+  const fitsLength = user?.fits.length;
 
   return (
     <View className="mt-4">
@@ -66,7 +67,7 @@ const HomeTabs = () => {
                 activeTab === "Fits" ? "font-bold" : ""
               } text-right text-[14px]`}
             >
-              Fits (0)
+              Fits ({fitsLength})
             </Text>
             {activeTab === "Fits" && (
               <View

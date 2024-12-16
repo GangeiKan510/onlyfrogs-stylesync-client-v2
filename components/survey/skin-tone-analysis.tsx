@@ -50,7 +50,7 @@ const SkinToneAnalysis = ({
   };
 
   const handleSwitchCamera = () => {
-    setCameraFacing(cameraFacing === "back" ? "front" : "front");
+    setCameraFacing(cameraFacing === "front" ? "back" : "front");
   };
 
   const handleTakePicture = async (uri: string) => {

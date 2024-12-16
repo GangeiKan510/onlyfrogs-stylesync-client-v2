@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView, View, Text, Pressable } from "react-native";
 import { Camera, CameraView } from "expo-camera";
 import CameraButton from "@/assets/icons/shoot.svg";

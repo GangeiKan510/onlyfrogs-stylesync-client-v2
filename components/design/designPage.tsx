@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   Image,
   PanResponder,
   Pressable,
@@ -14,7 +13,10 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  FlatList,
+} from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
@@ -25,13 +27,14 @@ import Save from "../../assets/icons/save.svg";
 import { createFit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
-
+import BackIcon from "@/assets/icons/return-icon.svg";
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
   const clothes = user?.clothes ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
+
   const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const viewToSnapshotRef = useRef<View | null>(null);
@@ -49,6 +52,11 @@ const DesignPage = () => {
   const [activeGesture, setActiveGesture] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [snapshotName, setSnapshotName] = useState("");
+  const [selectedClosetId, setSelectedClosetId] = useState<string | null>(null);
+  const filteredClothes =
+    user?.clothes?.filter(
+      (clothing) => clothing.closet_id === selectedClosetId
+    ) || [];
   const [isSavingFit, setIsSavingFit] = useState(false);
 
   const snapshot = async () => {
@@ -152,6 +160,7 @@ const DesignPage = () => {
         id={closet.id}
         name={closet.name}
         uri={imageUri}
+        onPress={() => setSelectedClosetId(closet.id)}
       />
     );
   };
@@ -429,64 +438,108 @@ const DesignPage = () => {
         }}
       >
         <BottomSheetView className="flex-1 p-3 items-center">
-          <View className="flex flex-row px-10 w-full justify-between mb-[-2px]">
+          <View className="flex flex-row px-10 w-full justify-between items-center mb-[-2px]">
             {["Closet", "Pieces"].map((tab) => {
               const isActive = activeTab === tab;
               const length = tab === "Closet" ? closetsLength : clothesLength;
+
               return (
                 <TouchableOpacity
                   key={tab}
-                  onPress={() => setActiveTab(tab)}
+                  onPress={() => {
+                    if (tab === "Closet" && !selectedClosetId) {
+                      setActiveTab(tab);
+                    } else if (tab === "Closet" && selectedClosetId) {
+                      setSelectedClosetId(null);
+                    } else {
+                      setActiveTab(tab);
+                    }
+                  }}
                   className="flex-1 items-center py-3 z-10"
                 >
-                  <View
-                    className={`${isActive ? "border-b-[2px] border-black" : ""} `}
-                  >
-                    <Text
-                      className={`text-sm ${
-                        isActive ? "text-black font-bold" : "text-gray-800"
-                      }`}
+                  <View className="flex-row items-center">
+                    {tab === "Closet" && selectedClosetId && (
+                      <BackIcon width={15} height={15} className="mr-2" />
+                    )}
+                    <View
+                      className={`${
+                        isActive ? "border-b-[2px] border-black" : ""
+                      } flex-row items-center`}
                     >
-                      {tab} ({length})
-                    </Text>
+                      <Text
+                        className={`text-sm ${
+                          isActive ? "text-black font-bold" : "text-gray-800"
+                        }`}
+                      >
+                        {tab} ({length})
+                      </Text>
+                    </View>
                   </View>
                 </TouchableOpacity>
               );
             })}
           </View>
+
           <View className="w-full h-[2px] bg-white" />
 
           {/* Closet Tab */}
-          <ScrollView className="h-[90%]">
-          {activeTab === "Closet" && (
-            <View className="h-[100%]">
-              <FlatList
-                key={activeTab}
-                className="mt-5 z-20 flex-grow px-2"
-                scrollEnabled={true}
-                data={closets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderCloset}
-                numColumns={3}
-              />
-            </View>
-          )}
+          <View className="h-[90%]">
+            {activeTab === "Closet" && (
+              <View className="h-[100%]">
+                {selectedClosetId === null ? (
+                  <FlatList
+                    key={activeTab}
+                    className="mt-5 z-20 flex-grow px-2"
+                    data={closets}
+                    scrollEnabled={true}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderCloset}
+                    numColumns={3}
+                    contentContainerStyle={{ paddingBottom: 4 }}
+                  />
+                ) : filteredClothes.length === 0 ? (
+                  <View className="items-center">
+                    <Text className="text-[#B7B7B7] mt-10">
+                      This closet has no clothes yet.
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    key="closetsList"
+                    className="mt-5 z-20 flex-grow px-2"
+                    scrollEnabled={true}
+                    data={filteredClothes}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                      <ClothingCard
+                        clothingId={item.id}
+                        uri={item.image_url}
+                        onPress={handleItemPress}
+                        selected={selectedImages.includes(item.image_url)}
+                      />
+                    )}
+                    numColumns={3}
+                    contentContainerStyle={{ paddingBottom: 2 }}
+                  />
+                )}
+              </View>
+            )}
 
-          {/* Pieces Tab */}
-          {activeTab === "Pieces" && (
-            <View className="h-[100%]">
-              <FlatList
-                key={activeTab}
-                className="mt-5 z-20 flex-grow px-2"
-                scrollEnabled={true}
-                data={clothes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderClothing}
-                numColumns={3}
-              />
-            </View>
-          )}
-          </ScrollView>
+            {/* Pieces Tab */}
+            {activeTab === "Pieces" && (
+              <View className="h-[100%]">
+                <FlatList
+                  key={activeTab}
+                  className="mt-5 z-20 flex-grow px-2"
+                  scrollEnabled={true}
+                  data={clothes}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={renderClothing}
+                  numColumns={3}
+                />
+              </View>
+            )}
+          </View>
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

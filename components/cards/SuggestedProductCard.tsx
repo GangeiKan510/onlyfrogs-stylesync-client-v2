@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, Pressable, Linking } from "react-native";
 import Toast from "react-native-toast-message";
+import SaveIcon from "../../assets/icons/save.svg";
 
 interface ProductProps {
   name: string;
@@ -62,7 +63,10 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
         <Text className="text-sm text-green-300 line-through">
           {originalPrice}
         </Text>
-        <Text className="text-sm text-red">{discount}</Text>
+        <View className="flex-row justify-between">
+          <Text className="text-sm text-red">{discount}</Text>
+          <SaveIcon />
+        </View>
       </View>
     </Pressable>
   );

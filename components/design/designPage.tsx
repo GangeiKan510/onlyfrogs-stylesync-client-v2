@@ -459,7 +459,7 @@ const DesignPage = () => {
                 >
                   <View className="flex-row items-center">
                     {tab === "Closet" && selectedClosetId && (
-                      <BackIcon width={15} height={15} className="mr-2" />
+                      <BackIcon width={13} height={13} color="black" className="mr-2" />
                     )}
                     <View
                       className={`${

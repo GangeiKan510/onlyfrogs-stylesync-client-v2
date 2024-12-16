@@ -56,6 +56,7 @@ const FitsTab = () => {
       refetchMe();
       setSelectedFit({ ...selectedFit, name: editedName });
       setIsEditing(false);
+      handleCloseModal();
     } catch (error) {
       console.error("Rename failed:", error);
       Toast.show({
@@ -133,54 +134,64 @@ const FitsTab = () => {
             <View className="bg-white rounded-lg p-4 items-center">
               <View className="w-[75%] flex-row justify-between items-center">
                 {isEditing ? (
-                  <TextInput
-                    value={editedName}
-                    onChangeText={setEditedName}
-                    className="border-b border-light-gray text-lg flex-1 mr-2"
-                    placeholder="Edit name"
-                  />
+                  <View className=" justify-center items-center flex-1 ml-12">
+                    <TextInput
+                      value={editedName}
+                      onChangeText={setEditedName}
+                      className="border-b text-center border-light-gray text-base"
+                      placeholder="Edit name"
+                      maxLength={20}
+                    />
+                  </View>
                 ) : (
-                  <Text className="font-semibold text-lg">
-                    {selectedFit.name}
-                  </Text>
+                  <View className="justify-center items-center flex-1 ml-6">
+                    <Text className="font-semibold text-lg">
+                      {selectedFit.name}
+                    </Text>
+                  </View>
                 )}
                 <View className="flex-row">
                   {isEditing ? (
-                    <View className="flex-row mt-[2px]">
-                      <TouchableOpacity
-                        onPress={handleCancelEdit}
-                        disabled={isRenaming}
-                      >
-                        <CloseIcon width={16} height={16} color={"red"} />
-                      </TouchableOpacity>
+                    <View className="flex-row mt-[1px]">
                       <TouchableOpacity
                         onPress={handleSaveEdit}
                         disabled={isRenaming}
-                        className="ml-2"
+                        className=""
                       >
                         {isRenaming ? (
                           <Spinner type="secondary" />
                         ) : (
-                          <CheckIcon width={16} height={16} color={"green"} />
+                          <CheckIcon width={18} height={18} color={"#7AB2B2"} />
                         )}
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={handleCancelEdit}
+                        disabled={isRenaming}
+                        className="ml-2"
+                      >
+                        <CloseIcon width={18} height={18} color={"red"} />
                       </TouchableOpacity>
                     </View>
                   ) : (
-                    <TouchableOpacity onPress={() => setIsEditing(true)}>
-                      <EditIcon width={16} height={16} color={"#000000"} />
-                    </TouchableOpacity>
-                  )}
-                  {isDeleting ? (
-                    <Spinner type="secondary" />
-                  ) : (
                     <TouchableOpacity
-                      className="ml-1"
-                      onPress={handleDeleteFit}
-                      disabled={isDeleting}
+                      className="relative right-2"
+                      onPress={() => setIsEditing(true)}
                     >
-                      <DeleteIcon width={16} height={16} color={"red"} />
+                      <EditIcon width={16} height={16} color={"#7AB2B2"} />
                     </TouchableOpacity>
                   )}
+                  {!isEditing &&
+                    (isDeleting ? (
+                      <Spinner type="secondary" />
+                    ) : (
+                      <TouchableOpacity
+                        className="ml-1"
+                        onPress={handleDeleteFit}
+                        disabled={isDeleting}
+                      >
+                        <DeleteIcon width={16} height={16} color={"red"} />
+                      </TouchableOpacity>
+                    ))}
                 </View>
               </View>
               <Image

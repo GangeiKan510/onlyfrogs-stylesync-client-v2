@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, Modal, Pressable, Animated, Easing } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import Spinner from "../common/Spinner";
+import { uploadWithImageLink } from "@/network/web/clothes";
 
 interface ClosetSelectionModalProps {
   isVisible: boolean;
   closets: { id: string; name: string }[];
+  userId: string;
+  itemUrl: string;
   onClose: () => void;
+  refetchMe: () => void;
   onSave: (selectedClosetId: string) => void;
 }
 
 const ClosetSelectionModal: React.FC<ClosetSelectionModalProps> = ({
   isVisible,
   closets,
+  userId,
+  itemUrl,
   onClose,
   onSave,
+  refetchMe,
 }) => {
   const [selectedClosetId, setSelectedClosetId] = useState<string | null>(
     closets[0]?.id || null
   );
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const scaleValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -39,11 +47,28 @@ const ClosetSelectionModal: React.FC<ClosetSelectionModalProps> = ({
     }
   }, [isVisible]);
 
-  const handleSave = () => {
-    if (selectedClosetId) {
+  const handleSave = async () => {
+    if (!selectedClosetId) return;
+
+    setIsLoading(true);
+    try {
+      const imageDetails = {
+        image_url: itemUrl,
+        user_id: userId,
+        closet_id: selectedClosetId,
+      };
+
+      console.log("Image Details", imageDetails);
+      await uploadWithImageLink(imageDetails);
+
       onSave(selectedClosetId);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      refetchMe();
+      setIsLoading(false);
+      onClose();
     }
-    onClose();
   };
 
   return (
@@ -62,9 +87,7 @@ const ClosetSelectionModal: React.FC<ClosetSelectionModalProps> = ({
               padding: 20,
               borderRadius: 10,
             },
-            {
-              transform: [{ scale: scaleValue }],
-            },
+            { transform: [{ scale: scaleValue }] },
           ]}
         >
           <Text className="text-lg font-bold mb-4">Select Closet</Text>
@@ -72,6 +95,7 @@ const ClosetSelectionModal: React.FC<ClosetSelectionModalProps> = ({
             <Picker
               selectedValue={selectedClosetId}
               onValueChange={(itemValue) => setSelectedClosetId(itemValue)}
+              enabled={!isLoading}
             >
               {closets.map((closet) => (
                 <Picker.Item
@@ -84,16 +108,26 @@ const ClosetSelectionModal: React.FC<ClosetSelectionModalProps> = ({
           </View>
           <View className="flex-row justify-end">
             <Pressable
-              className="w-[80px] flex-row items-center justify-center px-4 py-2 border border-tertiary rounded-lg mr-2"
+              className={`w-[80px] flex-row items-center justify-center px-4 py-2 border border-tertiary rounded-lg mr-2 ${
+                isLoading ? "opacity-50" : ""
+              }`}
               onPress={onClose}
+              disabled={isLoading}
             >
               <Text className="text-tertiary">Cancel</Text>
             </Pressable>
             <Pressable
-              className="w-[80px] flex-row items-center justify-center px-4 py-2 bg-tertiary rounded-lg"
+              className={`w-[80px] flex-row items-center justify-center px-4 py-2 bg-tertiary rounded-lg ${
+                isLoading ? "opacity-50" : ""
+              }`}
               onPress={handleSave}
+              disabled={isLoading}
             >
-              <Text className="text-white">Save</Text>
+              {isLoading ? (
+                <Spinner type="secondary" />
+              ) : (
+                <Text className="text-white">Save</Text>
+              )}
             </Pressable>
           </View>
         </Animated.View>

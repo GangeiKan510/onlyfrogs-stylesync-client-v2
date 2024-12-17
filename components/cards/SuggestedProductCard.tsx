@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { View, Text, Image, Pressable, Linking } from "react-native";
 import Toast from "react-native-toast-message";
@@ -24,21 +26,11 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
   productUrl,
   brand,
 }) => {
-  const { user } = useUser();
+  const { user, refetchMe } = useUser();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSaveIconClick = () => {
     setIsModalVisible(true);
-  };
-
-  const handleModalSave = (selectedClosetId: string) => {
-    console.log(`Saved to closet with ID: ${selectedClosetId}`);
-    Toast.show({
-      type: "success",
-      text1: "Saved to Closet",
-      text2: `Product saved to the selected closet successfully.`,
-    });
-    setIsModalVisible(false);
   };
 
   const openLink = async (url: string) => {
@@ -96,8 +88,17 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
       <ClosetSelectionModal
         isVisible={isModalVisible}
         closets={user?.closets || []}
+        userId={user?.id as string}
+        itemUrl={image}
         onClose={() => setIsModalVisible(false)}
-        onSave={handleModalSave}
+        onSave={(selectedClosetId) => {
+          Toast.show({
+            type: "success",
+            text1: "Saved to Closet",
+            text2: `Product saved to the selected closet successfully.`,
+          });
+        }}
+        refetchMe={refetchMe}
       />
     </Pressable>
   );

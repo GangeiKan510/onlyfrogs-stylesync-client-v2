@@ -53,7 +53,7 @@ const TopGreeting = () => {
       <View className="flex-1 flex-row items-center">
         <Avatar url={user?.profile_url as string} alt={"profile-alt"} />
         <View className="ml-3">
-          <View className="flex-row items-center gap-1">
+          <View className="flex-row items-center gap-1 ">
             <Text className="font-bold text-[14px]">
               Greetings,{" "}
               {user?.first_name

@@ -1,61 +1,83 @@
-import { View, Text, Pressable, Modal } from "react-native";
+/* eslint-disable react/prop-types */
+import {
+  View,
+  Text,
+  Modal,
+  Pressable,
+  GestureResponderEvent,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import CloseIcon from "@/assets/icons/x-icon.svg";
-import { useState } from "react";
-import MoreInfoIcon from "@/assets/icons/more-info-icon.svg";
 import { useRouter } from "expo-router";
 
-const TokenInfoModal = () => {
-  const router = useRouter();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+interface TokenInfoModalProps {
+  visible: boolean;
+  onConfirm: (event: GestureResponderEvent) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+  type: "primary" | "secondary";
+  confirmMessage: string;
+}
 
-  const handleTokenInfo = () => {
-    setIsModalVisible(!isModalVisible);
-  };
+const TokenInfoModal: React.FC<TokenInfoModalProps> = ({
+  visible,
+  onConfirm,
+  onCancel,
+  isLoading,
+  type,
+  confirmMessage,
+}) => {
+  const router = useRouter();
 
   return (
-    <View className="">
-      <Pressable onPress={handleTokenInfo}>
-        <MoreInfoIcon color="black" width={20} height={20} />
-      </Pressable>
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        onRequestClose={handleTokenInfo}
-        animationType="fade"
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onCancel}
+    >
+      <View
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       >
-        <View className="flex-grow justify-center items-center">
-          <View className="relative w-[80%] bg-white border-2 rounded-xl border-[#F2F2F2] shadow-lg ">
-            <View className="flex-row justify-between bg-[#F2F2F2] w-full">
-              <Text className="text-lg font-bold p-4">Token Information!</Text>
-              <CloseIcon
-                className="right-4 top-4 p-2"
-                width={24}
-                height={24}
-                color={"black"}
-                onPress={handleTokenInfo}
-              />
-            </View>
-            <View className="relative p-5 ">
-              <Text className="text-base">
-                Tokens are like points that get used whenever you chat with Ali.
-                They help keep the conversation going!
-              </Text>
-              <Text className="mt-4 text-base">
-                Note: You will get 150 tokens daily!🎊
-              </Text>
-            </View>
-            <View className=" mb-2 w-full rounded-2xl justify-center items-center p-2">
-              <Pressable
-              className="w-full items-center  bg-[#7AB2B2] rounded-2xl p-2"
-                onPress={() => router.push("/(tabs)/profile/subscription")}
-              >
-                <Text className="text-white">Get more Tokens </Text>
-              </Pressable>
-            </View>
+        <View className="relative w-[80%] bg-white rounded-xl shadow-lg">
+          <View className="flex-row justify-between bg-[#F2F2F2] w-full p-4 rounded-t-[10px]">
+            <Text className="text-lg font-bold">Token Information!</Text>
+            <Pressable onPress={onCancel}>
+              <CloseIcon width={24} height={24} color={"black"} />
+            </Pressable>
+          </View>
+          <View className="p-4">
+            <Text className="text-sm">
+              Tokens are points that get used whenever you chat with Ali.
+            </Text>
+            <Text className="mt-4 text-sm text-[#7AB2B2] font-bold">
+              1 Token = 1 Word
+            </Text>
+            <Text className="mt-4 text-sm">
+              Note: You will get 150 tokens daily! 🎊
+            </Text>
+          </View>
+          <View className="w-full px-4">
+            <TouchableOpacity
+
+              className="w-full items-center justify-center bg-[#7AB2B2] rounded-lg h-[42px] mb-6"
+              onPress={onConfirm}
+            >
+              {isLoading ? (
+                <ActivityIndicator
+                  size="small"
+                  color={type === "primary" ? "#fff" : "#7ab2b2"}
+                />
+              ) : (
+                <Text className="text-white text-center">{confirmMessage}</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
   );
 };
 

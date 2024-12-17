@@ -43,7 +43,8 @@ const MaterialAccordion: React.FC<MaterialAccordionProps> = ({
       >
         <View className="flex-row justify-center items-center">
           <Text className="text-[16px] text-[#484848]">Material</Text>
-          <Text className="text-red"> *</Text>
+          {!selectedMaterial && <Text className="text-red"> *</Text>}
+          {/* {!selectedSeasons.length && <Text className="text-red-500"> *</Text>} */}
         </View>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />

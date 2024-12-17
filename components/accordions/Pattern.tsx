@@ -41,7 +41,7 @@ const PatternAccordion: React.FC<PatternAccordionProps> = ({
       >
         <View className="flex-row justify-center items-center">
           <Text className="text-[16px] text-[#484848]">Pattern</Text>
-          <Text className="text-red"> *</Text>
+          {!selectedPattern && <Text className="text-red"> *</Text>}
         </View>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />

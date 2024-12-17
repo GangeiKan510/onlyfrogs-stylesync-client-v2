@@ -39,7 +39,7 @@ const SeasonAccordion = ({ selectedSeasons, setSelectedSeasons }: any) => {
       >
         <View className="flex-row justify-center items-center">
           <Text className="text-[16px] text-[#484848]">Season</Text>
-          <Text className="text-red"> *</Text>
+          {!selectedSeasons.length && <Text className="text-red"> *</Text>}
         </View>
         {isOpen ? (
           <ChevronUpIcon width={18} height={18} color={"#484848"} />

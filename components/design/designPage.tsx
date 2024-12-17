@@ -13,16 +13,14 @@ import {
 } from "react-native";
 import { useMemo, useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import {
-  GestureHandlerRootView,
-  FlatList,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView, FlatList } from "react-native-gesture-handler";
 import { captureRef } from "react-native-view-shot";
 import Header from "@/components/common/Header";
 import { useUser } from "@/components/config/user-context";
 import ClothingCard from "@/components/cards/DesignPiecesCard";
 import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
+import CloseIcon from "../../assets/icons/close-icon.svg";
 import Save from "../../assets/icons/save.svg";
 import { createFit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
@@ -223,6 +221,19 @@ const DesignPage = () => {
     setSelectedImage((prev) => (prev === image ? null : image));
   };
 
+  const handleRemoveImage = (image: string) => {
+    setSelectedImages((prevImages) =>
+      prevImages.filter((img) => img !== image)
+    );
+  };
+
+  const clearSelection = () => {
+    setSelectedImages([]);
+    setSelectedPiecesIds([]);
+    setDragPositions({});
+    setImageSizes({});
+  };
+
   const panResponder = (image: string) =>
     PanResponder.create({
       onStartShouldSetPanResponder: () =>
@@ -327,6 +338,26 @@ const DesignPage = () => {
                     position: "relative",
                   }}
                 >
+                  {isSelected && (
+                    <Pressable
+                      onPress={() => handleRemoveImage(image)}
+                      style={{
+                        position: "absolute",
+                        top: -10,
+                        left: -10,
+                        zIndex: 10,
+                        width: 20,
+                        height: 20,
+                        borderRadius: 12,
+                        backgroundColor: "rgba(147, 147, 147, 0.7)",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <CloseIcon width={14} height={14} color="#FFF" />
+                    </Pressable>
+                  )}
+
                   <Pressable onPress={() => handleImageSelection(image)}>
                     <Image
                       source={{ uri: image }}
@@ -341,16 +372,16 @@ const DesignPage = () => {
                         position: "absolute",
                         bottom: -6,
                         right: -6,
-                        width: 14,
-                        height: 14,
+                        width: 20,
+                        height: 20,
                         backgroundColor: "rgba(147, 147, 147, 0.7)",
-                        borderRadius: 7,
+                        borderRadius: 12,
                         alignItems: "center",
                         justifyContent: "center",
                       }}
                       {...resizeResponder(image).panHandlers}
                     >
-                      <ResizeArrow width="50%" height="50%" />
+                      <ResizeArrow width={9} height={9} />
                     </View>
                   )}
                 </View>
@@ -363,13 +394,19 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
+
       {selectedImages.length > 0 && (
-        <TouchableOpacity
-          onPress={snapshot}
-          className="absolute left-[90%] bottom-[77%]"
-        >
-          <Save />
-        </TouchableOpacity>
+        <View className=" w-full flex-row justify-between items-center py-3 px-5 bottom-[100%]">
+          <TouchableOpacity
+            onPress={clearSelection}
+            className=" border border-transparent bg-[#7AB2B2] rounded-xl p-1"
+          >
+            <Text className="text-white text-xs">Clear Selection</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={snapshot} className="">
+            <Save />
+          </TouchableOpacity>
+        </View>
       )}
 
       {snapshotImg && (
@@ -459,7 +496,12 @@ const DesignPage = () => {
                 >
                   <View className="flex-row items-center">
                     {tab === "Closet" && selectedClosetId && (
-                      <BackIcon width={15} height={15} className="mr-2" />
+                      <BackIcon
+                        width={13}
+                        height={13}
+                        color="black"
+                        className="mr-2"
+                      />
                     )}
                     <View
                       className={`${

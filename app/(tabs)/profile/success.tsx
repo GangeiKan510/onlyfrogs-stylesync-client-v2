@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WelcomeHero from "../../../assets/images/svg/welcome-hero.svg";
@@ -7,6 +7,14 @@ import { useRouter } from "expo-router";
 
 function SuccessScreen() {
     const router = useRouter();
+      const [clicked, setClicked] = useState(false);
+    
+      const handleClick = () => {
+        if (!clicked) {
+          setClicked(true);
+          router.push("/(tabs)/profile");
+        }
+      };
 
   return (
     <SafeAreaView className="flex-1 bg-[#FFFFFF] items-center">
@@ -22,7 +30,7 @@ function SuccessScreen() {
       </View>
       <View className="flex-1 justify-center items-center px-8">
         <TouchableOpacity className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
-          onPress={() =>  router.push("/(tabs)/profile")}
+          onPress={handleClick}
           >
           <Text className="text-[16px] text-white">OK</Text>
         </TouchableOpacity>

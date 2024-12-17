@@ -6,15 +6,15 @@ import Success from "../../../assets/images/svg/success.svg";
 import { useRouter } from "expo-router";
 
 function SuccessScreen() {
-    const router = useRouter();
-      const [clicked, setClicked] = useState(false);
-    
-      const handleClick = () => {
-        if (!clicked) {
-          setClicked(true);
-          router.push("/(tabs)/profile");
-        }
-      };
+  const router = useRouter();
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = () => {
+    if (!clicked) {
+      setClicked(true);
+      router.push("/(tabs)/profile");
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#FFFFFF] items-center">
@@ -29,9 +29,10 @@ function SuccessScreen() {
         </Text>
       </View>
       <View className="flex-1 justify-center items-center px-8">
-        <TouchableOpacity className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
+        <TouchableOpacity
+          className="justify-center items-center text-center h-[42px] w-full absolute bottom-4 bg-[#7AB2B2] rounded-[10px]"
           onPress={handleClick}
-          >
+        >
           <Text className="text-[16px] text-white">OK</Text>
         </TouchableOpacity>
       </View>

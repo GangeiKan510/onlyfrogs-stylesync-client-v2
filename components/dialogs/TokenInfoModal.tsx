@@ -9,8 +9,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import CloseIcon from "@/assets/icons/x-icon.svg";
-import { useRouter } from "expo-router";
-
 interface TokenInfoModalProps {
   visible: boolean;
   onConfirm: (event: GestureResponderEvent) => void;
@@ -28,7 +26,6 @@ const TokenInfoModal: React.FC<TokenInfoModalProps> = ({
   type,
   confirmMessage,
 }) => {
-  const router = useRouter();
 
   return (
     <Modal
@@ -62,7 +59,7 @@ const TokenInfoModal: React.FC<TokenInfoModalProps> = ({
           <View className="w-full px-4">
             <TouchableOpacity
 
-              className="w-full items-center justify-center bg-[#7AB2B2] rounded-lg h-[42px] mb-6"
+              className="w-full items-center justify-center bg-[#7AB2B2] rounded-full h-[42px] mb-6"
               onPress={onConfirm}
             >
               {isLoading ? (

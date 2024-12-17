@@ -19,6 +19,7 @@ const TopGreeting = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -29,6 +30,13 @@ const TopGreeting = () => {
   useEffect(() => {
     return () => setTokenInfoVisible(false);
   }, []);
+
+  const handleClick = () => {
+    if (!clicked) {
+      setClicked(true);
+      router.push("/(tabs)/profile/subscription");
+    }
+  };
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -110,8 +118,8 @@ const TopGreeting = () => {
       <TokenInfoModal
         visible={tokenInfoVisible}
         onConfirm={() => {
-          setTokenInfoVisible(false); 
-          router.push("/(tabs)/profile/subscription");
+          setTokenInfoVisible(false);
+          handleClick();
         }}
         onCancel={() => setTokenInfoVisible(false)}
         isLoading={false}

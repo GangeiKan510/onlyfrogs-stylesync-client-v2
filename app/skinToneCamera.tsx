@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, View, Text, Pressable } from "react-native";
+import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
+
 import { Camera, CameraView } from "expo-camera";
 import CameraButton from "@/assets/icons/shoot.svg";
 import SwitchCamera from "@/assets/icons/switch-camera.svg";
@@ -41,10 +42,8 @@ const SkinToneCamera = ({
   }, []);
 
   const handleTakePicture = async () => {
-    await requestCameraPermissions();
-
-    if (hasPermission) {
-      const result = await cameraRef.current?.takePictureAsync({});
+    if (hasPermission && cameraRef.current) {
+      const result = await cameraRef.current.takePictureAsync({});
       if (result && result.uri) {
         onTakePicture(result.uri);
       }
@@ -53,7 +52,7 @@ const SkinToneCamera = ({
 
   return (
     <>
-      {isVisible && hasPermission && (
+      {isVisible && hasPermission !== null && (
         <SafeAreaView className="flex-1 bg-white">
           <View className="flex-1">
             <View className="absolute top-0 left-0 right-0 bottom-40 justify-center items-center">
@@ -69,18 +68,25 @@ const SkinToneCamera = ({
 
             <View className="flex-1">
               <View className="absolute bottom-10 left-0 right-0 flex-row justify-between items-center px-8">
-                <Pressable onPress={onCancel} className=" p-3 rounded-full">
+                <TouchableOpacity
+                  onPress={onCancel}
+                  className=" p-3 rounded-full"
+                >
                   <Text className="text-black"> Cancel</Text>
-                </Pressable>
+                </TouchableOpacity>
 
-                <SwitchCamera onPress={onSwitchCamera} width={40} height={40} />
+                <TouchableOpacity onPress={onSwitchCamera}>
+                  <SwitchCamera width={40} height={40} />
+                </TouchableOpacity>
               </View>
               <View className="absolute bottom-5 left-0 right-0 justify-center items-center">
-                <CameraButton
+                <TouchableOpacity
                   onPress={handleTakePicture}
-                  width={80}
-                  height={80}
-                />
+                  activeOpacity={0.7}
+                  className="flex justify-center items-center"
+                >
+                  <CameraButton width={80} height={80} />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

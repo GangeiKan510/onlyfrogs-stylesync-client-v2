@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  View,
-  Text,
-  Alert,
-  BackHandler,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Alert, BackHandler, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
@@ -79,38 +73,33 @@ const SkinToneAnalysis = () => {
   };
 
   const handleTakePicture = async (uri: string) => {
-    await requestCameraPermissions()
+    await requestCameraPermissions();
 
     if (hasPermission) {
-
-
-      
       const formData = new FormData();
-    formData.append("file", {
-      uri: uri,
-      name: uri.split("/").pop(),
-      type: "image/jpeg",
-    } as any);
+      formData.append("file", {
+        uri: uri,
+        name: uri.split("/").pop(),
+        type: "image/jpeg",
+      } as any);
 
-    setIsLoading(true);
-    setIsAnalyzing(true);
-    try {
-      console.log("Sending image for analysis:", formData);
-      const result = await analyzeUserSkinTone(formData);
-      console.log("Analysis result:", result);
-      setAnalysisResult(result.skinToneAnalysis);
-      setSkinToneAnalysisResult(result.skinToneAnalysis);
-      onAnalyzeComplete();
-    } catch (error) {
-      console.error("Failed to analyze skin tone:", error);
-      Alert.alert("Error", "Failed to analyze skin tone.");
-    } finally {
-      setIsLoading(false);
-    }
+      setIsLoading(true);
+      setIsAnalyzing(true);
+      try {
+        console.log("Sending image for analysis:", formData);
+        const result = await analyzeUserSkinTone(formData);
+        console.log("Analysis result:", result);
+        setAnalysisResult(result.skinToneAnalysis);
+        setSkinToneAnalysisResult(result.skinToneAnalysis);
+        onAnalyzeComplete();
+      } catch (error) {
+        console.error("Failed to analyze skin tone:", error);
+        Alert.alert("Error", "Failed to analyze skin tone.");
+      } finally {
+        setIsLoading(false);
+      }
     }
     setSelectedImage(uri);
-
-    
   };
 
   const handleUploadFromGallery = async () => {
@@ -296,7 +285,7 @@ const SkinToneAnalysis = () => {
               </View>
             </View>
           </View>
-          <View className="absolute z-10 bottom-8 right-10">
+          <View className="absolute z-10 bottom-2 right-10">
             <SkinToneImageOptions
               onCameraPress={handleOpenCamera}
               onGalleryPress={handleUploadFromGallery}

@@ -227,6 +227,13 @@ const DesignPage = () => {
     );
   };
 
+  const clearSelection = () => {
+    setSelectedImages([]);
+    setSelectedPiecesIds([]);
+    setDragPositions({});
+    setImageSizes({});
+  };
+
   const panResponder = (image: string) =>
     PanResponder.create({
       onStartShouldSetPanResponder: () =>
@@ -387,13 +394,19 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
+
       {selectedImages.length > 0 && (
-        <TouchableOpacity
-          onPress={snapshot}
-          className="absolute left-[90%] bottom-[77%]"
-        >
-          <Save />
-        </TouchableOpacity>
+        <View className=" w-full flex-row justify-between items-center py-3 px-5 bottom-[100%]">
+          <TouchableOpacity
+            onPress={clearSelection}
+            className=" border border-transparent bg-[#7AB2B2] rounded-xl p-1"
+          >
+            <Text className="text-white text-xs">Clear Selection</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={snapshot} className="">
+            <Save />
+          </TouchableOpacity>
+        </View>
       )}
 
       {snapshotImg && (

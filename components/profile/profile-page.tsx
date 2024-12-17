@@ -33,6 +33,14 @@ const ProfilePage = () => {
   const [signOut, loading] = useSignOut(auth);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = (route: string) => {
+    if (!clicked) {
+      setClicked(true);
+      router.push(route as Href<string>);
+    }
+  };
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -86,7 +94,7 @@ const ProfilePage = () => {
             <View>
               <TouchableOpacity
                 className="flex-row h-10 w-96 mt-10 px-5 justify-between items-center"
-                onPress={() => router.push("/(tabs)/profile/subscription")}
+                onPress={() => handleClick("/(tabs)/profile/subscription")}
               >
                 <LinearGradient
                   colors={["#7AB2B2", "#B088CD"]}
@@ -125,7 +133,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push("/(tabs)/profile/profile-settings")
+                  handleClick("/(tabs)/profile/profile-settings")
                 }
               >
                 <View className="flex-row items-center">
@@ -140,7 +148,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push("/(tabs)/profile/personal-information")
+                  handleClick("/(tabs)/profile/personal-information")
                 }
               >
                 <View className="flex-row items-center">
@@ -155,7 +163,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push("/(tabs)/profile/preferences-and-budget")
+                  handleClick("/(tabs)/profile/preferences-and-budget")
                 }
               >
                 <View className="flex-row items-center">
@@ -170,7 +178,7 @@ const ProfilePage = () => {
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
                 onPress={() =>
-                  router.push("/(tabs)/profile/result")
+                  handleClick("/(tabs)/profile/result")
                 }
               >
                 <View className="flex-row items-center">
@@ -184,7 +192,7 @@ const ProfilePage = () => {
 
               <TouchableOpacity
                 className="flex-row my-2 h-[32px] w-full justify-between items-center"
-                onPress={() => router.push("/(tabs)/profile/body-type")}
+                onPress={() => handleClick("/(tabs)/profile/body-type")}
               >
                 <View className="flex-row items-center">
                   <BodyTypeIcon width={24} height={24} />

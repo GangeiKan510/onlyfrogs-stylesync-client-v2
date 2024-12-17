@@ -6,7 +6,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import Toast from "react-native-toast-message"; // Import Toast
+import Toast from "react-native-toast-message";
 import WelcomeHero from "../../../assets/images/svg/welcome-hero.svg";
 import { useRouter } from "expo-router";
 import Back from "../../../assets/icons/back-icon.svg";

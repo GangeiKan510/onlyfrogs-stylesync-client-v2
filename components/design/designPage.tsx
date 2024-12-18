@@ -26,6 +26,8 @@ import { createFit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 import BackIcon from "@/assets/icons/return-icon.svg";
+import ResetIcon from "@/assets/icons/reset-icon.svg";
+
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
@@ -396,15 +398,12 @@ const DesignPage = () => {
       </View>
 
       {selectedImages.length > 0 && (
-        <View className=" w-full flex-row justify-between items-center py-3 px-5 bottom-[100%]">
-          <TouchableOpacity
-            onPress={clearSelection}
-            className=" border border-transparent bg-[#7AB2B2] rounded-xl p-1"
-          >
-            <Text className="text-white text-xs">Clear Selection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={snapshot} className="">
+        <View className=" w-full flex-col items-end py-3 px-5 bottom-[50%]">
+          <TouchableOpacity onPress={snapshot} className=" mb-5">
             <Save />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={clearSelection} className="">
+            <ResetIcon />
           </TouchableOpacity>
         </View>
       )}

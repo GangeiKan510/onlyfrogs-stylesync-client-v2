@@ -26,6 +26,7 @@ import EditIcon from "../../../assets/icons/edit-icon.svg";
 import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
 import { routes } from "@/utils/routes";
 import EditClosetModal from "@/components/dialogs/EditClosetModal";
+import ImagePickerCrop from 'react-native-image-crop-picker';
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -83,6 +84,7 @@ const Page = () => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
+        allowsEditing: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -147,6 +149,7 @@ const Page = () => {
     if (status === "granted") {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
         quality: 1,
         allowsMultipleSelection: false,
       });

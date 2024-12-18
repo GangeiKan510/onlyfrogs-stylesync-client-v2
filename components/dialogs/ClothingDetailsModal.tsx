@@ -325,6 +325,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   <Text className="text-[16px] text-[#484848] mb-2">Brand</Text>
                   <TextInput
                     placeholder="Enter brand name"
+                    maxLength={40}
                     value={brandName as string}
                     onChangeText={(text) => {
                       setBrandName(text);
@@ -342,6 +343,7 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
                   <Text className="text-[16px] text-[#484848] mb-2">Name</Text>
                   <TextInput
                     placeholder="Give it a name (optional)"
+                    maxLength={40}
                     value={itemName}
                     onChangeText={(text) => {
                       setItemName(text);

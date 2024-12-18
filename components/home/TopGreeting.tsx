@@ -19,6 +19,7 @@ const TopGreeting = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -29,6 +30,13 @@ const TopGreeting = () => {
   useEffect(() => {
     return () => setTokenInfoVisible(false);
   }, []);
+
+  const handleClick = () => {
+    if (!clicked) {
+      setClicked(true);
+      router.push("/(tabs)/profile/subscription");
+    }
+  };
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -45,7 +53,7 @@ const TopGreeting = () => {
       <View className="flex-1 flex-row items-center">
         <Avatar url={user?.profile_url as string} alt={"profile-alt"} />
         <View className="ml-3">
-          <View className="flex-row items-center gap-1">
+          <View className="flex-row items-center gap-1 ">
             <Text className="font-bold text-[14px]">
               Greetings,{" "}
               {user?.first_name
@@ -110,8 +118,8 @@ const TopGreeting = () => {
       <TokenInfoModal
         visible={tokenInfoVisible}
         onConfirm={() => {
-          setTokenInfoVisible(false); 
-          router.push("/(tabs)/profile/subscription");
+          setTokenInfoVisible(false);
+          handleClick();
         }}
         onCancel={() => setTokenInfoVisible(false)}
         isLoading={false}

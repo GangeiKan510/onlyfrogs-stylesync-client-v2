@@ -1,15 +1,11 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
-import SheinLogo from "../../../assets/images/shein.svg";
 import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
-import UniqloLogo from "../../../assets/images/uniqlo.svg";
 import BenchLogo from "../../../assets/images/bench.svg";
 
 const brandsList = [
-  { name: "Shein", logo: SheinLogo },
   { name: "Penshoppe", logo: PenshoppeLogo },
-  { name: "Uniqlo", logo: UniqloLogo },
   { name: "Bench", logo: BenchLogo },
 ];
 

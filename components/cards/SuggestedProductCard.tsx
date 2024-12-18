@@ -1,6 +1,11 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from "react";
 import { View, Text, Image, Pressable, Linking } from "react-native";
 import Toast from "react-native-toast-message";
+import SaveIcon from "../../assets/icons/save.svg";
+import { useUser } from "../config/user-context";
+import ClosetSelectionModal from "../dialogs/ClosetSelectionModal";
 
 interface ProductProps {
   name: string;
@@ -21,6 +26,13 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
   productUrl,
   brand,
 }) => {
+  const { user, refetchMe } = useUser();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleSaveIconClick = () => {
+    setIsModalVisible(true);
+  };
+
   const openLink = async (url: string) => {
     try {
       const supported = await Linking.canOpenURL(url);
@@ -42,6 +54,9 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
       });
     }
   };
+
+  console.log("USER CLOSET", user?.closets);
+
   return (
     <Pressable
       className="flex flex-row border-[1.5px] border-tertiary rounded-lg p-4 mb-3"
@@ -62,8 +77,29 @@ const SuggestedProductCard: React.FC<ProductProps> = ({
         <Text className="text-sm text-green-300 line-through">
           {originalPrice}
         </Text>
-        <Text className="text-sm text-red">{discount}</Text>
+        <View className="flex-row justify-between items-center">
+          <Text className="text-sm text-red">{discount}</Text>
+          <Pressable onPress={handleSaveIconClick}>
+            <SaveIcon />
+          </Pressable>
+        </View>
       </View>
+
+      <ClosetSelectionModal
+        isVisible={isModalVisible}
+        closets={user?.closets || []}
+        userId={user?.id as string}
+        itemUrl={image}
+        onClose={() => setIsModalVisible(false)}
+        onSave={(selectedClosetId) => {
+          Toast.show({
+            type: "success",
+            text1: "Saved to Closet",
+            text2: `Product saved to the selected closet successfully.`,
+          });
+        }}
+        refetchMe={refetchMe}
+      />
     </Pressable>
   );
 };

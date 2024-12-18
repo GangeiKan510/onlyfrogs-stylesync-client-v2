@@ -13,7 +13,6 @@ import Header from "@/components/common/Header";
 import Bubble from "@/components/chat/bubble";
 import SendMessageIcon from "../../assets/icons/chat/send-icon.svg";
 import EmptyChat from "@/components/chat/empty-chat";
-import UploadIcon from "../../assets/icons/chat/upload-icon.svg";
 import { getUserChatSession, sendMessage } from "@/network/web/chat";
 import { useUser } from "@/components/config/user-context";
 import ReplyLoading from "@/components/chat/reply-loading";
@@ -282,7 +281,6 @@ export default function HomeScreen() {
 
         {/* Input field and send button */}
         <View className="flex flex-row items-center h-[42px] pl-3 pr-1 bg-light-gray mx-7 mt-3 rounded-[10px] mb-7">
-          <UploadIcon />
           <TextInput
             className="flex-1 h-[42px] bg-transparent ml-2"
             placeholder="Chat with Ali..."

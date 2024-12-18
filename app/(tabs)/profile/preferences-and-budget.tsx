@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -15,9 +15,7 @@ import { useUser } from "@/components/config/user-context";
 import { useRouter } from "expo-router";
 import { STYLE_LIST } from "@/components/constants/style-list";
 import { COLOR_LIST } from "@/components/constants/color-list";
-import SheinLogo from "../../../assets/images/shein.svg";
 import PenshoppeLogo from "../../../assets/images/penshoppe.svg";
-import UniqloLogo from "../../../assets/images/uniqlo.svg";
 import BenchLogo from "../../../assets/images/bench.svg";
 import Toast from "react-native-toast-message";
 import { updateUserPreferences } from "@/network/web/user";
@@ -48,9 +46,7 @@ const PreferencesAndBudget = () => {
   const [loading, setLoading] = useState(false);
 
   const brandsList = [
-    { name: "Shein", logo: SheinLogo },
     { name: "Penshoppe", logo: PenshoppeLogo },
-    { name: "Uniqlo", logo: UniqloLogo },
     { name: "Bench", logo: BenchLogo },
   ];
 

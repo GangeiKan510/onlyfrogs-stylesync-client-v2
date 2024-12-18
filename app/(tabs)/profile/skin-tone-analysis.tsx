@@ -1,27 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  View,
-  Text,
-  Alert,
-  BackHandler,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Alert, BackHandler, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import SkinToneAnalysisImage from "../../../assets/images/svg/skin-tone-analysis-hero.svg";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import SkinToneImageOptions from "../../../components/buttons/SkinToneImageOptionButton";
 import LoadingScreen from "../../../components/common/LoadingScreen";
+import { Image } from "react-native";
 import {
   analyzeUserSkinTone,
-  updateUser,
   updateUserSkinToneDetails,
 } from "@/network/web/user";
 import Result from "../../../components/survey/result";
 import Back from "../../../assets/icons/back-icon.svg";
-import { Href, useRouter } from "expo-router";
-import { routes } from "@/utils/routes";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@/components/config/user-context";
 import Toast from "react-native-toast-message";
@@ -35,6 +28,7 @@ const SkinToneAnalysis = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [skinToneAnalysisResult, setSkinToneAnalysisResult] =
     useState<any>(null);
@@ -61,8 +55,34 @@ const SkinToneAnalysis = () => {
     setIsModalVisible(false);
   };
 
-  const handleOpenCamera = () => {
-    setIsCameraActive(true);
+  const handleOpenCamera = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+
+    if (status === "granted") {
+      setIsCameraActive(true);
+    } else {
+      Alert.alert(
+        "Camera Permission Required",
+        "Camera permission is required to use this feature.",
+        [
+          {
+            text: "OK",
+            onPress: async () => {
+              const { status } = await Camera.requestCameraPermissionsAsync();
+              if (status === "granted") {
+                setIsCameraActive(true);
+              } else {
+                Alert.alert(
+                  "Permission Denied",
+                  "You cannot use the camera without permission.",
+                  [{ text: "OK"}]
+                );
+              }
+            },
+          },
+        ]
+      );
+    }
   };
 
   const handleCloseCamera = () => {
@@ -75,42 +95,37 @@ const SkinToneAnalysis = () => {
   };
 
   const handleSwitchCamera = () => {
-    setCameraFacing(cameraFacing === "back" ? "front" : "front");
+    setCameraFacing(cameraFacing === "front" ? "back" : "front");
   };
 
   const handleTakePicture = async (uri: string) => {
-    await requestCameraPermissions()
+    await requestCameraPermissions();
 
     if (hasPermission) {
-
-
-      
       const formData = new FormData();
-    formData.append("file", {
-      uri: uri,
-      name: uri.split("/").pop(),
-      type: "image/jpeg",
-    } as any);
+      formData.append("file", {
+        uri: uri,
+        name: uri.split("/").pop(),
+        type: "image/jpeg",
+      } as any);
 
-    setIsLoading(true);
-    setIsAnalyzing(true);
-    try {
-      console.log("Sending image for analysis:", formData);
-      const result = await analyzeUserSkinTone(formData);
-      console.log("Analysis result:", result);
-      setAnalysisResult(result.skinToneAnalysis);
-      setSkinToneAnalysisResult(result.skinToneAnalysis);
-      onAnalyzeComplete();
-    } catch (error) {
-      console.error("Failed to analyze skin tone:", error);
-      Alert.alert("Error", "Failed to analyze skin tone.");
-    } finally {
-      setIsLoading(false);
-    }
+      setIsLoading(true);
+      setIsAnalyzing(true);
+      try {
+        console.log("Sending image for analysis:", formData);
+        const result = await analyzeUserSkinTone(formData);
+        console.log("Analysis result:", result);
+        setAnalysisResult(result.skinToneAnalysis);
+        setSkinToneAnalysisResult(result.skinToneAnalysis);
+        onAnalyzeComplete();
+      } catch (error) {
+        console.error("Failed to analyze skin tone:", error);
+        Alert.alert("Error", "Failed to analyze skin tone.");
+      } finally {
+        setIsLoading(false);
+      }
     }
     setSelectedImage(uri);
-
-    
   };
 
   const handleUploadFromGallery = async () => {
@@ -150,6 +165,12 @@ const SkinToneAnalysis = () => {
           setIsLoading(false);
         }
       }
+    } else if (status === "denied") {
+      Alert.alert(
+        "Permission Required",
+        "Permission to access the media library is required to upload an image.",
+        [{ text: "OK", style: "default" }]
+      );
     }
   };
 
@@ -172,7 +193,7 @@ const SkinToneAnalysis = () => {
     }
 
     try {
-      setIsLoading(true);
+      setIsSaving(true);
       const userData = {
         id: user?.id,
         skin_tone_classification: skinToneAnalysisResult.skin_tone,
@@ -208,7 +229,8 @@ const SkinToneAnalysis = () => {
         swipeable: true,
       });
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
+      setIsAnalyzing(false);
     }
   };
 
@@ -234,11 +256,25 @@ const SkinToneAnalysis = () => {
 
             <TouchableOpacity
               onPress={handleSave}
-              className="items-center justify-center bg-[#7AB2B2] rounded-[10px] w-[45%] h-[42px] border border-solid border-[#7AB2B2]"
+              disabled={isSaving}
+              className={`items-center justify-center rounded-[10px] w-[45%] h-[42px] border border-solid ${
+                isSaving
+                  ? "bg-[#9fcccc] border-[#9fcccc]"
+                  : "bg-[#7AB2B2] border-[#7AB2B2]"
+              }`}
             >
-              <Text className="text-center text-[16px] text-white py-2">
-                Save
-              </Text>
+              {isSaving ? (
+                <Image
+                  source={{
+                    uri: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXJnaTk4OTlmOWdrcTJiNzRuanQyNnljdGF1aW40OHpkNWEzMjFvZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/ET74z48mhIlpWWLgLq/giphy.gif",
+                  }}
+                  style={{ height: 40, width: 40 }}
+                />
+              ) : (
+                <Text className="text-center text-[16px] text-white py-2">
+                  Save
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -296,7 +332,7 @@ const SkinToneAnalysis = () => {
               </View>
             </View>
           </View>
-          <View className="absolute z-10 bottom-8 right-10">
+          <View className="absolute z-10 bottom-2 right-10">
             <SkinToneImageOptions
               onCameraPress={handleOpenCamera}
               onGalleryPress={handleUploadFromGallery}

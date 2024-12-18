@@ -21,7 +21,7 @@ const SPRING_CONFIG = {
 
 const OFFSET = 65;
 
-type IconNameType = "camerao" | "upload";
+type IconNameType = "camera" | "upload";
 
 type FloatingActionButtonProps = {
   isExpanded: SharedValue<boolean>;
@@ -59,10 +59,10 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
         onPress();
         isExpanded.value = false;
       }}
-      style={[animatedStyles]}
+      style={[animatedStyles, {height:50, bottom: -40 + index * 50,}]}
     >
       <View
-        className="w-[50px] h-[50px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-0.25 bottom-6"
+        className="w-[50px] h-[50px] bg-[#7ab3b3] absolute rounded-full flex justify-center items-center flex-row right-0.25 "
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 0.5 },
@@ -101,16 +101,17 @@ const SkinToneImageOptions: React.FC<{
   });
 
   return (
-    <View>
+    <View className="h-full">
       <AnimatedPressable
         onPress={handlePress}
-        className={`${isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"}  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20`}
+        className={`${isExpanded ? "bg-[#7ab3b3]" : "bg-[#7ab3b3]"}  h-[50px] w-[50px] rounded-full flex justify-center items-center z-20 bottom-10`}
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 0.5 },
           shadowOpacity: 0.3,
           shadowRadius: 3,
           elevation: 5,
+          top:40,
           transform: [
             { translateY: -2 },
           ],
@@ -124,7 +125,7 @@ const SkinToneImageOptions: React.FC<{
       <FloatingActionButton
         isExpanded={isExpanded}
         index={1}
-        iconName="camerao"
+        iconName="camera"
         onPress={onCameraPress}
       />
       <FloatingActionButton

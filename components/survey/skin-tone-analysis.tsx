@@ -50,7 +50,7 @@ const SkinToneAnalysis = ({
   };
 
   const handleSwitchCamera = () => {
-    setCameraFacing(cameraFacing === "back" ? "front" : "front");
+    setCameraFacing(cameraFacing === "front" ? "back" : "front");
   };
 
   const handleTakePicture = async (uri: string) => {
@@ -176,30 +176,30 @@ const SkinToneAnalysis = ({
                 Let&apos;s find your perfect shades.
               </Text>
               <SkinToneAnalysisImage />
-              <View className="w-[85%]">
-                <Text className=" text-sm font-bold text-center">
-                  To Achieve Accurate Skin Tone Analysis Result:
-                </Text>
-                <View className="flex-col ml-8 w-[80%] ">
-                  <View className="mt-2 flex-row items-start">
-                    <CheckMark width={16} height={16} className="mt-1" />
-                    <Text className="text-xs ml-3">
-                      Ensure even lighting to avoid shadows or overexposure.
-                    </Text>
-                  </View>
-                  <View className="mt-2 flex-row items-start">
-                    <CheckMark width={16} height={16} className="mt-1" />
-                    <Text className="text-xs ml-3">
-                      Remove any accessories like hats or glasses.
-                    </Text>
-                  </View>
-                  <View className="mt-2 flex-row items-start">
-                    <CheckMark width={16} height={16} className="mt-1" />
-                    <Text className="text-xs ml-3">
-                      Move your face closer to the screen so it fills the frame
-                      completely.
-                    </Text>
-                  </View>
+            </View>
+            <View className="w-[85%]">
+              <Text className=" text-sm font-bold text-center">
+                To Achieve Accurate Skin Tone Analysis Result:
+              </Text>
+              <View className="flex-col ml-8 w-[80%] ">
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Ensure even lighting to avoid shadows or overexposure.
+                  </Text>
+                </View>
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Remove any accessories like hats or glasses.
+                  </Text>
+                </View>
+                <View className="mt-2 flex-row items-start">
+                  <CheckMark width={16} height={16} className="mt-1" />
+                  <Text className="text-xs ml-3">
+                    Move your face closer to the screen so it fills the frame
+                    completely.
+                  </Text>
                 </View>
               </View>
             </View>

@@ -23,22 +23,12 @@ const SkinToneCamera = ({
   const cameraRef = useRef<CameraView>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
-  const requestCameraPermissions = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === "granted");
-  };
-
   useEffect(() => {
     const requestPermissions = async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(cameraStatus.status === "granted");
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
     };
-
     requestPermissions();
-  }, []);
-
-  useEffect(() => {
-    requestCameraPermissions();
   }, []);
 
   const handleTakePicture = async () => {
@@ -72,17 +62,29 @@ const SkinToneCamera = ({
                       <Ellipse
                         cx="50%"
                         cy="45%"
-                        rx="35%"
-                        ry="25%"
+                        rx="32%"
+                        ry="22%"
                         fill="black"
+                        stroke="red"
+                        strokeWidth={4}
                       />
                     </Mask>
                   </Defs>
 
+                  <Ellipse
+                    cx="50%"
+                    cy="45%"
+                    rx="32%"
+                    ry="22%"
+                    fill="none"
+                    stroke="#7AB2B2" 
+                    strokeWidth="4" 
+                  />
+
                   <Rect
                     width="100%"
                     height="100%"
-                    fill="rgba(0, 0, 0, 0.7)"
+                    fill="rgba(0, 0, 0, 0.8)"
                     mask="url(#mask)"
                   />
                 </Svg>

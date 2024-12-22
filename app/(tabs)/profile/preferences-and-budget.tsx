@@ -25,14 +25,15 @@ const PreferencesAndBudget = () => {
   const { user, refetchMe } = useUser();
   const MIN_DEFAULT = 100;
   const MAX_DEFAULT = 5000;
-
   const [minValue, setMinValue] = useState<number>(
     user?.budget_min || MIN_DEFAULT
   );
   const [maxValue, setMaxValue] = useState<number>(
     user?.budget_max || MAX_DEFAULT
   );
-  const [styles, setStyles] = useState<string[]>(user?.style_preferences || []);
+  const [styles, setStyles] = useState<string[]>(
+    user?.preferred_style as string[]
+  );
   const [favoriteColors, setFavoriteColors] = useState<string[]>(
     user?.favorite_colors || []
   );

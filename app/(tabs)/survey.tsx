@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
 import {
@@ -42,7 +41,7 @@ const Survey = () => {
   const [bodyType, setBodyType] = useState("NeatHourGlass");
   const [preferences, setPreferences] = useState<Preferences>({
     preferred_style: [],
-    favourite_colors: [],
+    favorite_colors: [],
     preferred_brands: [],
     budget_range: { min: 0, max: 0 },
   });
@@ -70,8 +69,11 @@ const Survey = () => {
       setIsAnalyzing={setIsAnalyzing}
       setSkinToneAnalysisResult={setSkinToneAnalysisResult}
     />,
-    <BodyType setBodyType={setBodyType} />, // Pass setBodyType to BodyType
-    <PreferencesAndBudget setPreferences={setPreferences} />,
+    <BodyType setBodyType={setBodyType} />,
+    <PreferencesAndBudget
+      preferences={preferences}
+      setPreferences={setPreferences}
+    />,
     <PersonalInformation setPersonalInfo={setPersonalInfo} />,
   ];
 
@@ -80,7 +82,7 @@ const Survey = () => {
     setBodyType("NeatHourGlass");
     setPreferences({
       preferred_style: [],
-      favourite_colors: [],
+      favorite_colors: [],
       preferred_brands: [],
       budget_range: { min: 0, max: 0 },
     });
@@ -112,7 +114,7 @@ const Survey = () => {
         position: "top",
         swipeable: true,
       });
-      return; // Prevent submission if fields are incomplete
+      return;
     }
 
     const surveyData: UpdateUserData = {
@@ -128,7 +130,7 @@ const Survey = () => {
       skin_tone_complements: skinToneAnalysisResult?.complements,
       body_type: bodyType,
       preferred_style: preferences.preferred_style,
-      favourite_colors: preferences.favourite_colors,
+      favorite_colors: preferences.favorite_colors,
       preferred_brands: preferences.preferred_brands,
       budget_min: preferences.budget_range?.min,
       budget_max: preferences.budget_range?.max,

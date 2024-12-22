@@ -1,17 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { COLOR_LIST } from "@/components/constants/color-list";
 
-const FavColorSelection = () => {
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
+const FavColorSelection = ({ selectedColors, onColorsChange }: any) => {
+  const [showAll, setShowAll] = useState(false);
 
   const toggleColorSelection = (colorName: string) => {
-    if (selectedColors.includes(colorName)) {
-      setSelectedColors(selectedColors.filter((color) => color !== colorName));
-    } else {
-      setSelectedColors([...selectedColors, colorName]);
-    }
+    const updatedColors = selectedColors.includes(colorName)
+      ? selectedColors.filter((color: string) => color !== colorName)
+      : [...selectedColors, colorName];
+    onColorsChange(updatedColors);
   };
 
   const visibleColors = showAll ? COLOR_LIST : COLOR_LIST.slice(0, 8);
@@ -23,7 +22,7 @@ const FavColorSelection = () => {
           <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
               className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                selectedColors.includes(color.name)
+                selectedColors?.includes(color.name)
                   ? "bg-[#7AB2B2] border-[#7AB2B2]"
                   : "bg-white border-[#7AB2B2]"
               }`}
@@ -35,7 +34,7 @@ const FavColorSelection = () => {
               />
               <Text
                 className={`text-base ${
-                  selectedColors.includes(color.name)
+                  selectedColors?.includes(color.name)
                     ? "text-white"
                     : "text-[#7AB2B2]"
                 }`}
@@ -43,14 +42,14 @@ const FavColorSelection = () => {
                 {color.name}
               </Text>
             </TouchableOpacity>
-            {!showAll && COLOR_LIST.length > 8 && index === 7 && (
+            {!showAll && COLOR_LIST.length > 8 && (
               <TouchableOpacity onPress={() => setShowAll(true)}>
                 <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                   Show more...
                 </Text>
               </TouchableOpacity>
             )}
-            {showAll && index === COLOR_LIST.length - 1 && (
+            {showAll && (
               <TouchableOpacity onPress={() => setShowAll(false)}>
                 <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
                   Show less

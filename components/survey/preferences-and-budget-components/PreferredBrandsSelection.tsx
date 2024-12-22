@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
@@ -9,16 +10,14 @@ const brandsList = [
   { name: "Bench", logo: BenchLogo },
 ];
 
-const PreferredBrandSelection = () => {
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
+const PreferredBrandSelection = ({ selectedBrands, onBrandsChange }: any) => {
+  const [showAll, setShowAll] = useState(false);
 
   const toggleBrandSelection = (brandName: string) => {
-    if (selectedBrands.includes(brandName)) {
-      setSelectedBrands(selectedBrands.filter((brand) => brand !== brandName));
-    } else {
-      setSelectedBrands([...selectedBrands, brandName]);
-    }
+    const updatedBrands = selectedBrands?.includes(brandName)
+      ? selectedBrands.filter((brand: string) => brand !== brandName)
+      : [...selectedBrands, brandName];
+    onBrandsChange(updatedBrands);
   };
 
   const visibleBrands = showAll ? brandsList : brandsList.slice(0, 4);
@@ -26,15 +25,15 @@ const PreferredBrandSelection = () => {
   return (
     <View>
       <View className="flex-wrap flex-row">
-        {visibleBrands.map((brandName, index) => (
+        {visibleBrands.map((brand, index) => (
           <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
               className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                selectedBrands.includes(brandName.name)
+                selectedBrands?.includes(brand.name)
                   ? "bg-[#7AB2B2] border-[#7AB2B2]"
                   : "bg-white border-[#7AB2B2]"
               }`}
-              onPress={() => toggleBrandSelection(brandName.name)}
+              onPress={() => toggleBrandSelection(brand.name)}
             >
               <View
                 style={{
@@ -45,35 +44,33 @@ const PreferredBrandSelection = () => {
                   marginRight: 8,
                 }}
               >
-                <brandName.logo width="100%" height="100%" />
+                <brand.logo width="100%" height="100%" />
               </View>
               <Text
                 className={`text-base ${
-                  selectedBrands.includes(brandName.name)
+                  selectedBrands?.includes(brand.name)
                     ? "text-white"
                     : "text-[#7AB2B2]"
                 }`}
               >
-                {brandName.name}
+                {brand.name}
               </Text>
             </TouchableOpacity>
-            {!showAll && brandsList.length > 4 && index === 3 && (
-              <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
-                  Show more...
-                </Text>
-              </TouchableOpacity>
-            )}
-            {showAll && index === brandsList.length - 1 && (
-              <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
-                  Show less
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
         ))}
       </View>
+      {!showAll && brandsList.length > 4 && (
+        <TouchableOpacity onPress={() => setShowAll(true)}>
+          <Text className="text-[#7AB2B2] text-base ml-4 mt-4">
+            Show more...
+          </Text>
+        </TouchableOpacity>
+      )}
+      {showAll && (
+        <TouchableOpacity onPress={() => setShowAll(false)}>
+          <Text className="text-[#7AB2B2] text-base ml-4 mt-4">Show less</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

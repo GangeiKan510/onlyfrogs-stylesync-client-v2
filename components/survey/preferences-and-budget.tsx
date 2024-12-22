@@ -8,20 +8,22 @@ import PreferredBrandsSelection from "./preferences-and-budget-components/Prefer
 import BudgetRange from "./preferences-and-budget-components/BudgetRange";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const PreferencesAndBudget = ({ setPreferences }: any) => {
-  const [styles, setStyles] = useState<string[]>(["casual", "modern"]);
-  const [colors, setColors] = useState<string[]>(["white", "cream"]);
-  const [brands, setBrands] = useState<string[]>(["uniqlo"]);
-  const [budget, setBudget] = useState({ min: 400, max: 1000 });
+const PreferencesAndBudget = ({ preferences, setPreferences }: any) => {
+  const handleStylesChange = (styles: string[]) => {
+    setPreferences((prev: any) => ({ ...prev, preferred_style: styles }));
+  };
 
-  useEffect(() => {
-    setPreferences({
-      preferred_style: styles,
-      favourite_colors: colors,
-      preferred_brands: brands,
-      budget_range: budget,
-    });
-  }, [styles, colors, brands, budget]);
+  const handleColorsChange = (colors: string[]) => {
+    setPreferences((prev: any) => ({ ...prev, favorite_colors: colors }));
+  };
+
+  const handleBrandsChange = (brands: string[]) => {
+    setPreferences((prev: any) => ({ ...prev, preferred_brands: brands }));
+  };
+
+  const handleBudgetChange = (budget: { min: number; max: number }) => {
+    setPreferences((prev: any) => ({ ...prev, budget_range: budget }));
+  };
 
   return (
     <>
@@ -33,21 +35,33 @@ const PreferencesAndBudget = ({ setPreferences }: any) => {
       <ScrollView>
         <View className="flex justify-start items-start mx-5">
           <Text className="font-bold mb-1">Choose your preferred styles</Text>
-          <StyleSelection />
+          <StyleSelection
+            selectedStyles={preferences?.preferred_style}
+            onStylesChange={handleStylesChange}
+          />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
           <Text className="font-bold mb-1">Choose your favorite colors</Text>
-          <FavColorSelection />
+          <FavColorSelection
+            selectedColors={preferences?.favorite_colors}
+            onColorsChange={handleColorsChange}
+          />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
           <Text className="font-bold mb-1">Choose your preferred brands</Text>
-          <PreferredBrandsSelection />
+          <PreferredBrandsSelection
+            selectedBrands={preferences?.preferred_brands}
+            onBrandsChange={handleBrandsChange}
+          />
         </View>
         <View className="flex justify-start items-start mx-5 mt-8">
           <Text className="font-bold mb-1">
             Choose your preferred budget range
           </Text>
-          <BudgetRange setBudget={setBudget} />
+          <BudgetRange
+            budgetRange={preferences?.budget_range}
+            onBudgetChange={handleBudgetChange}
+          />
         </View>
       </ScrollView>
     </>

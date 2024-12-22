@@ -35,8 +35,10 @@ const TopGreeting = () => {
     if (!clicked) {
       setClicked(true);
       router.push("/(tabs)/profile/subscription");
+      setTimeout(() => setClicked(false), 300);
     }
   };
+  
 
   const handleLogout = async () => {
     setModalVisible(false);

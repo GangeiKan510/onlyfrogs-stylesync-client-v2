@@ -39,8 +39,10 @@ const ProfilePage = () => {
     if (!clicked) {
       setClicked(true);
       router.push(route as Href<string>);
+      setTimeout(() => setClicked(false), 300);
     }
   };
+  
 
   const handleLogout = async () => {
     setModalVisible(false);

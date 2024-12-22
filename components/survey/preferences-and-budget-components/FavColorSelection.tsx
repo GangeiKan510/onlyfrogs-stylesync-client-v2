@@ -42,22 +42,20 @@ const FavColorSelection = ({ selectedColors, onColorsChange }: any) => {
                 {color.name}
               </Text>
             </TouchableOpacity>
-            {!showAll && COLOR_LIST.length > 8 && (
-              <TouchableOpacity onPress={() => setShowAll(true)}>
-                <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
-                  Show more...
-                </Text>
-              </TouchableOpacity>
-            )}
-            {showAll && (
-              <TouchableOpacity onPress={() => setShowAll(false)}>
-                <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
-                  Show less
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
         ))}
+        {!showAll && COLOR_LIST.length > 8 && (
+          <TouchableOpacity onPress={() => setShowAll(true)}>
+            <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">
+              Show more...
+            </Text>
+          </TouchableOpacity>
+        )}
+        {showAll && (
+          <TouchableOpacity onPress={() => setShowAll(false)}>
+            <Text className="text-[#7AB2B2] text-sm ml-4 mt-4">Show less</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

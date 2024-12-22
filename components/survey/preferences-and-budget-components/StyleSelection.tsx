@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { STYLE_LIST } from "../../constants/style-list";
 
-const StyleSelection = () => {
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
+const StyleSelection = ({ selectedStyles, onStylesChange }: any) => {
+  const [showAll, setShowAll] = useState(false);
 
   const toggleStyleSelection = (styleName: string) => {
-    if (selectedStyles.includes(styleName)) {
-      setSelectedStyles(selectedStyles.filter((style) => style !== styleName));
-    } else {
-      setSelectedStyles([...selectedStyles, styleName]);
-    }
+    const updatedStyles = selectedStyles?.includes(styleName)
+      ? selectedStyles?.filter((style: string) => style !== styleName)
+      : [...selectedStyles, styleName];
+    onStylesChange(updatedStyles);
   };
 
   const visibleStyles = showAll ? STYLE_LIST : STYLE_LIST.slice(0, 8);
@@ -23,7 +23,7 @@ const StyleSelection = () => {
           <View key={index} className="flex-row items-center mb-1">
             <TouchableOpacity
               className={`m-1 px-3 py-1 border-[1px] rounded-full flex-row items-center ${
-                selectedStyles.includes(style.name)
+                selectedStyles?.includes(style.name)
                   ? "bg-[#7AB2B2] border-[#7AB2B2]"
                   : "bg-white border-[#7AB2B2]"
               }`}
@@ -31,7 +31,7 @@ const StyleSelection = () => {
             >
               <Text
                 className={`text-base ${
-                  selectedStyles.includes(style.name)
+                  selectedStyles?.includes(style.name)
                     ? "text-white"
                     : "text-[#7AB2B2]"
                 }`}
@@ -59,7 +59,7 @@ const StyleSelection = () => {
 
       {selectedStyles.length > 0 && (
         <View className="">
-          {selectedStyles.map((styleName) => {
+          {selectedStyles.map((styleName: any) => {
             const style = STYLE_LIST.find((s) => s.name === styleName);
             return (
               style && (

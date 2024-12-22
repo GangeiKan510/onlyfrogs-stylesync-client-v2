@@ -55,7 +55,7 @@ type UserDetails = {
   birth_date: string | null;
   budget_min: number;
   budget_max: number;
-  preferred_styles: string | null;
+  preferred_style: string[];
   preferred_brands: string | null;
   email: string;
   favorite_color: string | null;

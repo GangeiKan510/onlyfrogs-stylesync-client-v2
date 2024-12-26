@@ -430,14 +430,14 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
               <View className="flex-row justify-between items-center mt-4 space-x-4">
                 <TouchableOpacity
                   onPress={() => setShowModal(false)}
-                  className="h-[42px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
+                  className="h-[35px] flex-1 border border-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                   disabled={isDeleting}
                 >
                   <Text className="text-[#7AB2B2] text-[16px]">Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleDelete}
-                  className="h-[42px] flex-1 border border-red bg-red rounded-lg mx-2 justify-center items-center"
+                  className="h-[35px] flex-1 border border-[#7ab3b3] bg-[#7ab3b3] rounded-lg mx-2 justify-center items-center"
                   disabled={isDeleting}
                 >
                   {isDeleting ? (

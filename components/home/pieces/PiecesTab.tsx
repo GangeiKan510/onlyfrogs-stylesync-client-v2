@@ -76,7 +76,6 @@ const PiecesTab = () => {
     return false;
   };
 
-
   const filterOptions = () => {
     const filterOptions = {
       season: new Set<string>(),
@@ -88,7 +87,7 @@ const PiecesTab = () => {
       worn: new Set<string>(),
     };
 
-    user?.clothes.forEach((item) => {
+    (user?.clothes || []).forEach((item) => {
       item.season?.forEach((season) => filterOptions.season.add(season));
       item.occasion?.forEach((occasion) =>
         filterOptions.occasion.add(occasion)
@@ -134,9 +133,10 @@ const PiecesTab = () => {
     (optionArray) => optionArray.length > 0
   );
 
+  const allClothes = user?.closets?.flatMap((closet) => closet.clothes) ?? [];
+
   const filteredClothes =
-    user?.clothes.filter((item) => {
-      
+    allClothes.filter((item) => {
       const matchesSearch =
         search.length === 0 ||
         [
@@ -148,16 +148,17 @@ const PiecesTab = () => {
           item.category?.name,
           item.pattern,
           item.material,
-        ]
-        .some((field) => searchFieldMatch(field));
+        ].some((field) => searchFieldMatch(field));
 
       // Season
       const itemSeason = Array.isArray(item.season)
-        ? item.season.map((season) => (season as string).toLowerCase())
+        ? item.season.map((season: string) => (season as string).toLowerCase())
         : [];
       // Occasion
       const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((occasion) => (occasion as string).toLowerCase())
+        ? item.occasion.map((occasion: string) =>
+            (occasion as string).toLowerCase()
+          )
         : [];
       // Category
       const itemCategory = item.category?.name?.toLowerCase() ?? "";
@@ -194,7 +195,7 @@ const PiecesTab = () => {
             itemWorn.toLowerCase().includes(filter.toLowerCase())
         );
 
-      return  matchesSearch && matchesFilters;
+      return matchesSearch && matchesFilters;
     }) ?? [];
 
   return (
@@ -439,9 +440,7 @@ const PiecesTab = () => {
                   </View>
                 </View>
 
-                <Text className="text-[#484848] text-[14px] ">
-                  Wear Count
-                </Text>
+                <Text className="text-[#484848] text-[14px] ">Wear Count</Text>
                 <View className="flex-row flex-wrap">
                   <View className="flex-row flex-wrap mb-6">
                     {itemFilterOptions.worn.map((itemWorn) => {

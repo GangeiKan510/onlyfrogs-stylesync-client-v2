@@ -47,12 +47,12 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
   console.log(user);
 
   useEffect(() => {
-    if (user?.body_type) {
-      setSelectedBodyType(user.body_type);
-      setInitialBodyType(user.body_type);
+    if (user) {
+      setSelectedBodyType(user.body_type || "");
+      setInitialBodyType(user.body_type || "");
       setLoading(false);
     }
-  }, [user?.body_type]);
+  }, [user]);
 
   useEffect(() => {
     if (setBodyType) {
@@ -96,7 +96,8 @@ const BodyType = ({ setBodyType }: BodyTypeProps) => {
     );
   }
 
-  const isSaveDisabled = selectedBodyType === initialBodyType || isSaving;
+  const isSaveDisabled =
+    selectedBodyType === initialBodyType || isSaving || !selectedBodyType;
 
   return (
     <SafeAreaView className="flex-1 bg-white">

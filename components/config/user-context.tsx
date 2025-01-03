@@ -19,6 +19,7 @@ type Closet = {
   description: string;
   serial: number;
   user_id: string;
+  clothes: Clothes[];
 };
 
 type Clothes = {
@@ -51,36 +52,52 @@ type PromptSettings = {
   updatedAt: string;
 };
 
+type ChatSession = {
+  id: string;
+  created_at: string;
+  user_id: string;
+  messages: { id: string; role: string; content: string; created_at: string }[];
+};
+
+type Token = {
+  id: string;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+};
+
 type UserDetails = {
   birth_date: string | null;
-  budget_min: number;
-  budget_max: number;
-  preferred_style: string[];
-  preferred_brands: string | null;
+  body_type: string | null;
+  budget_min: number | null;
+  budget_max: number | null;
+  chat_session: ChatSession | null;
+  closets: Closet[];
+  clothes: Clothes[];
   email: string;
-  favorite_color: string | null;
+  favorite_colors: string[];
   first_name: string;
+  fits: FitsType[];
   gender: "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null;
   height: number | null;
   id: string;
   last_name: string;
+  notifications: Notification[];
+  preferred_brands: string[];
+  preferred_styles: string[];
+  profile_url: string | null;
+  prompt_settings: PromptSettings;
+  role: string | null;
+  season: string | null;
   serial: number;
   skin_tone_classification: string | null;
-  sub_season: string | null;
-  skin_tone_complements?: string[];
+  skin_tone_complements: string[];
   style_preferences: string[];
-  tokens: number;
-  closets: Closet[];
-  clothes: Clothes[];
-  weight: string;
-  body_type: string;
-  profile_url: string;
-  promptSettings: PromptSettings;
-  favorite_colors: string[];
-  notifications: Notification[];
-  fits: FitsType[];
+  sub_season: string | null;
+  tokens: Token[];
+  weight: string | null;
 };
-
 interface UserContextProps {
   user: UserDetails | null;
   updateUser: (userData: UserDetails | null) => void;
@@ -103,17 +120,7 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
       try {
         const userInfo = await getMe({ email });
         if (userInfo) {
-          const {
-            consider_skin_tone = false,
-            prioritize_preferences = false,
-            ...rest
-          } = userInfo;
-
-          updateUser({
-            ...rest,
-            consider_skin_tone,
-            prioritize_preferences,
-          });
+          updateUser(userInfo);
           return;
         }
       } catch (error) {

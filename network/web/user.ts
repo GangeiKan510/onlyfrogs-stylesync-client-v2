@@ -21,6 +21,7 @@ export const getMe = async ({ email }: { email: string }) => {
       throw new Error(`Error fetching user: ${response.statusText}`);
     }
     const me = await response.json();
+    console.log("GET ME", me);
     return me;
   } catch (error) {
     console.error("Failed to get user", error);

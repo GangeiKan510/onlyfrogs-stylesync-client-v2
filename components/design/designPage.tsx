@@ -22,11 +22,12 @@ import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
 import CloseIcon from "../../assets/icons/close-icon.svg";
 import Save from "../../assets/icons/save.svg";
-import { createFit } from "@/network/web/fits";
+import { createFit, completeOutfit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 import BackIcon from "@/assets/icons/return-icon.svg";
 import ResetIcon from "@/assets/icons/reset-icon.svg";
+import CompleteFitIcon from "@/assets/icons/complete-fit-icon.svg";
 
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
@@ -57,6 +58,7 @@ const DesignPage = () => {
     user?.closets?.find((closet) => closet.id === selectedClosetId)?.clothes ??
     [];
   const [isSavingFit, setIsSavingFit] = useState(false);
+  const [isCompletingOutfit, setIsCompletingOutfit] = useState(false);
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
@@ -295,6 +297,81 @@ const DesignPage = () => {
       onPanResponderRelease: () => setActiveGesture(null),
     });
 
+  const completeOutfitHandler = async () => {
+    if (selectedPiecesIds.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please select some pieces to complete the outfit.",
+        position: "top",
+      });
+      return;
+    }
+
+    setIsCompletingOutfit(true);
+    try {
+      const response = await completeOutfit(
+        user?.id as string,
+        selectedPiecesIds
+      );
+      console.log(response);
+
+      const suggestedOutfitIds = response?.suggestedOutfit || [];
+
+      if (suggestedOutfitIds.length === 0) {
+        Toast.show({
+          type: "info",
+          text1: "No Suggestions",
+          text2: "Couldn't find enough clothes to complete the outfit.",
+          position: "top",
+        });
+        return;
+      }
+
+      const newIds = suggestedOutfitIds.filter(
+        (id: string) => !selectedPiecesIds.includes(id)
+      );
+
+      const newClothes = clothes.filter((item) => newIds.includes(item.id));
+
+      const updatedImages = clothes
+        .filter((item) => selectedPiecesIds.includes(item.id))
+        .map((item) => item.image_url);
+
+      setSelectedImages(updatedImages);
+      setSelectedPiecesIds((current) => [...current, ...newIds]);
+
+      newClothes.forEach((item) => {
+        setDragPositions((current) => ({
+          ...current,
+          [item.image_url]: { x: -5, y: -10 },
+        }));
+
+        setImageSizes((current) => ({
+          ...current,
+          [item.image_url]: { width: 96, height: 96 },
+        }));
+      });
+
+      Toast.show({
+        type: "success",
+        text1: "Outfit Completed",
+        text2: "Suggested pieces have been added.",
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing outfit:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to complete the outfit.",
+        position: "top",
+      });
+    } finally {
+      setIsCompletingOutfit(false);
+    }
+  };
+
   return (
     <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
@@ -391,12 +468,23 @@ const DesignPage = () => {
       </View>
 
       {selectedImages.length > 0 && (
-        <View className=" w-full flex-col items-end py-3 px-5 bottom-[50%]">
-          <TouchableOpacity onPress={snapshot} className=" mb-5">
-            <Save />
+        <View className="w-full flex-row justify-end items-center py-3 px-5 bottom-[90%]">
+          <TouchableOpacity
+            onPress={completeOutfitHandler}
+            className="mx-1"
+            disabled={isCompletingOutfit}
+          >
+            {isCompletingOutfit ? (
+              <Spinner type="secondary" />
+            ) : (
+              <CompleteFitIcon width={24} height={24} />
+            )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={clearSelection} className="">
+          <TouchableOpacity onPress={clearSelection} className="mx-2">
             <ResetIcon />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={snapshot} className="mx-1 mr-3">
+            <Save />
           </TouchableOpacity>
         </View>
       )}

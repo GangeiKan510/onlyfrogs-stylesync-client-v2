@@ -35,9 +35,6 @@ const DesignPage = () => {
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
 
-  console.log("Clothes", user?.closets[0].clothes);
-  console.log("Closets", user?.closets);
-
   const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
   const viewToSnapshotRef = useRef<View | null>(null);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -60,28 +61,52 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
-    if (clothingId && user?.clothes) {
-      const matchingClothing = user.clothes.find(
-        (item) => item.id === clothingId
-      );
+    if (clothingId && user?.closets) {
+      let matchingClothing = null;
+
+      setItemName("");
+      setBrandName("");
+      setSelectedSeasons([]);
+      setSelectedOccasions([]);
+      setSelectedColor(null);
+      setSelectedCategory({ name: null, type: null });
+      setSelectedMaterial(null);
+      setSelectedPattern(null);
+
+      for (const closet of user.closets) {
+        matchingClothing = closet.clothes.find(
+          (item) => item.id === clothingId
+        );
+        if (matchingClothing) break;
+      }
 
       if (matchingClothing) {
         setItemName(matchingClothing.name || "");
         setBrandName(matchingClothing.brand || "");
-        setSelectedSeasons(matchingClothing.season || []);
-        setSelectedOccasions(matchingClothing.occasion || []);
-        setSelectedColor((matchingClothing.color as string) || null);
-        setSelectedCategory({
-          name: matchingClothing.category?.name || null,
-          type: matchingClothing.category?.type || null,
-        });
+
+        setSelectedSeasons(
+          matchingClothing.seasons?.map((season) => season.season) || []
+        );
+        setSelectedOccasions(
+          matchingClothing.occasions?.map((occasion) => occasion.occasion) || []
+        );
+
+        setSelectedColor(matchingClothing.color as any);
+
+        if (matchingClothing.categories?.length > 0) {
+          const category = matchingClothing.categories[0];
+          setSelectedCategory({
+            name: category.category,
+            type: category.type,
+          });
+        }
+
         setSelectedMaterial(matchingClothing.material || null);
         setSelectedPattern(matchingClothing.pattern || null);
       }
     }
-  }, [clothingId, user?.clothes]);
+  }, [clothingId, user?.closets]);
 
-  // Helper function to check if all required fields are filled
   const isFormValid = () => {
     if (selectedCategory.name === "Jewelry" && selectedCategory.type) {
       return true;
@@ -145,7 +170,6 @@ const ClothingDetailsModal: React.FC<ClothingDetailsModalProps> = ({
     setIsAnalyzing(true);
     try {
       const analysisResult = await analyzeClothing(clothingImage);
-      console.log("AI Analysis Result:", analysisResult);
 
       if (analysisResult?.tags) {
         const { category, material, occasion, pattern, season, color } =

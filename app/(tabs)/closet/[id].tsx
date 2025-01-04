@@ -26,7 +26,6 @@ import EditIcon from "../../../assets/icons/edit-icon.svg";
 import ConfirmationModal from "@/components/dialogs/ConfirmationModal";
 import { routes } from "@/utils/routes";
 import EditClosetModal from "@/components/dialogs/EditClosetModal";
-import ImagePickerCrop from 'react-native-image-crop-picker';
 
 const Page = () => {
   const { user, refetchMe } = useUser();
@@ -67,7 +66,7 @@ const Page = () => {
   };
 
   const handleClothingClick = (id: string, imageUrl: string) => {
-    const selectedClothing = filteredClothes.find((item) => item.id === id);
+    const selectedClothing = closetClothes.find((item) => item.id === id);
 
     const wornCount = selectedClothing?.worn?.[0]?.count ?? 0;
 
@@ -115,8 +114,6 @@ const Page = () => {
             setLoading(false);
             return;
           }
-
-          console.log("Clothing Upload", formData);
 
           await uploadClothing(formData);
           Toast.show({
@@ -246,8 +243,7 @@ const Page = () => {
 
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
 
-  const filteredClothes =
-    user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
+  const closetClothes = currentCloset?.clothes || [];
 
   const actions = [
     {
@@ -266,8 +262,6 @@ const Page = () => {
       label: "",
     },
   ];
-
-  console.log(currentCloset);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -300,7 +294,7 @@ const Page = () => {
           </View>
           <Text className="text-base">{currentCloset?.description || ""}</Text>
         </View>
-        {filteredClothes.length === 0 ? (
+        {closetClothes.length === 0 ? (
           <View className="items-center">
             <Text className="text-[#B7B7B7] mt-10">
               This closet has no clothes yet.
@@ -308,13 +302,14 @@ const Page = () => {
           </View>
         ) : (
           <FlatList
-            data={filteredClothes}
+            data={closetClothes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <ClothingCard
                 clothingId={item.id}
                 uri={item.image_url}
                 onPress={() => handleClothingClick(item.id, item.image_url)}
+                closetClothes={closetClothes}
               />
             )}
             numColumns={3}

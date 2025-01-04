@@ -49,6 +49,7 @@ export const uploadWithImageLink = async (
 
 export const updateClothing = async (clothingData: UpdateClothingData) => {
   try {
+    console.log("CLOTHING DATA", clothingData);
     const response = await postWithFirebaseJwt(
       "/web/clothes/update-clothing",
       clothingData

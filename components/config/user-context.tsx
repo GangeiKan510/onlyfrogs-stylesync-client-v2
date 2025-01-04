@@ -13,7 +13,7 @@ import { getMe } from "@/network/web/user";
 import { Notification } from "@/app/(tabs)/notifications";
 import { FitsType } from "@/utils/types/FitType";
 
-type Closet = {
+export type Closet = {
   id: string;
   name: string;
   description: string;
@@ -22,28 +22,25 @@ type Closet = {
   clothes: Clothes[];
 };
 
-type Clothes = {
-  pattern: null;
-  material: null;
-  occasion: never[];
-  season: never[];
-  color: string | string[];
-  brand: string | string[];
-  name: string;
+export type Clothes = {
   id: string;
   serial: number;
   image_url: string;
-  user_id: string;
+  name: string;
+  brand: string | string[] | null;
+  color: string | string[] | null;
+  material: string | null;
+  pattern: string | null;
   closet_id: string;
-  category: {
-    name: string | null;
-    type: string | null;
-  };
+  user_id: string;
   tags: string[];
-  worn: any;
+  worn: { count: number; last_worn: string | null }[];
+  seasons: { id: string; season: string }[];
+  occasions: { id: string; occasion: string }[];
+  categories: { id: string; category: string; type: string }[];
 };
 
-type PromptSettings = {
+export type PromptSettings = {
   id: string;
   user_id: string;
   consider_skin_tone: boolean;
@@ -52,14 +49,14 @@ type PromptSettings = {
   updatedAt: string;
 };
 
-type ChatSession = {
+export type ChatSession = {
   id: string;
   created_at: string;
   user_id: string;
   messages: { id: string; role: string; content: string; created_at: string }[];
 };
 
-type Token = {
+export type Token = {
   id: string;
   amount: number;
   created_at: string;
@@ -67,7 +64,7 @@ type Token = {
   user_id: string;
 };
 
-type UserDetails = {
+export type UserDetails = {
   birth_date: string | null;
   body_type: string | null;
   budget_min: number | null;

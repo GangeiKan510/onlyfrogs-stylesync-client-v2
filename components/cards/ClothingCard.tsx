@@ -4,16 +4,22 @@ import DesignIcon from "../../assets/icons/tabs/design.svg";
 import { updateWornDate } from "@/network/web/clothes";
 import Toast from "react-native-toast-message";
 import Spinner from "../common/Spinner";
-import { useUser } from "../config/user-context";
+import { Clothes, useUser } from "../config/user-context";
 
 interface CardProps {
   uri: string;
   onPress: () => void;
   clothingId: string;
+  closetClothes: Array<Clothes>;
 }
 
-const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
-  const { user, refetchMe } = useUser();
+const ClothingCard: React.FC<CardProps> = ({
+  uri,
+  onPress,
+  clothingId,
+  closetClothes,
+}) => {
+  const { refetchMe } = useUser();
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -22,7 +28,6 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
   const isDateToday = (date: Date | string) => {
     const today = new Date();
     const wornDate = new Date(date);
-
     return (
       wornDate.getDate() === today.getDate() &&
       wornDate.getMonth() === today.getMonth() &&
@@ -31,7 +36,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
   };
 
   useEffect(() => {
-    const clothingItem = user?.clothes.find((item) => item.id === clothingId);
+    const clothingItem = closetClothes.find((item) => item.id === clothingId);
     const lastWorn = clothingItem?.worn?.[0]?.last_worn;
 
     if (lastWorn && isDateToday(lastWorn)) {
@@ -41,7 +46,7 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
       setIsDisabled(false);
       setButtonLabel("Wear");
     }
-  }, [user, clothingId]);
+  }, [closetClothes, clothingId]);
 
   const handleWornClick = async () => {
     try {
@@ -53,8 +58,8 @@ const ClothingCard: React.FC<CardProps> = ({ uri, onPress, clothingId }) => {
         text2: "The worn date has been updated successfully.",
       });
       refetchMe();
-      setButtonLabel("Worn"); // Update label after successful click
-      setIsDisabled(true); // Disable button to prevent multiple clicks
+      setButtonLabel("Worn");
+      setIsDisabled(true);
     } catch (error) {
       Toast.show({
         type: "error",

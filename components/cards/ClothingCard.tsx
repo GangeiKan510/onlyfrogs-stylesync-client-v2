@@ -17,7 +17,7 @@ const ClothingCard: React.FC<CardProps> = ({
   uri,
   onPress,
   clothingId,
-  closetClothes,
+  closetClothes = [],
 }) => {
   const { refetchMe } = useUser();
   const [loading, setLoading] = useState(true);

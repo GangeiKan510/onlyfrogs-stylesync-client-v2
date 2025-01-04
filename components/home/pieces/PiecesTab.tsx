@@ -486,7 +486,6 @@ const PiecesTab = () => {
       <View className="h-[100%]">
         <FlatList
           className="mt-5 z-20 flex-grow"
-          scrollEnabled={true}
           data={filteredClothes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
@@ -497,14 +496,15 @@ const PiecesTab = () => {
                 "https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square-300x300.jpg"
               }
               onPress={() => handleItemPress(item.id, item.image_url)}
+              closetClothes={allClothes}
             />
           )}
           numColumns={3}
-          // contentContainerStyle={{
-          //   paddingBottom: 196,
-          // }}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<View style={{ height: 1 }} />}
+          ListEmptyComponent={
+            <Text className="text-center mt-5">No items found.</Text>
+          }
         />
       </View>
 

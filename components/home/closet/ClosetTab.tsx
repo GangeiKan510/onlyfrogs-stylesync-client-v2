@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   View,
@@ -74,15 +75,18 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
     }
   };
 
+  console.log("Closets", user?.closets);
+  console.log("Clothing URL", user?.closets[0].clothes[0].image_url);
   return (
     <View className="flex-1">
       <View className="flex-row flex-wrap justify-start">
-        {closetCards?.map((closet) => {
-          const clothingInCloset = (user?.clothes || []).filter(
-            (clothing) => clothing.closet_id === closet.id
-          );
+        {closetCards?.map((closet: any) => {
+          const clothingInCloset = closet.clothes || [];
+
+          console.log("Clothing in Closet", clothingInCloset);
+
           const imageUri =
-            clothingInCloset && clothingInCloset.length > 0
+            clothingInCloset.length > 0
               ? clothingInCloset[0].image_url
               : "https://lh3.googleusercontent.com/pw/AP1GczMpwiLxbGQkZGPAbApzNsZPrj7I8aqlXXj1gVqKU4UindflHV1YdgnaH3yWBP35nufvm1dZNmYcoCBg1XrBed4zrYPt8VuOgpWjZk0vZfW56vuptA=w2400";
 
@@ -95,6 +99,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
             />
           );
         })}
+
         <AddClosetCard onPress={handleModalVisibility} />
       </View>
 

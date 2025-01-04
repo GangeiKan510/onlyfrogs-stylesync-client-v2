@@ -64,3 +64,23 @@ export const deleteFit = async (fitId: string) => {
     throw error;
   }
 };
+
+export const completeOutfit = async (userId: string, clothingIds: string[]) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/fits/complete-outfit", {
+      userId,
+      clothingIds,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error completing outfit: ${errorText}`);
+    }
+
+    const suggestedOutfit = await response.json();
+    return suggestedOutfit;
+  } catch (error) {
+    console.error("Failed to complete outfit", error);
+    throw error;
+  }
+};

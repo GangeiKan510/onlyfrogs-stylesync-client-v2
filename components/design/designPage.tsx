@@ -177,8 +177,17 @@ const DesignPage = () => {
   );
 
   const handleItemPress = (clothingId: string, image_url: string) => {
-    setSelectedImages((current) => {
-      const isSelected = current.includes(image_url);
+    setSelectedPiecesIds((currentIds) => {
+      const isSelected = currentIds.includes(clothingId);
+      const updatedIds = isSelected
+        ? currentIds.filter((id) => id !== clothingId)
+        : [...currentIds, clothingId];
+
+      const updatedImages = clothes
+        .filter((item) => updatedIds.includes(item.id))
+        .map((item) => item.image_url);
+
+      setSelectedImages(updatedImages);
 
       if (isSelected) {
         setImageSizes((prevSizes) => {
@@ -190,27 +199,15 @@ const DesignPage = () => {
           const { [image_url]: _, ...remainingPositions } = prevPositions;
           return remainingPositions;
         });
+      } else {
+        setDragPositions((current) => ({
+          ...current,
+          [image_url]: { x: -5, y: -10 },
+        }));
       }
 
-      return isSelected
-        ? current.filter((url) => url !== image_url)
-        : [...current, image_url];
+      return updatedIds;
     });
-
-    setSelectedPiecesIds((current) => {
-      const isSelected = current.includes(clothingId);
-
-      return isSelected
-        ? current.filter((id) => id !== clothingId)
-        : [...current, clothingId];
-    });
-
-    if (!selectedImages.includes(image_url)) {
-      setDragPositions((current) => ({
-        ...current,
-        [image_url]: { x: -5, y: -10 },
-      }));
-    }
   };
 
   const handleImageSelection = (image: string) => {
@@ -308,13 +305,16 @@ const DesignPage = () => {
       return;
     }
 
+    console.log("SELECTED PIECES", selectedPiecesIds);
+    console.log("SELECTED IMAGES", selectedImages);
+
     setIsCompletingOutfit(true);
     try {
       const response = await completeOutfit(
         user?.id as string,
         selectedPiecesIds
       );
-      console.log(response);
+      console.log("Response:", response);
 
       const suggestedOutfitIds = response?.suggestedOutfit || [];
 
@@ -332,14 +332,21 @@ const DesignPage = () => {
         (id: string) => !selectedPiecesIds.includes(id)
       );
 
+      if (newIds.length === 0) {
+        Toast.show({
+          type: "info",
+          text1: "Info",
+          text2: "No new pieces were added.",
+          position: "top",
+        });
+        return;
+      }
+
       const newClothes = clothes.filter((item) => newIds.includes(item.id));
+      const newImages = newClothes.map((item) => item.image_url);
 
-      const updatedImages = clothes
-        .filter((item) => selectedPiecesIds.includes(item.id))
-        .map((item) => item.image_url);
-
-      setSelectedImages(updatedImages);
       setSelectedPiecesIds((current) => [...current, ...newIds]);
+      setSelectedImages((current) => [...current, ...newImages]);
 
       newClothes.forEach((item) => {
         setDragPositions((current) => ({

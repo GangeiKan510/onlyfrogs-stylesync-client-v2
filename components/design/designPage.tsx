@@ -31,9 +31,12 @@ import ResetIcon from "@/assets/icons/reset-icon.svg";
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
-  const clothes = user?.clothes ?? [];
+  const clothes = user?.closets?.flatMap((closet) => closet.clothes) ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
+
+  console.log("Clothes", user?.closets[0].clothes);
+  console.log("Closets", user?.closets);
 
   const snapPoints = useMemo(() => ["30%", "80%"], []);
   const bottomSheet = useRef<BottomSheet>(null);
@@ -54,9 +57,8 @@ const DesignPage = () => {
   const [snapshotName, setSnapshotName] = useState("");
   const [selectedClosetId, setSelectedClosetId] = useState<string | null>(null);
   const filteredClothes =
-    user?.clothes?.filter(
-      (clothing) => clothing.closet_id === selectedClosetId
-    ) || [];
+    user?.closets?.find((closet) => closet.id === selectedClosetId)?.clothes ??
+    [];
   const [isSavingFit, setIsSavingFit] = useState(false);
 
   const snapshot = async () => {
@@ -141,14 +143,8 @@ const DesignPage = () => {
     bottomSheet.current?.snapToIndex(0);
   }, [activeTab, closets, clothes]);
 
-  const renderCloset = ({
-    item: closet,
-  }: {
-    item: { id: string; name: string };
-  }) => {
-    const clothingInCloset = user?.clothes.filter(
-      (clothing) => clothing.closet_id === closet.id
-    );
+  const renderCloset = ({ item: closet }: { item: any }) => {
+    const clothingInCloset = closet.clothes ?? [];
     const imageUri =
       clothingInCloset && clothingInCloset.length > 0
         ? clothingInCloset[0].image_url

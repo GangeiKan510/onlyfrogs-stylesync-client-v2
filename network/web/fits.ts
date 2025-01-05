@@ -65,7 +65,10 @@ export const deleteFit = async (fitId: string) => {
   }
 };
 
-export const completeOutfit = async (userId: string, clothingIds: string[]) => {
+export const completeOutfit = async (
+  userId: string,
+  clothingIds: string[] | []
+) => {
   try {
     const response = await postWithFirebaseJwt("/web/fits/complete-outfit", {
       userId,

@@ -295,16 +295,6 @@ const DesignPage = () => {
     });
 
   const completeOutfitHandler = async () => {
-    if (selectedPiecesIds.length === 0) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Please select some pieces to complete the outfit.",
-        position: "top",
-      });
-      return;
-    }
-
     console.log("SELECTED PIECES", selectedPiecesIds);
     console.log("SELECTED IMAGES", selectedImages);
 
@@ -369,9 +359,8 @@ const DesignPage = () => {
     } catch (error) {
       console.error("Error completing outfit:", error);
       Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to complete the outfit.",
+        type: "info",
+        text1: "Failed to create or outfit is already complete",
         position: "top",
       });
     } finally {

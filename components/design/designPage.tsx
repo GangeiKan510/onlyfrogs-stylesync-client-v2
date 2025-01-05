@@ -383,6 +383,38 @@ const DesignPage = () => {
     <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
+      <View className="relative w-full py-3 px-5 flex-row items-center justify-end mt-2">
+        <View className="absolute left-[33%] -translate-x-1/2">
+          <TouchableOpacity
+            onPress={completeOutfitHandler}
+            className="mx-1"
+            disabled={isCompletingOutfit}
+          >
+            <View className="bg-tertiary px-5 py-2 rounded-full flex-row items-center justify-center">
+              {isCompletingOutfit ? (
+                <Spinner type="primary" />
+              ) : (
+                <>
+                  <Text className="mr-2 text-white">Generate Outfit</Text>
+                  <CompleteFitIcon width={24} height={24} />
+                </>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {selectedImages.length > 0 && (
+          <View className="flex-row items-center">
+            <TouchableOpacity onPress={clearSelection} className="mx-2">
+              <ResetIcon />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={snapshot} className="mx-1 mr-3">
+              <Save />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
       <View
         collapsable={false}
         ref={viewToSnapshotRef}
@@ -473,28 +505,6 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
-
-      {selectedImages.length > 0 && (
-        <View className="w-full flex-row justify-end items-center py-3 px-5 bottom-[90%]">
-          <TouchableOpacity
-            onPress={completeOutfitHandler}
-            className="mx-1"
-            disabled={isCompletingOutfit}
-          >
-            {isCompletingOutfit ? (
-              <Spinner type="secondary" />
-            ) : (
-              <CompleteFitIcon width={24} height={24} />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity onPress={clearSelection} className="mx-2">
-            <ResetIcon />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={snapshot} className="mx-1 mr-3">
-            <Save />
-          </TouchableOpacity>
-        </View>
-      )}
 
       {snapshotImg && (
         <Modal animationType="fade" transparent={true} visible={showModal}>

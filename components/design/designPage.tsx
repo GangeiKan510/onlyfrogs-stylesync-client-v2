@@ -383,19 +383,19 @@ const DesignPage = () => {
     <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
-      <View className="relative w-full py-3 px-5 flex-row items-center justify-end mt-2">
+      <View className="relative w-full py-3 px-5 flex-row items-center justify-end mt-4">
         <View className="absolute left-[33%] -translate-x-1/2">
           <TouchableOpacity
             onPress={completeOutfitHandler}
             className="mx-1"
             disabled={isCompletingOutfit}
           >
-            <View className="bg-tertiary px-5 py-2 rounded-full flex-row items-center justify-center">
+            <View className="w-[170px] bg-tertiary px-5 py-2 rounded-full flex-row items-center justify-center">
               {isCompletingOutfit ? (
                 <Spinner type="primary" />
               ) : (
                 <>
-                  <Text className="mr-2 text-white">Generate Outfit</Text>
+                  <Text className="mr-2 text-white">Design with Ali</Text>
                   <CompleteFitIcon width={24} height={24} />
                 </>
               )}
@@ -403,16 +403,18 @@ const DesignPage = () => {
           </TouchableOpacity>
         </View>
 
-        {selectedImages.length > 0 && (
-          <View className="flex-row items-center">
-            <TouchableOpacity onPress={clearSelection} className="mx-2">
-              <ResetIcon />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={snapshot} className="mx-1 mr-3">
-              <Save />
-            </TouchableOpacity>
-          </View>
-        )}
+        <View className="flex-row items-center">
+          <TouchableOpacity onPress={clearSelection} className="mx-2">
+            <ResetIcon />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={snapshot}
+            className="mx-1 disabled:opacity-25"
+            disabled={selectedPiecesIds.length === 0}
+          >
+            <Save />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View

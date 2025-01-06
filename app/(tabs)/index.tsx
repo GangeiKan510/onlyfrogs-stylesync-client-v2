@@ -36,6 +36,7 @@ interface MessageProps {
 
 export default function HomeScreen() {
   const { user } = useUser();
+  console.log("USER DETAILS", user);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");

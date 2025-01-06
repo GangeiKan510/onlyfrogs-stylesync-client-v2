@@ -86,3 +86,21 @@ export const getSuggesteddPrompt = async (userMessage: string) => {
     throw error;
   }
 };
+
+export const refreshTokens = async (userId: string) => {
+  try {
+    const response = await postWithFirebaseJwt("/web/chat/refresh-tokens", {
+      userId,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error refreshing tokens: ${response.statusText}`);
+    }
+
+    const refreshResponse = await response.json();
+    return refreshResponse;
+  } catch (error) {
+    console.error("Failed to refresh tokens", error);
+    throw error;
+  }
+};

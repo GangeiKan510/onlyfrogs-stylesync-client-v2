@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   Text,
@@ -63,19 +64,6 @@ const PiecesTab = () => {
     setSelectedFilters([]);
   };
 
-  const searchFieldMatch = (field: string | string[] | null | undefined) => {
-    if (typeof field === "string") {
-      return field.toLowerCase().includes(search.toLowerCase());
-    } else if (Array.isArray(field)) {
-      return field.some(
-        (searchField) =>
-          typeof searchField === "string" &&
-          searchField.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    return false;
-  };
-
   const filterOptions = () => {
     const filterOptions = {
       season: new Set<string>(),
@@ -87,12 +75,20 @@ const PiecesTab = () => {
       worn: new Set<string>(),
     };
 
-    (user?.clothes || []).forEach((item) => {
-      item.season?.forEach((season) => filterOptions.season.add(season));
-      item.occasion?.forEach((occasion) =>
-        filterOptions.occasion.add(occasion)
+    const allClothes = user?.closets?.flatMap((closet) => closet.clothes) ?? [];
+
+    allClothes.forEach((item) => {
+      item.seasons?.forEach((season) =>
+        filterOptions.season.add(season.season)
       );
-      if (item.category?.name) filterOptions.category.add(item.category.name);
+
+      item.occasions?.forEach((occasion) =>
+        filterOptions.occasion.add(occasion.occasion)
+      );
+
+      item.categories?.forEach((category) =>
+        filterOptions.category.add(category.category)
+      );
 
       if (
         typeof item.color === "string" &&
@@ -103,8 +99,11 @@ const PiecesTab = () => {
         const colorCode = getColorHexCode(item.color, COLOR_LIST) || "#FFFFFF";
         filterOptions.color.add({ name: item.color, colorCode });
       }
+
       if (item.material) filterOptions.material.add(item.material);
+
       if (item.pattern) filterOptions.pattern.add(item.pattern);
+
       const wornCount = item.worn?.[0]?.count ?? 0;
       if (wornCount === 0) filterOptions.worn.add("Never Worn");
       else if (wornCount >= 1 && wornCount <= 5)
@@ -112,15 +111,13 @@ const PiecesTab = () => {
       else if (wornCount >= 6 && wornCount <= 10)
         filterOptions.worn.add("Frequently Worn");
       else if (wornCount > 10) filterOptions.worn.add("Very Frequently Worn");
-
-      console.log("Worn count:", item.worn);
     });
 
     return {
       season: Array.from(filterOptions.season),
       occasion: Array.from(filterOptions.occasion),
-      color: Array.from(filterOptions.color),
       category: Array.from(filterOptions.category),
+      color: Array.from(filterOptions.color),
       material: Array.from(filterOptions.material),
       pattern: Array.from(filterOptions.pattern),
       worn: Array.from(filterOptions.worn),
@@ -143,35 +140,29 @@ const PiecesTab = () => {
           item.name,
           item.color,
           item.brand,
-          item.season,
-          item.occasion,
-          item.category?.name,
           item.pattern,
           item.material,
-        ].some((field) => searchFieldMatch(field));
+          ...item.categories.map((category) => category.category),
+          ...item.seasons.map((season) => season.season),
+          ...item.occasions.map((occasion) => occasion.occasion),
+        ].some((field: any) =>
+          field?.toLowerCase().includes(search.toLowerCase())
+        );
 
-      // Season
-      const itemSeason = Array.isArray(item.season)
-        ? item.season.map((season: string) => (season as string).toLowerCase())
-        : [];
-      // Occasion
-      const itemOccasion = Array.isArray(item.occasion)
-        ? item.occasion.map((occasion: string) =>
-            (occasion as string).toLowerCase()
-          )
-        : [];
-      // Category
-      const itemCategory = item.category?.name?.toLowerCase() ?? "";
-      // Color
-      const itemColor =
-        typeof item.color === "string" ? item.color.toLowerCase() : "";
-      // Material
-      const itemMaterial =
-        (item.material as unknown as string)?.toLowerCase() || "";
-      // Pattern
-      const itemPattern =
-        (item.pattern as unknown as string)?.toLowerCase() || "";
-      // Worn
+      const itemSeason = item.seasons.map((season) =>
+        season.season.toLowerCase()
+      );
+      const itemOccasion = item.occasions.map((occasion) =>
+        occasion.occasion.toLowerCase()
+      );
+      const itemCategory = item.categories.map((category) =>
+        category.category.toLowerCase()
+      );
+      let itemColor: any = item.color;
+      itemColor = itemColor?.toLowerCase() ?? "";
+      const itemMaterial = item.material?.toLowerCase() ?? "";
+      const itemPattern = item.pattern?.toLowerCase() ?? "";
+
       const wornCount = item.worn?.[0]?.count ?? 0;
       const itemWorn =
         wornCount === 0
@@ -184,15 +175,16 @@ const PiecesTab = () => {
 
       const matchesFilters =
         selectedFilters.length === 0 ||
-        selectedFilters.some(
-          (filter) =>
-            itemCategory.includes(filter.toLowerCase()) ||
-            itemOccasion.includes(filter.toLowerCase()) ||
-            itemSeason.includes(filter.toLowerCase()) ||
-            itemColor.includes(filter.toLowerCase()) ||
-            itemMaterial.includes(filter.toLowerCase()) ||
-            itemPattern.includes(filter.toLowerCase()) ||
-            itemWorn.toLowerCase().includes(filter.toLowerCase())
+        selectedFilters.some((filter) =>
+          [
+            ...itemSeason,
+            ...itemOccasion,
+            ...itemCategory,
+            itemColor,
+            itemMaterial,
+            itemPattern,
+            itemWorn.toLowerCase(),
+          ].includes(filter.toLowerCase())
         );
 
       return matchesSearch && matchesFilters;

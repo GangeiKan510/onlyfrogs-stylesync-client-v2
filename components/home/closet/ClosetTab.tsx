@@ -75,15 +75,11 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
     }
   };
 
-  console.log("Closets", user?.closets);
-  console.log("Clothing URL", user?.closets[0].clothes[0].image_url);
   return (
     <View className="flex-1">
       <View className="flex-row flex-wrap justify-start">
         {closetCards?.map((closet: any) => {
           const clothingInCloset = closet.clothes || [];
-
-          console.log("Clothing in Closet", clothingInCloset);
 
           const imageUri =
             clothingInCloset.length > 0

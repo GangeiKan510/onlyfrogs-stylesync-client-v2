@@ -23,10 +23,11 @@ import Spinner from "@/components/common/Spinner";
 import SettingsDropdown from "@/components/chat/settings-dropdown";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
 import RecommendedProductsIcon from "../../assets/icons/recommended-products-icon.svg";
-import { getSuggesteddPrompt } from "@/network/web/chat";
+import { getSuggesteddPrompt, refreshTokens } from "@/network/web/chat";
 import { scrapeMissingPieces } from "@/network/web/scraping";
 import SuggestedProductCard from "@/components/cards/SuggestedProductCard";
 import { removeLineBreaks } from "@/utils/helpers/remove-line-breaks";
+import Toast from "react-native-toast-message";
 
 interface MessageProps {
   id: string;
@@ -36,7 +37,6 @@ interface MessageProps {
 
 export default function HomeScreen() {
   const { user } = useUser();
-  console.log("USER DETAILS", user);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -69,6 +69,29 @@ export default function HomeScreen() {
     };
 
     fetchChatSession();
+  }, [user]);
+
+  useEffect(() => {
+    const checkAndRefreshTokens = async () => {
+      if (user?.tokens?.[0]?.updated_at) {
+        const lastUpdated = new Date(user.tokens[0].updated_at);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (lastUpdated < today) {
+          try {
+            await refreshTokens(user.id);
+            Toast.show({
+              type: "success",
+              text1: "Tokens refreshed successfully",
+            });
+          } catch (error) {
+            console.error("Failed to refresh tokens:", error);
+          }
+        }
+      }
+    };
+
+    checkAndRefreshTokens();
   }, [user]);
 
   const resetChatState = () => {

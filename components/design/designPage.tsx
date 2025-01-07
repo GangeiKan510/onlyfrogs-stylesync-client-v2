@@ -28,6 +28,7 @@ import Toast from "react-native-toast-message";
 import BackIcon from "@/assets/icons/return-icon.svg";
 import ResetIcon from "@/assets/icons/reset-icon.svg";
 import CompleteFitIcon from "@/assets/icons/complete-fit-icon.svg";
+import { LinearGradient } from "expo-linear-gradient";
 
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
@@ -373,22 +374,37 @@ const DesignPage = () => {
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
       <View className="relative w-full py-3 px-5 flex-row items-center justify-end mt-4">
-        <View className="absolute left-[33%] -translate-x-1/2">
+        <View className="absolute left-[5%] -translate-x-1/2">
           <TouchableOpacity
             onPress={completeOutfitHandler}
             className="mx-1"
             disabled={isCompletingOutfit}
           >
-            <View className="w-[170px] bg-tertiary px-5 py-2 rounded-full flex-row items-center justify-center">
-              {isCompletingOutfit ? (
-                <Spinner type="primary" />
-              ) : (
-                <>
-                  <Text className="mr-2 text-white">Design with Ali</Text>
-                  <CompleteFitIcon width={24} height={24} />
-                </>
-              )}
-            </View>
+            <LinearGradient
+              colors={["#7AB2B2", "#B088CD"]}
+              start={[0, 0]}
+              end={[1, 0]}
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                width: "100%",
+                borderRadius: 20,
+                paddingHorizontal: 4,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View className="px-2 py-1.5 flex-row items-center justify-center">
+                {isCompletingOutfit ? (
+                  <Spinner type="primary" />
+                ) : (
+                  <>
+                    <Text className="mr-2 text-white">Design</Text>
+                    <CompleteFitIcon width={24} height={24} />
+                  </>
+                )}
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 

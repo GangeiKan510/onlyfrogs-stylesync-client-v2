@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { router } from "expo-router";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -25,7 +26,7 @@ function Result() {
     return str;
   };
 
-  const chunkArray = (array: string[], chunkSize: number) => {
+  const chunkArray = (array: any[], chunkSize: number) => {
     const results = [];
     for (let i = 0; i < array.length; i += chunkSize) {
       results.push(array.slice(i, i + chunkSize));
@@ -33,9 +34,16 @@ function Result() {
     return results;
   };
 
+  // Extract complement colors as a list of hex strings
+  const complementColors = complements.map((colorObj) => colorObj.complement);
+
+  // Chunk the color hex values
+  const chunkedColors = chunkArray(complementColors, 7);
+
   const capitalizedSubSeason = capitalizeWords(subSeason);
   const subSeasonText = splitSubSeasonIntoTwoLines(capitalizedSubSeason);
-  const chunkedColors = chunkArray(complements, 7);
+
+  console.log("Chunked Colors", chunkedColors);
 
   return (
     <SafeAreaView className="flex-1 bg-white">

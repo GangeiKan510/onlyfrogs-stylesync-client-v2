@@ -13,7 +13,7 @@ const DesignExpandedCloset = () => {
   console.log("Closet ID:", closetId);
 
   const currentCloset = user?.closets?.find((closet) => closet.id === closetId);
-  console.log("Current Closet:", currentCloset); 
+  console.log("Current Closet:", currentCloset);
 
   const filteredClothes =
     user?.clothes?.filter((clothing) => clothing.closet_id === closetId) || [];
@@ -46,6 +46,7 @@ const DesignExpandedCloset = () => {
                 clothingId={item.id}
                 uri={item.image_url}
                 onPress={() => {}}
+                closetClothes={[]}
               />
             )}
             numColumns={3}

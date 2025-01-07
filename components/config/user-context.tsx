@@ -13,36 +13,34 @@ import { getMe } from "@/network/web/user";
 import { Notification } from "@/app/(tabs)/notifications";
 import { FitsType } from "@/utils/types/FitType";
 
-type Closet = {
+export type Closet = {
   id: string;
   name: string;
   description: string;
   serial: number;
   user_id: string;
+  clothes: Clothes[];
 };
 
-type Clothes = {
-  pattern: null;
-  material: null;
-  occasion: never[];
-  season: never[];
-  color: string | string[];
-  brand: string | string[];
-  name: string;
+export type Clothes = {
   id: string;
   serial: number;
   image_url: string;
-  user_id: string;
+  name: string;
+  brand: string | string[] | null;
+  color: string | string[] | null;
+  material: string | null;
+  pattern: string | null;
   closet_id: string;
-  category: {
-    name: string | null;
-    type: string | null;
-  };
+  user_id: string;
   tags: string[];
-  worn: any;
+  worn: { count: number; last_worn: string | null }[];
+  seasons: { id: string; season: string }[];
+  occasions: { id: string; occasion: string }[];
+  categories: { id: string; category: string; type: string }[];
 };
 
-type PromptSettings = {
+export type PromptSettings = {
   id: string;
   user_id: string;
   consider_skin_tone: boolean;
@@ -51,36 +49,52 @@ type PromptSettings = {
   updatedAt: string;
 };
 
-type UserDetails = {
+export type ChatSession = {
+  id: string;
+  created_at: string;
+  user_id: string;
+  messages: { id: string; role: string; content: string; created_at: string }[];
+};
+
+export type Token = {
+  id: string;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+};
+
+export type UserDetails = {
   birth_date: string | null;
-  budget_min: number;
-  budget_max: number;
-  preferred_style: string[];
-  preferred_brands: string | null;
+  body_type: string | null;
+  budget_min: number | null;
+  budget_max: number | null;
+  chat_session: ChatSession | null;
+  closets: Closet[];
+  clothes: Clothes[];
   email: string;
-  favorite_color: string | null;
+  favorite_colors: string[];
   first_name: string;
+  fits: FitsType[];
   gender: "Male" | "Female" | "Non-Binary" | "Rather Not Say" | null;
   height: number | null;
   id: string;
   last_name: string;
+  notifications: Notification[];
+  preferred_brands: string[];
+  preferred_styles: string[];
+  profile_url: string | null;
+  prompt_settings: PromptSettings;
+  role: string | null;
+  season: string | null;
   serial: number;
   skin_tone_classification: string | null;
-  sub_season: string | null;
-  skin_tone_complements?: string[];
+  skin_tone_complements: string[];
   style_preferences: string[];
-  tokens: number;
-  closets: Closet[];
-  clothes: Clothes[];
-  weight: string;
-  body_type: string;
-  profile_url: string;
-  promptSettings: PromptSettings;
-  favorite_colors: string[];
-  notifications: Notification[];
-  fits: FitsType[];
+  sub_season: string | null;
+  tokens: Token[];
+  weight: string | null;
 };
-
 interface UserContextProps {
   user: UserDetails | null;
   updateUser: (userData: UserDetails | null) => void;
@@ -103,17 +117,7 @@ export const UserProvider: React.FC<React.PropsWithChildren<{}>> = ({
       try {
         const userInfo = await getMe({ email });
         if (userInfo) {
-          const {
-            consider_skin_tone = false,
-            prioritize_preferences = false,
-            ...rest
-          } = userInfo;
-
-          updateUser({
-            ...rest,
-            consider_skin_tone,
-            prioritize_preferences,
-          });
+          updateUser(userInfo);
           return;
         }
       } catch (error) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   View,
@@ -31,8 +32,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
 
   const minimunChar = closetName.length < NAME_CHAR_MINUMUM;
 
-  const isAddDisabled =
-    !closetName.trim() || minimunChar;
+  const isAddDisabled = !closetName.trim() || minimunChar;
 
   const handleModalVisibility = () => {
     setModalVisible(true);
@@ -78,13 +78,11 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
   return (
     <View className="flex-1">
       <View className="flex-row flex-wrap justify-start">
-        {closetCards?.map((closet) => {
-          const clothingInCloset = user?.clothes.filter(
-            (clothing) => clothing.closet_id === closet.id
-          );
+        {closetCards?.map((closet: any) => {
+          const clothingInCloset = closet.clothes || [];
 
           const imageUri =
-            clothingInCloset && clothingInCloset.length > 0
+            clothingInCloset.length > 0
               ? clothingInCloset[0].image_url
               : "https://lh3.googleusercontent.com/pw/AP1GczMpwiLxbGQkZGPAbApzNsZPrj7I8aqlXXj1gVqKU4UindflHV1YdgnaH3yWBP35nufvm1dZNmYcoCBg1XrBed4zrYPt8VuOgpWjZk0vZfW56vuptA=w2400";
 
@@ -97,6 +95,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
             />
           );
         })}
+
         <AddClosetCard onPress={handleModalVisibility} />
       </View>
 
@@ -116,9 +115,7 @@ const ClosetTab = ({ closetCards }: ClosetTabProps) => {
             </View>
             <View className="w-full">
               <View className="mb-3 mt-4">
-                <Text className="text-[16px] mb-1 self-start">
-                  Name{" "}
-                </Text>
+                <Text className="text-[16px] mb-1 self-start">Name </Text>
                 <TextInput
                   className="bg-[#F3F3F3] h-[42px] rounded-[10px] px-4 w-full"
                   maxLength={20}

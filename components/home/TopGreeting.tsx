@@ -38,7 +38,6 @@ const TopGreeting = () => {
       setTimeout(() => setClicked(false), 300);
     }
   };
-  
 
   const handleLogout = async () => {
     setModalVisible(false);
@@ -96,7 +95,9 @@ const TopGreeting = () => {
           <Pressable onPress={() => setTokenInfoVisible(true)}>
             <MoreInfoIcon color="black" width={20} height={20} />
           </Pressable>
-          <Text className="text-[14px] ml-1">Tokens: {user?.tokens}</Text>
+          <Text className="text-[14px] ml-1">
+            Tokens: {user?.tokens[0].amount}
+          </Text>
         </View>
         {/* <Pressable onPress={() => router.push("/(tabs)/survey" as Href<string | object>)}>
           <Text className="text-[8px]">to survey</Text>

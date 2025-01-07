@@ -9,9 +9,10 @@ const HomeTabs = () => {
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState("Closet");
 
-  // Directly use closets from user object
   const closets = user?.closets || [];
-  const clothesLength = user?.clothes.length;
+  const clothesLength =
+    user?.closets.reduce((total, closet) => total + closet.clothes.length, 0) ||
+    0;
   const fitsLength = user?.fits.length;
 
   return (

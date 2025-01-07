@@ -22,16 +22,17 @@ import ClosetCard from "@/components/cards/DesignClosetCard";
 import ResizeArrow from "../../assets/icons/resize.svg";
 import CloseIcon from "../../assets/icons/close-icon.svg";
 import Save from "../../assets/icons/save.svg";
-import { createFit } from "@/network/web/fits";
+import { createFit, completeOutfit } from "@/network/web/fits";
 import Spinner from "../common/Spinner";
 import Toast from "react-native-toast-message";
 import BackIcon from "@/assets/icons/return-icon.svg";
 import ResetIcon from "@/assets/icons/reset-icon.svg";
+import CompleteFitIcon from "@/assets/icons/complete-fit-icon.svg";
 
 const DesignPage = () => {
   const { user, refetchMe } = useUser();
   const closets = user?.closets || [];
-  const clothes = user?.clothes ?? [];
+  const clothes = user?.closets?.flatMap((closet) => closet.clothes) ?? [];
   const clothesLength = clothes.length;
   const closetsLength = closets.length;
 
@@ -54,10 +55,10 @@ const DesignPage = () => {
   const [snapshotName, setSnapshotName] = useState("");
   const [selectedClosetId, setSelectedClosetId] = useState<string | null>(null);
   const filteredClothes =
-    user?.clothes?.filter(
-      (clothing) => clothing.closet_id === selectedClosetId
-    ) || [];
+    user?.closets?.find((closet) => closet.id === selectedClosetId)?.clothes ??
+    [];
   const [isSavingFit, setIsSavingFit] = useState(false);
+  const [isCompletingOutfit, setIsCompletingOutfit] = useState(false);
 
   const snapshot = async () => {
     const result = await captureRef(viewToSnapshotRef);
@@ -141,14 +142,8 @@ const DesignPage = () => {
     bottomSheet.current?.snapToIndex(0);
   }, [activeTab, closets, clothes]);
 
-  const renderCloset = ({
-    item: closet,
-  }: {
-    item: { id: string; name: string };
-  }) => {
-    const clothingInCloset = user?.clothes.filter(
-      (clothing) => clothing.closet_id === closet.id
-    );
+  const renderCloset = ({ item: closet }: { item: any }) => {
+    const clothingInCloset = closet.clothes ?? [];
     const imageUri =
       clothingInCloset && clothingInCloset.length > 0
         ? clothingInCloset[0].image_url
@@ -182,8 +177,17 @@ const DesignPage = () => {
   );
 
   const handleItemPress = (clothingId: string, image_url: string) => {
-    setSelectedImages((current) => {
-      const isSelected = current.includes(image_url);
+    setSelectedPiecesIds((currentIds) => {
+      const isSelected = currentIds.includes(clothingId);
+      const updatedIds = isSelected
+        ? currentIds.filter((id) => id !== clothingId)
+        : [...currentIds, clothingId];
+
+      const updatedImages = clothes
+        .filter((item) => updatedIds.includes(item.id))
+        .map((item) => item.image_url);
+
+      setSelectedImages(updatedImages);
 
       if (isSelected) {
         setImageSizes((prevSizes) => {
@@ -195,27 +199,15 @@ const DesignPage = () => {
           const { [image_url]: _, ...remainingPositions } = prevPositions;
           return remainingPositions;
         });
+      } else {
+        setDragPositions((current) => ({
+          ...current,
+          [image_url]: { x: -5, y: -10 },
+        }));
       }
 
-      return isSelected
-        ? current.filter((url) => url !== image_url)
-        : [...current, image_url];
+      return updatedIds;
     });
-
-    setSelectedPiecesIds((current) => {
-      const isSelected = current.includes(clothingId);
-
-      return isSelected
-        ? current.filter((id) => id !== clothingId)
-        : [...current, clothingId];
-    });
-
-    if (!selectedImages.includes(image_url)) {
-      setDragPositions((current) => ({
-        ...current,
-        [image_url]: { x: -5, y: -10 },
-      }));
-    }
   };
 
   const handleImageSelection = (image: string) => {
@@ -302,10 +294,118 @@ const DesignPage = () => {
       onPanResponderRelease: () => setActiveGesture(null),
     });
 
+  const completeOutfitHandler = async () => {
+    console.log("SELECTED PIECES", selectedPiecesIds);
+    console.log("SELECTED IMAGES", selectedImages);
+
+    setIsCompletingOutfit(true);
+    try {
+      const response = await completeOutfit(
+        user?.id as string,
+        selectedPiecesIds
+      );
+      console.log("Response:", response);
+
+      const suggestedOutfitIds = response?.suggestedOutfit || [];
+
+      if (suggestedOutfitIds.length === 0) {
+        Toast.show({
+          type: "info",
+          text1: "No Suggestions",
+          text2: "Couldn't find enough clothes to complete the outfit.",
+          position: "top",
+        });
+        return;
+      }
+
+      const newIds = suggestedOutfitIds.filter(
+        (id: string) => !selectedPiecesIds.includes(id)
+      );
+
+      if (newIds.length === 0) {
+        Toast.show({
+          type: "info",
+          text1: "Info",
+          text2: "No new pieces were added.",
+          position: "top",
+        });
+        return;
+      }
+
+      const newClothes = clothes.filter((item) => newIds.includes(item.id));
+      const newImages = newClothes.map((item) => item.image_url);
+
+      setSelectedPiecesIds((current) => [...current, ...newIds]);
+      setSelectedImages((current) => [...current, ...newImages]);
+
+      newClothes.forEach((item) => {
+        setDragPositions((current) => ({
+          ...current,
+          [item.image_url]: { x: -5, y: -10 },
+        }));
+
+        setImageSizes((current) => ({
+          ...current,
+          [item.image_url]: { width: 96, height: 96 },
+        }));
+      });
+
+      Toast.show({
+        type: "success",
+        text1: "Outfit Completed",
+        text2: "Suggested pieces have been added.",
+        position: "top",
+      });
+    } catch (error) {
+      console.error("Error completing outfit:", error);
+      Toast.show({
+        type: "info",
+        text1: "Failed to create or outfit is already complete",
+        position: "top",
+      });
+    } finally {
+      setIsCompletingOutfit(false);
+    }
+  };
+
   return (
     <GestureHandlerRootView className="flex-1 bg-white">
       <Header />
       <View className="border-t border-[#D9D9D9] mt-6"></View>
+      <View className="relative w-full py-3 px-5 flex-row items-center justify-end mt-4">
+        <View className="absolute left-[33%] -translate-x-1/2">
+          <TouchableOpacity
+            onPress={completeOutfitHandler}
+            className="mx-1"
+            disabled={isCompletingOutfit}
+          >
+            <View className="w-[170px] bg-tertiary px-5 py-2 rounded-full flex-row items-center justify-center">
+              {isCompletingOutfit ? (
+                <Spinner type="primary" />
+              ) : (
+                <>
+                  <Text className="mr-2 text-white">Design with Ali</Text>
+                  <CompleteFitIcon width={24} height={24} />
+                </>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View className="flex-row items-center">
+          <TouchableOpacity onPress={clearSelection} className="mx-2">
+            <ResetIcon />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={snapshot}
+            className="mx-1 disabled:opacity-25"
+            disabled={selectedPiecesIds.length === 0}
+          >
+            <Save />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View
         collapsable={false}
         ref={viewToSnapshotRef}
@@ -396,17 +496,6 @@ const DesignPage = () => {
           </Text>
         )}
       </View>
-
-      {selectedImages.length > 0 && (
-        <View className=" w-full flex-col items-end py-3 px-5 bottom-[50%]">
-          <TouchableOpacity onPress={snapshot} className=" mb-5">
-            <Save />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={clearSelection} className="">
-            <ResetIcon />
-          </TouchableOpacity>
-        </View>
-      )}
 
       {snapshotImg && (
         <Modal animationType="fade" transparent={true} visible={showModal}>

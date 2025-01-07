@@ -31,14 +31,17 @@ const PreferencesAndBudget = () => {
   const [maxValue, setMaxValue] = useState<number>(
     user?.budget_max || MAX_DEFAULT
   );
+
   const [styles, setStyles] = useState<string[]>(
-    user?.preferred_style as string[]
+    user?.style_preferences?.map((item: any) => item.style) || []
   );
+
   const [favoriteColors, setFavoriteColors] = useState<string[]>(
-    user?.favorite_colors || []
+    user?.favorite_colors?.map((item: any) => item.color) || []
   );
-  const [brands, setBrands] = useState<string[] | null>(
-    user?.preferred_brands as any
+
+  const [brands, setBrands] = useState<string[]>(
+    user?.preferred_brands?.map((item: any) => item.brand) || []
   );
 
   const [showAllStyles, setShowAllStyles] = useState<boolean>(false);
@@ -52,16 +55,15 @@ const PreferencesAndBudget = () => {
   ];
 
   const toggleStyleSelection = (styleName: string): string[] => {
-    let updatedStyles;
+    let updatedStyles = styles || [];
 
-    if (styles.includes(styleName)) {
-      updatedStyles = styles.filter((style) => style !== styleName);
+    if (updatedStyles.includes(styleName)) {
+      updatedStyles = updatedStyles.filter((style) => style !== styleName);
     } else {
-      updatedStyles = [...styles, styleName];
+      updatedStyles = [...updatedStyles, styleName];
     }
 
     setStyles(updatedStyles);
-
     return updatedStyles;
   };
 

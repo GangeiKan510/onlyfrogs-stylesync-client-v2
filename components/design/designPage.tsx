@@ -184,11 +184,11 @@ const DesignPage = () => {
         ? currentIds.filter((id) => id !== clothingId)
         : [...currentIds, clothingId];
 
-      const updatedImages = clothes
-        .filter((item) => updatedIds.includes(item.id))
-        .map((item) => item.image_url);
-
-      setSelectedImages(updatedImages);
+      setSelectedImages((currentImages) =>
+        isSelected
+          ? currentImages.filter((img) => img !== image_url)
+          : [...currentImages, image_url]
+      );
 
       if (isSelected) {
         setImageSizes((prevSizes) => {
@@ -220,6 +220,22 @@ const DesignPage = () => {
     setSelectedImages((prevImages) =>
       prevImages.filter((img) => img !== image)
     );
+    setSelectedPiecesIds((prevIds) => {
+      const removedPiece = clothes.find((item) => item.image_url === image);
+      return removedPiece
+        ? prevIds.filter((id) => id !== removedPiece.id)
+        : prevIds;
+    });
+
+    setImageSizes((prevSizes) => {
+      const { [image]: _, ...remainingSizes } = prevSizes;
+      return remainingSizes;
+    });
+
+    setDragPositions((prevPositions) => {
+      const { [image]: _, ...remainingPositions } = prevPositions;
+      return remainingPositions;
+    });
   };
 
   const clearSelection = () => {

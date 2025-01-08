@@ -23,8 +23,8 @@ import { updateUserPreferences } from "@/network/web/user";
 const PreferencesAndBudget = () => {
   const router = useRouter();
   const { user, refetchMe } = useUser();
-  const MIN_DEFAULT = 100;
-  const MAX_DEFAULT = 5000;
+  const MIN_DEFAULT = 500;
+  const MAX_DEFAULT = 100000;
   const [minValue, setMinValue] = useState<number>(
     user?.budget_min || MIN_DEFAULT
   );

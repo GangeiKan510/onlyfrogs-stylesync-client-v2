@@ -5,8 +5,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import RangeSlider from "./RangeSlider";
 
 const BudgetRange = ({ onBudgetChange }: any) => {
-  const MIN_DEFAULT = 100;
-  const MAX_DEFAULT = 5000;
+  const MIN_DEFAULT = 500;
+  const MAX_DEFAULT = 100000;
   const [minValue, setMinValue] = useState(MIN_DEFAULT);
   const [maxValue, setMaxValue] = useState(MAX_DEFAULT);
 

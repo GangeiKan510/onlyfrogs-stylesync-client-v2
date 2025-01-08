@@ -167,7 +167,7 @@ const SkinToneAnalysis = ({
         <SafeAreaView className="flex-1 bg-white">
           <View className="w-full flex-row items-center top-2 px-6 z-30">
             <Text className="flex-1 text-center text-[20px] font-bold">
-              Skint Tone Analysis
+              Skin Tone Analysis
             </Text>
           </View>
           <View className="h-[85vh] flex justify-center items-center mt-10">
